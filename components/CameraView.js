@@ -28,7 +28,7 @@ export default class CameraView extends React.Component {
             },
             features: [
               {
-                type: 'DOCUMENT_TEXT_DETECTION',
+                type: 'TEXT_DETECTION',
               },
             ],
           },
@@ -44,6 +44,14 @@ export default class CameraView extends React.Component {
       //   console.log(resp.body);
       // }
       console.log('non-json: ', resp.data);
+      console.log(
+        'RESPONSE ======>',
+        resp.data.responses[0].fullTextAnnotation.text
+      );
+      const receiptText = resp.data.responses[0].fullTextAnnotation.text;
+      parseReceipt(
+        'Kiwiana Restaurant\n847 A Union Street\nBrooklyn, NY 11215\n718-230-3682\nTbl:4\nRef:57204\nChk:57373\n2/5/2017 12:19 pm\nNino\nbloody mary\nMimosa Special\nCoffee\nFlorentine\nFrench Toast\n7.00\n8.00\n2.75\n12.00\n13.00\nSub Total\nState Tax\n42.75\n3.79\nTotal\n46.54\nImmigrants make America great (they also cooked\nyour food and served you today)\n'
+      );
     } catch (err) {
       console.log('some error happened');
       console.error(err);
@@ -108,4 +116,43 @@ export default class CameraView extends React.Component {
       );
     }
   }
+}
+
+function parseReceipt(receiptText) {
+  const receiptArr = receiptText.split('\n');
+  let priceArr = [];
+  let itemsArr = [];
+  let receiptObj = {};
+  const regex = /^\d*\.?\d*$/g;
+  receiptArr.forEach(ele => {
+    if (Number(ele)) {
+      if (ele.match(regex)) {
+        priceArr.push(Number(ele));
+      }
+    } else {
+      itemsArr.push(ele);
+    }
+  });
+
+  itemsArr.forEach((ele, idx) => {
+    const lastSpaceIdx = ele.lastIndexOf(' ');
+    if (ele.slice(-3).match(regex)) {
+      priceArr.splice(
+        idx,
+        0,
+        isNaN(Number(ele.slice(lastSpaceIdx + 1)))
+          ? 999.99
+          : Number(ele.slice(lastSpaceIdx + 1))
+      );
+    }
+  });
+  priceArr.forEach((price, idx) => {
+    receiptObj[idx] = {
+      name: itemsArr[idx],
+      price: price,
+      quantity: 1,
+    };
+  });
+
+  console.log('RECEIPT OBJECT ====>', receiptObj);
 }
