@@ -49,9 +49,7 @@ export default class CameraView extends React.Component {
         resp.data.responses[0].fullTextAnnotation.text
       );
       const receiptText = resp.data.responses[0].fullTextAnnotation.text;
-      parseReceipt(
-        'Kiwiana Restaurant\n847 A Union Street\nBrooklyn, NY 11215\n718-230-3682\nTbl:4\nRef:57204\nChk:57373\n2/5/2017 12:19 pm\nNino\nbloody mary\nMimosa Special\nCoffee\nFlorentine\nFrench Toast\n7.00\n8.00\n2.75\n12.00\n13.00\nSub Total\nState Tax\n42.75\n3.79\nTotal\n46.54\nImmigrants make America great (they also cooked\nyour food and served you today)\n'
-      );
+      parseReceipt(receiptText);
     } catch (err) {
       console.log('some error happened');
       console.error(err);
