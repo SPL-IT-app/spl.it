@@ -1,7 +1,8 @@
 import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { Camera, Permissions } from 'expo';
-import vision from 'react-native-cloud-vision-api';
+const axios = require('axios');
+require('../secrets');
 
 export default class CameraView extends React.Component {
   state = {
@@ -14,35 +15,46 @@ export default class CameraView extends React.Component {
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
-  takePicture = async () => {
-
-    /**
-     * TODO(developer): Uncomment the following line before running the sample.
-     */
-    // const fileName = 'Local image file, e.g. /path/to/image.png';
-
-    // Performs text detection on the local file
-    let photo = await this.camera.takePictureAsync({ base64: true });
-    console.log("photo taken")
+  getData = async photo => {
     try {
-      vision.init({ auth: process.env.API_KEY });
-      const req = new vision.Request({
-        image: new vision.Image({
-          base64: photo.base64,
-        }),
-        features: [
-          new vision.Feature('TEXT_DETECTION', 4)
+      const reqBody = {
+        requests: [
+          {
+            image: {
+              content: photo.base64,
+              // source: {
+              //   imageUri: photo.uri,
+              // },
+            },
+            features: [
+              {
+                type: 'DOCUMENT_TEXT_DETECTION',
+              },
+            ],
+          },
         ],
-      });
-      vision.annotate(req).then((res) => {
-        // handling response
-        console.log("res", res)
-        console.log(JSON.stringify(res.responses))
-      }).catch(err => console.log(err))
+      };
+      const resp = await axios.post(
+        `https://vision.googleapis.com/v1/images:annotate?key=${
+          process.env.REACT_APP_GOOGLE_API_KEY
+        }`,
+        reqBody
+      );
+      // if (resp.status >= 400) {
+      //   console.log(resp.body);
+      // }
+      console.log('non-json: ', resp.data);
     } catch (err) {
-      console.log("some error happened")
+      console.log('some error happened');
       console.error(err);
     }
+  };
+  takePicture = async () => {
+    let photo = await this.camera.takePictureAsync({
+      quality: 0,
+      base64: true,
+    });
+    this.getData(photo);
   };
 
   render() {
