@@ -31,7 +31,7 @@ const HomeStack = createStackNavigator({
 //   ),
 // };
 
-const LinksStack = createStackNavigator({
+const ProfileStack = createStackNavigator({
   Links: LinksScreen,
 });
 
@@ -45,7 +45,7 @@ const LinksStack = createStackNavigator({
 //   ),
 // };
 
-const SettingsStack = createStackNavigator({
+const MoreStack = createStackNavigator({
   Settings: SettingsScreen,
 });
 
@@ -61,15 +61,15 @@ const SettingsStack = createStackNavigator({
 
 export default createBottomTabNavigator({
   HomeStack,
-  LinksStack,
-  SettingsStack,
+  ProfileStack,
+  MoreStack,
 }, {
   tabBarComponent: props => {
     return (
       <Footer>
         <FooterTab>
           <Button
-            active={props.navigation.history === 'HomeStack'}
+            active={props.navigation.state.index === 0}
             onPress={() => props.navigation.navigate("HomeStack")}
           >
             <Icon name='calendar' />
@@ -78,8 +78,8 @@ export default createBottomTabNavigator({
             </Text>
           </Button>
           <Button
-            // active={props.navigationState.index === 0}
-            onPress={() => props.navigation.navigate("LinksStack")}
+            active = {props.navigation.state.index === 1}
+            onPress={() => props.navigation.navigate("ProfileStack")}
           >
             <Icon type= 'MaterialCommunityIcons' name='account' />
             <Text>
@@ -87,8 +87,8 @@ export default createBottomTabNavigator({
             </Text>
           </Button>
           <Button
-            // active={props.navigationState.index === 0}
-            onPress={() => props.navigation.navigate("SettingsStack")}
+            active={props.navigation.state.index === 2}
+            onPress={() => props.navigation.navigate("MoreStack")}
           >
             <Icon name='more' />
             <Text>
