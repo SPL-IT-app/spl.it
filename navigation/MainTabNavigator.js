@@ -12,7 +12,7 @@ import SettingsScreen from '../screens/SettingsScreen'
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
-});
+} , {headerMode: 'none'});
 
 // HomeStack.navigationOptions = {
 //   tabBarLabel: 'Home',
@@ -33,7 +33,7 @@ const HomeStack = createStackNavigator({
 
 const ProfileStack = createStackNavigator({
   Links: LinksScreen,
-});
+}, {headerMode: 'none'});
 
 // LinksStack.navigationOptions = {
 //   tabBarLabel: 'Links',
@@ -47,7 +47,7 @@ const ProfileStack = createStackNavigator({
 
 const MoreStack = createStackNavigator({
   Settings: SettingsScreen,
-});
+} , {headerMode: 'none'});
 
 // SettingsStack.navigationOptions = {
 //   tabBarLabel: 'Settings',
@@ -99,4 +99,5 @@ export default createBottomTabNavigator({
       </Footer>
     )
   }
+
 });
