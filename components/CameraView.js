@@ -8,6 +8,7 @@ export default class CameraView extends React.Component {
   state = {
     hasCameraPermission: null,
     type: Camera.Constants.Type.back,
+    displayLoading: false,
   };
 
   async componentDidMount() {
