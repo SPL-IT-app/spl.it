@@ -1,8 +1,27 @@
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Camera, Permissions } from 'expo';
 const axios = require('axios');
 require('../secrets');
+import { Icon, Button } from 'native-base';
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+  },
+  camera: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+  },
+  button: { padding: 20, marginTop: 20 },
+  touch: {
+    flex: 0.1,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+  },
+  text: { fontSize: 18, marginBottom: 10, color: 'white' },
+});
 
 export default class CameraView extends React.Component {
   state = {
@@ -72,42 +91,28 @@ export default class CameraView extends React.Component {
       return <Text>No access to camera</Text>;
     } else {
       return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.view}>
           <Camera
-            style={{ flex: 1 }}
+            style={styles.view}
             type={this.state.type}
             ref={ref => {
               this.camera = ref;
             }}
           >
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: 'transparent',
-                flexDirection: 'row',
-              }}
-            >
+            <View style={styles.camera}>
+              <Button
+                style={styles.button}
+                onPress={() => this.props.navigation.navigate('Home')}
+              >
+                <Icon name="ios-arrow-back" />
+              </Button>
               <TouchableOpacity
-                style={{
-                  flex: 0.1,
-                  alignSelf: 'flex-end',
-                  alignItems: 'center',
-                }}
+                style={styles.touch}
                 onPress={() => {
-                  /*  this.setState({
-                    type: this.state.type === Camera.Constants.Type.back
-                      ? Camera.Constants.Type.front
-                      : Camera.Constants.Type.back,
-                  }); */
                   this.takePicture();
                 }}
               >
-                <Text
-                  style={{ fontSize: 18, marginBottom: 10, color: 'white' }}
-                >
-                  {' '}
-                  Take Photo{' '}
-                </Text>
+                <Text style={styles.text}> Take Photo </Text>
               </TouchableOpacity>
             </View>
           </Camera>

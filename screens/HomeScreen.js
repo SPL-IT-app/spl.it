@@ -44,7 +44,7 @@ export default class HomeScreen extends React.Component {
             this.props.navigation.navigate('Camera');
           }}
         >
-          <Text>Take a Photo </Text>
+          <Text>New Receipt</Text>
           <Icon name="ios-camera" style={styles.icon} />
         </Button>
       </View>
