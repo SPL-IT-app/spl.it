@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default class LoginScreen extends React.Component {
+export default class SignUpScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {}
@@ -27,13 +27,15 @@ export default class LoginScreen extends React.Component {
         return (
             <Container style={styles.container}>
                     <Form>
-                        <Item floatingLabel>
+                        <Item >
                             <Input
+                            floatingLabel
                                 placeholder='Username'
                             />
                         </Item >
-                        <Item floatingLabel>
+                        <Item >
                             <Input
+                            floatingLabel
                                 placeholder='Password'
                                 secureTextEntry={true}
                             />
