@@ -50,13 +50,13 @@ const events = [
 const receipts = [
   {
     imageUrl: 'fakeURL',
-    creator: {},
+    creator: { '-LRODPdw3f2DZZ3v51lp': true },
     tipPercent: 10,
     lineItems: {},
   },
   {
     imageUrl: 'secondreceiptfakeurl',
-    creator: {},
+    creator: { '-LRODPdv6yPBGCXhZYdE': true },
     tipPercent: 25,
     lineItems: {},
   },
@@ -66,12 +66,12 @@ const lineItems = [
   {
     name: 'cheese pizza',
     price: 45,
-    users: {},
+    users: { '-LRODPdv6yPBGCXhZYdE': true, '-LRODPdw3f2DZZ3v51lp': true },
   },
   {
     name: 'creamed spinach',
     price: 5,
-    users: {},
+    users: { '-LRODPdv6yPBGCXhZYdE': true, '-LRODPdw3f2DZZ3v51lp': true },
   },
 ];
 
