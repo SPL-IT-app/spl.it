@@ -7,11 +7,13 @@ import {
     Input,
     Label,
     Text,
+    Footer,
 } from 'native-base'
-import { StyleSheet } from 'react-native'
 import firebase from '../server/firebaseconfig'
 import { getUser } from "../store/"
 import { connect } from 'react-redux'
+
+import { StyleSheet, View } from 'react-native'
 
 const styles = StyleSheet.create({
     container: {
@@ -24,8 +26,8 @@ class LoginScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: '',
-            password: ''
+            email: 'pug@email.com',
+            password: '123456'
         }
     }
 
@@ -76,6 +78,7 @@ class LoginScreen extends React.Component {
 
     render() {
         return (
+            <Container>
             <Container style={styles.container}>
                 <Form>
                     <Item floatingLabel>
@@ -114,6 +117,7 @@ class LoginScreen extends React.Component {
                         <Text> Sign Up </Text>
                     </Button>
                 </Form>
+            </Container>
             </Container>
         )
     }
