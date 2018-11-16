@@ -40,6 +40,7 @@ class LoginScreen extends React.Component {
                 firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then(user => {
                         getUser(user.user)
+
                         firebase
                             .database()
                             .ref('users')
@@ -65,8 +66,7 @@ class LoginScreen extends React.Component {
             }
             firebase.auth().signInWithEmailAndPassword(email, password)
                 .then(user => {
-                    console.log(user.user.providerData, '<<<<<<<USER')
-                    getUser(user.user)
+                    getUser({ id: user.user.uid })
                 })
             this.props.navigation.navigate('Main')
         } catch (err) {
