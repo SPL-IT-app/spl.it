@@ -10,6 +10,8 @@ import {
 } from 'native-base'
 import { StyleSheet } from 'react-native'
 import firebase from '../server/firebaseconfig'
+import { getUser } from "../store/"
+import { connect } from 'react-redux'
 
 const styles = StyleSheet.create({
     container: {
@@ -18,7 +20,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default class LoginScreen extends React.Component {
+class LoginScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -29,6 +31,7 @@ export default class LoginScreen extends React.Component {
 
 
     signUpUser = (email, password) => {
+        const { getUser } = this.props
         try {
             if (this.state.password.length < 6) {
                 alert('Please enter at least 6 characters')
@@ -36,6 +39,8 @@ export default class LoginScreen extends React.Component {
             } else {
                 firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then(user => {
+                        getUser({ id: user.user.uid })
+
                         firebase
                             .database()
                             .ref('users')
@@ -53,12 +58,16 @@ export default class LoginScreen extends React.Component {
     }
 
     loginUser = (email, password) => {
+        const { getUser } = this.props
         try {
             if (this.state.password.length < 6) {
                 alert('Please enter at least 6 characters')
                 return
             }
             firebase.auth().signInWithEmailAndPassword(email, password)
+                .then(user => {
+                    getUser({ id: user.user.uid })
+                })
             this.props.navigation.navigate('Main')
         } catch (err) {
             console.error(err)
@@ -92,7 +101,7 @@ export default class LoginScreen extends React.Component {
                         full
                         rounded
                         style={{ marginTop: 10 }}
-                        onPress={() => this.loginUser(this.state.email, this.state.password)}//{ this.props.navigation.navigate('Main') }}
+                        onPress={() => this.loginUser(this.state.email, this.state.password)}
                     >
                         <Text> Login </Text>
                     </Button>
@@ -109,3 +118,5 @@ export default class LoginScreen extends React.Component {
         )
     }
 }
+
+export default connect(null, { getUser })(LoginScreen)
