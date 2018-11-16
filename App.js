@@ -3,7 +3,7 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import Expo, { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import getTheme from './native-base-theme/components';
-import { StyleProvider } from "native-base";
+import { StyleProvider, Container } from "native-base";
 
 
 
