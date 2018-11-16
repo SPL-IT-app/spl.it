@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Camera, Permissions } from 'expo';
+import { Camera, Permissions, ImageManipulator } from 'expo';
 const axios = require('axios');
 require('../secrets');
 import { Icon, Button } from 'native-base';
@@ -28,6 +28,12 @@ export default class CameraView extends React.Component {
     hasCameraPermission: null,
     type: Camera.Constants.Type.back,
     displayLoading: false,
+    crop: {
+      originX: 1,
+      originY: 1,
+      width: 1,
+      height: 1,
+    },
   };
 
   async componentDidMount() {
@@ -80,7 +86,38 @@ export default class CameraView extends React.Component {
       quality: 0,
       base64: true,
     });
-    this.getData(photo);
+    this.cropPicture(photo);
+    // this.getData(photo);
+  };
+
+  cropPicture = async photo => {
+    let croppedPhoto = await ImageManipulator.manipulate(
+      photo.uri,
+      [
+        {
+          crop: {
+            originX: 1,
+            originY: 1,
+            width: 1,
+            height: 1,
+          },
+        },
+      ],
+      { base64: true }
+    );
+    this.getData(croppedPhoto);
+  };
+
+  handlePress = evt => {
+    this.setState({
+      ...this.state,
+      crop: {
+        originX: evt.nativeEvt.pageX,
+        originY: evt.nativeEvt.pageX,
+        width: 1,
+        height: 1,
+      },
+    });
   };
 
   render() {
@@ -99,7 +136,7 @@ export default class CameraView extends React.Component {
               this.camera = ref;
             }}
           >
-            <View style={styles.camera}>
+            <View style={styles.camera} onStartShouldSetResponder="true">
               <Button
                 style={styles.button}
                 onPress={() => this.props.navigation.navigate('Home')}
@@ -112,7 +149,9 @@ export default class CameraView extends React.Component {
                   this.takePicture();
                 }}
               >
-                <Text style={styles.text}> Take Photo </Text>
+                <Button>
+                  <Text style={styles.text}> Take Photo </Text>
+                </Button>
               </TouchableOpacity>
             </View>
           </Camera>
