@@ -7,7 +7,7 @@ import {
     Input,
     Label,
     Text,
-    View
+    View,
 } from 'native-base'
 import { StyleSheet } from 'react-native'
 import firebase from '../server/firebaseconfig'
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     signUp: {
         fontWeight: "bold",
         textAlign: 'center',
-        color: 'blue'
+        color: 'steelblue'
     },
 })
 
@@ -59,6 +59,9 @@ class LoginScreen extends React.Component {
     render() {
         return (
             <Container style={styles.container}>
+                <View>
+                    <Text style={{ textAlign: 'center', fontSize: 50 }}>SPL/IT</Text>
+                </View>
                 <Form>
                     <Item floatingLabel>
                         <Label>Email</Label>
@@ -81,6 +84,7 @@ class LoginScreen extends React.Component {
                         />
                     </Item>
                     <Button
+                        warning
                         full
                         rounded
                         style={{ marginTop: 10 }}

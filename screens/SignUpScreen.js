@@ -81,7 +81,7 @@ class SignUpScreen extends React.Component {
             <ScrollView>
                 <Container style={styles.container}>
                     <View style={{ marginLeft: 10 }}>
-                        <TouchableOpacity><Text onPress={() => this.props.navigation.navigate('Login')}>Back</Text></TouchableOpacity>
+                        <TouchableOpacity><Icon type='MaterialCommunityIcons' name='arrow-left' onPress={() => this.props.navigation.navigate('Login')} /></TouchableOpacity>
                     </View>
                     <Form>
                         <Item floatingLabel>
@@ -145,7 +145,7 @@ class SignUpScreen extends React.Component {
                         <Button
                             full
                             rounded
-                            style={{ marginTop: 10 }}
+                            style={{ marginTop: 10, backgroundColor: 'steelblue' }}
                             onPress={() => this.signUpUser(this.state.email, this.state.password)}
                         >
                             <Text>Sign Up</Text>
