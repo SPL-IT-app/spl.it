@@ -60,10 +60,6 @@ export default class CameraView extends React.Component {
         }`,
         reqBody
       );
-      // if (resp.status >= 400) {
-      //   console.log(resp.body);
-      // }
-      console.log('non-json: ', resp.data);
       console.log(
         'RESPONSE ======>',
         resp.data.responses[0].fullTextAnnotation.text
@@ -109,7 +105,9 @@ export default class CameraView extends React.Component {
               <TouchableOpacity
                 style={styles.touch}
                 onPress={() => {
-                  this.takePicture();
+                  this.takePicture().then(() => {
+                    this.props.navigation.navigate('ListConfirm');
+                  });
                 }}
               >
                 <Text style={styles.text}> Take Photo </Text>

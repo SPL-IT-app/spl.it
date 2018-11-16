@@ -4,6 +4,7 @@ import { createSwitchNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import CameraView from '../components/CameraView';
+import ListItemConfirmationScreen from '../screens/ListItemConfirmationScreen';
 
 export default createSwitchNavigator(
   {
@@ -12,6 +13,7 @@ export default createSwitchNavigator(
     Main: MainTabNavigator,
     Login: LoginScreen,
     Camera: CameraView,
+    ListConfirm: ListItemConfirmationScreen,
   },
   {
     initialRouteName: 'Login',
