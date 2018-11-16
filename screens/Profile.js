@@ -67,10 +67,10 @@ class Profile extends React.Component {
       {title: 'Friends', content: 'No Friends Yetdscacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjkhasdvlkjad'}
     ]
     return (
-        <KeyboardAvoidingView behavior='padding' enabled style={styles.container}>
       <Container>
         <MyHeader title='Profile' />
-        {/* <ScrollView > */}
+        <ScrollView >
+        <KeyboardAvoidingView behavior='padding' style={styles.container}>
           <Card>
             <CardItem header>
             <Left />
@@ -175,9 +175,9 @@ class Profile extends React.Component {
             </CardItem>
           </Card>
               <Accordion dataArray={dataArray} icon='add' expandedIcon='remove' />
-        {/* </ScrollView> */}
-      </Container>
         </KeyboardAvoidingView>
+        </ScrollView>
+      </Container>
     );
   }
 }
