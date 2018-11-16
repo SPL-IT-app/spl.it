@@ -1,35 +1,22 @@
 import React from 'react'
-import * as firebase from 'firebase'
-//const {firebaseRef} = require('../server/firebaseconfig')
 import {
     Button,
     Form,
     Container,
-    Content,
     Item,
     Input,
     Label,
     Text,
 } from 'native-base'
+import { StyleSheet } from 'react-native'
+import firebase from '../server/firebaseconfig'
 
-import { StyleSheet, View } from 'react-native'
- 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
     }
 })
-
-const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: "spl-it-91619.firebaseapp.com",
-    databaseURL: "https://spl-it-91619.firebaseio.com",
-    projectId: "spl-it-91619",
-    storageBucket: "spl-it-91619.appspot.com"
-}
-
-firebase.initializeApp(firebaseConfig)
 
 export default class LoginScreen extends React.Component {
     constructor(props) {
@@ -39,24 +26,33 @@ export default class LoginScreen extends React.Component {
             password: ''
         }
     }
-    
+
 
     signUpUser = (email, password) => {
-        console.log(firebase, '1<<<<<<')
         try {
             if (this.state.password.length < 6) {
                 alert('Please enter at least 6 characters')
                 return
+            } else {
+                firebase.auth().createUserWithEmailAndPassword(email, password)
+                    .then(user => {
+                        firebase
+                            .database()
+                            .ref('users')
+                            .update({
+                                [user.user.uid]: {
+                                    email
+                                }
+                            })
+                    })
+                this.props.navigation.navigate('Main')
             }
-            firebase.auth().createUserWithEmailAndPassword(email, password)
-            this.props.navigation.navigate('Main')
         } catch (err) {
             console.error(err)
         }
     }
 
     loginUser = (email, password) => {
-        console.log(firebase, '2<<<<<<')
         try {
             if (this.state.password.length < 6) {
                 alert('Please enter at least 6 characters')
