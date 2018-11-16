@@ -1,5 +1,5 @@
-const firebase = require('firebase')
-//import * as firebase from 'firebase'
+//const firebase = require('firebase')
+import * as firebase from 'firebase'
 require('../secrets')
 
 // Initialize Firebase
