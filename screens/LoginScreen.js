@@ -26,8 +26,8 @@ class LoginScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: '',
-            password: ''
+            email: 'pug@email.com',
+            password: '123456'
         }
     }
 
@@ -119,7 +119,9 @@ class LoginScreen extends React.Component {
                 </Form>
             </Container>
                 <Footer>
-                    <Button onPress={()=> this.props.navigation.navigate('Main')} >
+                    <Button onPress={()=> {
+                        this.setState({email: 'pug@email.com', password: '123456'})
+                        this.loginUser(this.state.email, this.state.password)}} >
                         <Text>Skip login</Text>
                     </Button>
                 </Footer>
