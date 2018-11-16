@@ -18,7 +18,9 @@ const handler = {
         return { ...state, receipt: action.receipt }
     },
     [UPDATE_LINE_ITEM]: (state, action) => {
-        return {...state, receipt: state.receipt.splice(action.idx, 1, action.lineItem)}
+        const newReceipt = [...state.receipt]
+        newReceipt.splice(action.idx, 1, action.lineItem)
+        return {...state, receipt: [...newReceipt]}
     }
 }
 
