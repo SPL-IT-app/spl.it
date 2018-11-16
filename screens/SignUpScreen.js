@@ -2,16 +2,15 @@ import React from 'react';
 import {
     Button,
     Form,
-    Container,
     Label,
     Item,
     Input,
     Text,
     View,
-    Icon
+    Icon,
 } from 'native-base'
 
-import { StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native'
 
 const styles = StyleSheet.create({
     container: {
@@ -78,8 +77,7 @@ class SignUpScreen extends React.Component {
 
     render() {
         return (
-            <ScrollView>
-                <Container style={styles.container}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
                     <View style={{ marginLeft: 10 }}>
                         <TouchableOpacity><Icon type='MaterialCommunityIcons' name='arrow-left' onPress={() => this.props.navigation.navigate('Login')} /></TouchableOpacity>
                     </View>
@@ -151,8 +149,7 @@ class SignUpScreen extends React.Component {
                             <Text>Sign Up</Text>
                         </Button>
                     </Form>
-                </Container>
-            </ScrollView>
+            </KeyboardAvoidingView>
         )
     }
 }
