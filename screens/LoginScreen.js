@@ -1,17 +1,17 @@
 import React from 'react'
-import * as firebase from 'firebase'
-//const {firebaseRef} = require('../server/firebaseconfig')
 import {
     Button,
     Form,
     Container,
-    Content,
     Item,
     Input,
     Label,
     Text,
     Footer,
 } from 'native-base'
+import firebase from '../server/firebaseconfig'
+import { getUser } from "../store/"
+import { connect } from 'react-redux'
 
 import { StyleSheet, View } from 'react-native'
 
@@ -22,17 +22,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: "spl-it-91619.firebaseapp.com",
-    databaseURL: "https://spl-it-91619.firebaseio.com",
-    projectId: "spl-it-91619",
-    storageBucket: "spl-it-91619.appspot.com"
-}
-
-firebase.initializeApp(firebaseConfig)
-
-export default class LoginScreen extends React.Component {
+class LoginScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -43,27 +33,43 @@ export default class LoginScreen extends React.Component {
 
 
     signUpUser = (email, password) => {
-        console.log(firebase, '1<<<<<<')
+        const { getUser } = this.props
         try {
             if (this.state.password.length < 6) {
                 alert('Please enter at least 6 characters')
                 return
+            } else {
+                firebase.auth().createUserWithEmailAndPassword(email, password)
+                    .then(user => {
+                        getUser({ id: user.user.uid })
+
+                        firebase
+                            .database()
+                            .ref('users')
+                            .update({
+                                [user.user.uid]: {
+                                    email
+                                }
+                            })
+                    })
+                this.props.navigation.navigate('Main')
             }
-            firebase.auth().createUserWithEmailAndPassword(email, password)
-            this.props.navigation.navigate('Main')
         } catch (err) {
             console.error(err)
         }
     }
 
     loginUser = (email, password) => {
-        console.log(firebase, '2<<<<<<')
+        const { getUser } = this.props
         try {
             if (this.state.password.length < 6) {
                 alert('Please enter at least 6 characters')
                 return
             }
             firebase.auth().signInWithEmailAndPassword(email, password)
+                .then(user => {
+                    getUser({ id: user.user.uid })
+                })
             this.props.navigation.navigate('Main')
         } catch (err) {
             console.error(err)
@@ -98,7 +104,7 @@ export default class LoginScreen extends React.Component {
                         full
                         rounded
                         style={{ marginTop: 10 }}
-                        onPress={() => this.loginUser(this.state.email, this.state.password)}//{ this.props.navigation.navigate('Main') }}
+                        onPress={() => this.loginUser(this.state.email, this.state.password)}
                     >
                         <Text> Login </Text>
                     </Button>
@@ -121,3 +127,5 @@ export default class LoginScreen extends React.Component {
         )
     }
 }
+
+export default connect(null, { getUser })(LoginScreen)
