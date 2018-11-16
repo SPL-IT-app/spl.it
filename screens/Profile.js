@@ -37,6 +37,23 @@ class Profile extends React.Component {
       value
     })
   }
+  handleSubmit = () => {
+    if(this.state.editing === 'username'){
+      const profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`)
+      profileRef.update({
+        username: this.state.value
+      })
+    } else {
+      const userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
+      userRef.update({
+        [this.state.editing]: this.state.value
+      })
+    }
+    this.setState({
+      editing: '',
+      value: ''
+    })
+  }
 
   render() {
     const dataArray=[
@@ -75,41 +92,78 @@ class Profile extends React.Component {
               <Body>
               </Body>
               <Right>
-                <Button icon transparent onPress={()=>this.handleEditing('username', this.state.profile.username)}>
-                  {this.state.editing === 'username'
-                  ?
+                {this.state.editing === 'username'
+                ?
+                <Button icon transparent onPress={this.handleSubmit}>
                   <Icon type='MaterialCommunityIcons' name='content-save' />
-                  :
-                  <Icon name='create' />
-
-                }
                 </Button>
+
+                :
+                <Button icon transparent onPress={()=>this.handleEditing('username', this.state.profile.username)}>
+                  <Icon type='MaterialCommunityIcons' name='pencil' />
+                </Button>
+              }
               </Right>
             </CardItem>
             <CardItem bordered>
               <Left>
                 <Text note>Phone Number:</Text>
-                <Text>{this.state.user.phone} </Text>
+                {this.state.editing === 'phone' ?
+                  <Item rounded>
+                    <Input
+                      value={this.state.value}
+                      onChangeText={(value) => this.setState({value})}
+                      />
+                  </Item>
+                  :
+                  <Text>{this.state.user.phone} </Text>
+                }
               </Left>
               <Body>
               </Body>
               <Right>
-                <Button icon transparent>
-                  <Icon name='create' />
+              {this.state.editing === 'phone'
+                ?
+                <Button icon transparent onPress={this.handleSubmit}>
+                  <Icon type='MaterialCommunityIcons' name='content-save' />
                 </Button>
+
+                :
+                <Button icon transparent onPress={()=>this.handleEditing('phone', this.state.user.phone)}>
+                  <Icon type='MaterialCommunityIcons' name='pencil' />
+                </Button>
+              }
               </Right>
             </CardItem>
             <CardItem bordered>
               <Left>
                 <Text note>Email:</Text>
-                <Text>{this.state.user.email} </Text>
+                {this.state.editing === 'email' ?
+                  <Item rounded>
+                    <Input
+                      value={this.state.value}
+                      onChangeText={(value) => this.setState({value})}
+                      />
+                  </Item>
+                  :
+                  <Text>{this.state.user.email} </Text>
+                }
               </Left>
               <Body>
               </Body>
               <Right>
-                <Button icon transparent>
-                  <Icon name='create' />
+              {this.state.editing === 'email'
+                ?
+                <Button icon transparent onPress={this.handleSubmit}>
+                  <Icon type='MaterialCommunityIcons' name='content-save' />
                 </Button>
+
+                :
+                <Button icon transparent onPress={()=>this.handleEditing('email', this.state.user.email)}>
+                  <Icon type='MaterialCommunityIcons' name='pencil' />
+                </Button>
+              }
+
               </Right>
             </CardItem>
           </Card>
