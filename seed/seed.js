@@ -1,4 +1,6 @@
-const makeRef = require('../server/firebaseconfig');
+const {makeRef} = require('../server/firebaseconfig')
+//import {makeRef} from '../server/firebaseconfig'
+
 const {
   users,
   profiles,
