@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Image, StatusBar } from 'react-native';
-import { Header, Body, Title, Left, Right, Button, Icon, Thumbnail, Container } from 'native-base';
+import { Container } from 'native-base';
 import MyHeader from '../components/Header';
 
 export default class LinksScreen extends React.Component {
@@ -12,9 +12,9 @@ export default class LinksScreen extends React.Component {
     return (
       <Container>
         <MyHeader title='Profile' />
-      <ScrollView style={styles.container}>
+        <ScrollView style={styles.container}>
 
-      </ScrollView>
+        </ScrollView>
       </Container>
     );
   }
