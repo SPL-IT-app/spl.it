@@ -57,7 +57,7 @@ class SignUpScreen extends React.Component {
                                     email
                                 }
                             })
-                        getUser(user.user)
+                        getUser({ id: user.user.uid })
                     })
                 this.props.navigation.navigate('Main')
             }
@@ -69,7 +69,7 @@ class SignUpScreen extends React.Component {
     render() {
         return (
             <Container style={styles.container}>
-                <View style={{marginLeft: 10}}>
+                <View style={{ marginLeft: 10 }}>
                     <TouchableOpacity><Text onPress={() => this.props.navigation.navigate('Login')}>Back</Text></TouchableOpacity>
                 </View>
                 <Form>
