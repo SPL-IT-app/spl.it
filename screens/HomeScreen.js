@@ -2,7 +2,8 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { WebBrowser } from 'expo';
 import CameraView from '../components/CameraView';
-import { Button, Icon } from 'native-base';
+import { Button, Icon, Content, Container } from 'native-base';
+import MyHeader from '../components/Header';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,20 +35,23 @@ export default class HomeScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Button
-          rounded
-          info
-          large
-          style={styles.button}
-          onPress={() => {
-            this.props.navigation.navigate('Camera');
-          }}
-        >
-          <Text>New Receipt</Text>
-          <Icon name="ios-camera" style={styles.icon} />
-        </Button>
-      </View>
+      <Container>
+        <MyHeader title='Events' />
+        <Container style={styles.container}>
+          <Button
+            rounded
+            info
+            large
+            style={styles.button}
+            onPress={() => {
+              this.props.navigation.navigate('Camera');
+            }}
+          >
+            <Text>New Receipt</Text>
+            <Icon name="ios-camera" style={styles.icon} />
+          </Button>
+        </Container>
+      </Container>
     );
   }
 }

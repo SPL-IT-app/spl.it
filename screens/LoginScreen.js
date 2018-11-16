@@ -7,12 +7,12 @@ import {
     Input,
     Label,
     Text,
-    View,
 } from 'native-base'
-import { StyleSheet } from 'react-native'
 import firebase from '../server/firebaseconfig'
 import { getUser } from "../store/"
 import { connect } from 'react-redux'
+
+import { StyleSheet, View } from 'react-native'
 
 const styles = StyleSheet.create({
     container: {
@@ -34,8 +34,8 @@ class LoginScreen extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: '',
-            password: ''
+            email: 'pug@email.com',
+            password: '123456'
         }
     }
 
@@ -58,45 +58,45 @@ class LoginScreen extends React.Component {
 
     render() {
         return (
-            <Container style={styles.container}>
-                <View>
+            <Container>
+                <Container style={styles.container}>
                     <Text style={{ textAlign: 'center', fontSize: 50 }}>SPL/IT</Text>
-                </View>
-                <Form>
-                    <Item floatingLabel>
-                        <Label>Email</Label>
-                        <Input
-                            keyboardType='email-address'
-                            value={this.state.email}
-                            autoCorrect={false}
-                            autoCapitalize='none'
-                            onChangeText={(email) => this.setState({ email })}
-                        />
-                    </Item >
-                    <Item floatingLabel>
-                        <Label>Password</Label>
-                        <Input
-                            value={this.state.password}
-                            secureTextEntry={true}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            onChangeText={(password) => this.setState({ password })}
-                        />
-                    </Item>
-                    <Button
-                        warning
-                        full
-                        rounded
-                        style={{ marginTop: 10 }}
-                        onPress={() => this.loginUser(this.state.email, this.state.password)}
-                    >
-                        <Text> Login </Text>
-                    </Button>
+                    <Form>
+                        <Item floatingLabel>
+                            <Label>Email</Label>
+                            <Input
+                                keyboardType='email-address'
+                                value={this.state.email}
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                onChangeText={(email) => this.setState({ email })}
+                            />
+                        </Item >
+                        <Item floatingLabel>
+                            <Label>Password</Label>
+                            <Input
+                                value={this.state.password}
+                                secureTextEntry={true}
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                onChangeText={(password) => this.setState({ password })}
+                            />
+                        </Item>
+                        <Button
+                            warning
+                            full
+                            rounded
+                            style={{ marginTop: 10 }}
+                            onPress={() => this.loginUser(this.state.email, this.state.password)}
+                        >
+                            <Text> Login </Text>
+                        </Button>
 
-                </Form>
-                <View>
-                    <Text style={styles.text}> New to SPL/IT? </Text><Text style={styles.signUp} onPress={() => this.props.navigation.navigate('SignUp')}>Sign Up</Text>
-                </View>
+                    </Form>
+                    <View>
+                        <Text style={styles.text}> New to SPL/IT? </Text><Text style={styles.signUp} onPress={() => this.props.navigation.navigate('SignUp')}>Sign Up</Text>
+                    </View>
+                </Container>
             </Container>
         )
     }
