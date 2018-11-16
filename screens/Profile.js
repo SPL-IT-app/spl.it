@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Image, StatusBar } from 'react-native';
+import { ScrollView, StyleSheet, Image, StatusBar, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { Container, Text, Title, Card, CardItem, Body, Accordion, Left, Right, ListItem, Icon, Button, Input, Item } from 'native-base';
 import MyHeader from '../components/Header';
 import { connect } from 'react-redux'
@@ -13,7 +13,8 @@ class Profile extends React.Component {
       user: {},
       profile: {},
       editing: '',
-      value: ''
+      value: '',
+      margin: 400
     }
   }
   static navigationOptions = {
@@ -21,14 +22,21 @@ class Profile extends React.Component {
   };
 
   componentDidMount(){
-    const userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
-    const profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`)
-    userRef.on('value', (snapshot) => {
+    this.userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
+    this.profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`)
+    // this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    // this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    this.userRef.on('value', (snapshot) => {
       this.setState({user: snapshot.val()})
     })
-    profileRef.on('value', (snapshot) => {
+    this.profileRef.on('value', (snapshot) => {
       this.setState({profile: snapshot.val()})
     })
+  }
+
+  componentWillUnmount(){
+    this.userRef.off()
+    this.profileRef.off()
   }
 
   handleEditing = (editing, value) => {
@@ -58,11 +66,12 @@ class Profile extends React.Component {
   render() {
     const dataArray=[
       {title: 'Groups', content: 'No Groups Yet'},
-      {title: 'Friends', content: 'No Friends Yet'}
+      {title: 'Friends', content: 'No Friends Yetdscacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjkhasdvlkjad'}
     ]
     return (
       <Container>
         <MyHeader title='Profile' />
+        {/* <KeyboardAvoidingView behavior='padding'> */}
         <ScrollView style={styles.container}>
           <Card>
             <CardItem header>
@@ -169,6 +178,7 @@ class Profile extends React.Component {
           </Card>
               <Accordion dataArray={dataArray} icon='add' expandedIcon='remove' />
         </ScrollView>
+        {/* </KeyboardAvoidingView> */}
       </Container>
     );
   }

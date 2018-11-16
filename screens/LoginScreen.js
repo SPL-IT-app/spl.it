@@ -118,13 +118,6 @@ class LoginScreen extends React.Component {
                     </Button>
                 </Form>
             </Container>
-                <Footer>
-                    <Button onPress={()=> {
-                        this.setState({email: 'pug@email.com', password: '123456'})
-                        this.loginUser(this.state.email, this.state.password)}} >
-                        <Text>Skip login</Text>
-                    </Button>
-                </Footer>
             </Container>
         )
     }
