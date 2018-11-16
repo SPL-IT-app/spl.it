@@ -1,19 +1,19 @@
 // ACTION TYPE
-const GET_USER = 'GET_USER '
+const SET_RECEIPT = 'SET_RECEIPT'
 
 // INITIAL STATE
 const defaultState = {
-    currentUser: {}
+    receipt: []
 }
 
 // ACTION CREATOR
-export const getUser = user => ({ type: GET_USER, user })
+export const setReceipt = receipt => ({ type: SET_RECEIPT, receipt })
 
 
 // HANDLERS
 const handler = {
-    [GET_USER]: (state, action) => {
-        return { ...state, currentUser: action.user }
+    [SET_RECEIPT]: (state, action) => {
+        return { ...state, receipt: action.receipt }
     }
 }
 
