@@ -39,7 +39,7 @@ class LoginScreen extends React.Component {
             } else {
                 firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then(user => {
-                        getUser(user.user)
+                        getUser({ id: user.user.uid })
 
                         firebase
                             .database()
