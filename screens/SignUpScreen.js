@@ -7,9 +7,11 @@ import {
     Item,
     Input,
     Text,
+    View,
+    Icon
 } from 'native-base'
 
-import { StyleSheet } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 
 const styles = StyleSheet.create({
     container: {
@@ -44,8 +46,6 @@ class SignUpScreen extends React.Component {
                 firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then(user => {
                         const { firstName, lastName, phone } = this.state
-                        getUser(user.user)
-
                         firebase
                             .database()
                             .ref('users')
@@ -57,6 +57,7 @@ class SignUpScreen extends React.Component {
                                     email
                                 }
                             })
+                        getUser(user.user)
                     })
                 this.props.navigation.navigate('Main')
             }
@@ -68,6 +69,9 @@ class SignUpScreen extends React.Component {
     render() {
         return (
             <Container style={styles.container}>
+                <View style={{marginLeft: 10}}>
+                    <TouchableOpacity><Text onPress={() => this.props.navigation.navigate('Login')}>Back</Text></TouchableOpacity>
+                </View>
                 <Form>
                     <Item floatingLabel>
                         <Label>First Name</Label>
