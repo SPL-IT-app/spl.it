@@ -10,10 +10,11 @@ import {
     Input,
     Label,
     Text,
+    Footer,
 } from 'native-base'
 
 import { StyleSheet, View } from 'react-native'
- 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -39,7 +40,7 @@ export default class LoginScreen extends React.Component {
             password: ''
         }
     }
-    
+
 
     signUpUser = (email, password) => {
         console.log(firebase, '1<<<<<<')
@@ -71,6 +72,7 @@ export default class LoginScreen extends React.Component {
 
     render() {
         return (
+            <Container>
             <Container style={styles.container}>
                 <Form>
                     <Item floatingLabel>
@@ -109,6 +111,12 @@ export default class LoginScreen extends React.Component {
                         <Text> Sign Up </Text>
                     </Button>
                 </Form>
+            </Container>
+                <Footer>
+                    <Button onPress={()=> this.props.navigation.navigate('Main')} >
+                        <Text>Skip login</Text>
+                    </Button>
+                </Footer>
             </Container>
         )
     }

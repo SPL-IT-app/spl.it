@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Image, StatusBar } from 'react-native';
 import { Header, Body, Title, Left, Right, Button, Icon, Thumbnail, Container } from 'native-base';
+import MyHeader from '../components/Header';
 
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
@@ -10,21 +11,7 @@ export default class LinksScreen extends React.Component {
   render() {
     return (
       <Container>
-        <Header>
-          <Left>
-              {/* <Icon name='menu' /> */}
-              <Image resizeMode='stretch'
-            source={require('../assets/images/logo.png')}
-            style={{width:57, height:30}}
-          />
-          {/* <Thumbnail square large source={{ uri: '../assets/images/logo.png' }} /> */}
-
-          </Left>
-          <Body>
-            <Title>Profile</Title>
-          </Body>
-          <Right />
-        </Header>
+        <MyHeader title='Profile' />
       <ScrollView style={styles.container}>
 
       </ScrollView>
