@@ -21,16 +21,38 @@ const users = [
       events: {},
     },
   },
+  {
+    v143uyYUOEPrIsOKLRN3gbSCtkw1: {
+      firstName: 'me',
+      lastName: 'mememe',
+      email: 'me@me.com',
+      phone: '111-111-1111',
+      friends: {},
+      groups: {},
+      events: {},
+    },
+  },
 ];
 
 const profiles = [
   {
-    username: 'codyPug',
-    imageUrl: 'https://bit.ly/2q1fzuM',
+    Ul5MOGufA2eYLCMq0CDD8Juojz92: {
+      username: 'codyPug',
+      imageUrl: 'https://bit.ly/2q1fzuM',
+    },
   },
   {
-    username: 'maaaary',
-    imageUrl: 'https://bit.ly/2RXPGbi',
+    QUYamusOQnMkQxJaxZVetUgY66D3: {
+      username: 'pugCody',
+      imageUrl: 'https://bit.ly/2RXPGbi',
+    },
+  },
+  {
+    v143uyYUOEPrIsOKLRN3gbSCtkw1: {
+      username: 'memememe',
+      imageUrl:
+        'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+    },
   },
 ];
 

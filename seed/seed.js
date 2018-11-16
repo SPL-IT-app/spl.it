@@ -11,9 +11,10 @@ const {
 function seed() {
   makeRef('/').set({});
 
-  const profilesRef = makeRef('/profiles');
+  // const profilesRef = makeRef('/profiles');
   profiles.forEach(profile => {
-    profilesRef.push().set(profile);
+    const profRefIndiv = makeRef(`/profiles/${Object.keys(profile)[0]}`);
+    profRefIndiv.set(profile[Object.keys(profile)[0]]);
   });
 
   // const usersRef = makeRef('/users');
@@ -27,6 +28,15 @@ function seed() {
     const newEventRef = eventsRef.push();
     const eventId = newEventRef.key;
     newEventRef.set(event);
+
+    const update = { [eventId]: true };
+
+    users.forEach(user => {
+      if (Object.keys(user)[0] !== 'v143uyYUOEPrIsOKLRN3gbSCtkw1') {
+        const usersRefIndiv = makeRef(`/users/${Object.keys(user)[0]}`);
+        usersRefIndiv.child('events').update({ ...update });
+      }
+    });
 
     const receiptsRef = makeRef(`/events/${eventId}/receipts`);
     receipts.forEach(receipt => {
