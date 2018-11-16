@@ -23,9 +23,7 @@ class Profile extends React.Component {
 
   componentDidMount(){
     this.userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
-    this.profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`)
-    // this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-    // this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    this.profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`);
     this.userRef.on('value', (snapshot) => {
       this.setState({user: snapshot.val()})
     })
@@ -69,10 +67,10 @@ class Profile extends React.Component {
       {title: 'Friends', content: 'No Friends Yetdscacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjkhasdvlkjad'}
     ]
     return (
+        <KeyboardAvoidingView behavior='padding' enabled style={styles.container}>
       <Container>
         <MyHeader title='Profile' />
-        {/* <KeyboardAvoidingView behavior='padding'> */}
-        <ScrollView style={styles.container}>
+        {/* <ScrollView > */}
           <Card>
             <CardItem header>
             <Left />
@@ -177,9 +175,9 @@ class Profile extends React.Component {
             </CardItem>
           </Card>
               <Accordion dataArray={dataArray} icon='add' expandedIcon='remove' />
-        </ScrollView>
-        {/* </KeyboardAvoidingView> */}
+        {/* </ScrollView> */}
       </Container>
+        </KeyboardAvoidingView>
     );
   }
 }
