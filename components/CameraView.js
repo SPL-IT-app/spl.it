@@ -4,6 +4,8 @@ import { Camera, Permissions } from 'expo';
 const axios = require('axios');
 require('../secrets');
 import { Icon, Button } from 'native-base';
+import { connect } from 'react-redux';
+import { setReceipt } from '../store';
 
 const styles = StyleSheet.create({
   view: {
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
   text: { fontSize: 18, marginBottom: 10, color: 'white' },
 });
 
-export default class CameraView extends React.Component {
+export class CameraView extends React.Component {
   state = {
     hasCameraPermission: null,
     type: Camera.Constants.Type.back,
@@ -60,16 +62,13 @@ export default class CameraView extends React.Component {
         }`,
         reqBody
       );
-      // if (resp.status >= 400) {
-      //   console.log(resp.body);
-      // }
-      console.log('non-json: ', resp.data);
-      console.log(
-        'RESPONSE ======>',
-        resp.data.responses[0].fullTextAnnotation.text
-      );
+      // console.log(
+      //   'RESPONSE ======>',
+      //   resp.data.responses[0].fullTextAnnotation.text
+      // );
       const receiptText = resp.data.responses[0].fullTextAnnotation.text;
-      parseReceipt(receiptText);
+      const receiptObj = parseReceipt(receiptText);
+      this.props.setReceipt(receiptObj);
     } catch (err) {
       console.log('some error happened');
       console.error(err);
@@ -109,7 +108,9 @@ export default class CameraView extends React.Component {
               <TouchableOpacity
                 style={styles.touch}
                 onPress={() => {
-                  this.takePicture();
+                  this.takePicture().then(() => {
+                    this.props.navigation.navigate('ListConfirm');
+                  });
                 }}
               >
                 <Text style={styles.text}> Take Photo </Text>
@@ -127,6 +128,7 @@ function parseReceipt(receiptText) {
   let priceArr = [];
   let itemsArr = [];
   let receiptObj = {};
+  let parsedReceipt = [];
   const regex = /^\d*\.?\d*$/g;
   receiptArr.forEach(ele => {
     if (Number(ele)) {
@@ -156,7 +158,26 @@ function parseReceipt(receiptText) {
       price: price,
       quantity: 1,
     };
+    parsedReceipt.push({
+      name: itemsArr[idx],
+      price: price,
+      quantity: 1,
+    })
   });
 
-  console.log('RECEIPT OBJECT ====>', receiptObj);
+  console.log('RECEIPT ARRAY ====>', parsedReceipt);
+  return parsedReceipt;
 }
+
+const mapDispatch = dispatch => {
+  return {
+    setReceipt: receiptObj => {
+      dispatch(setReceipt(receiptObj));
+    },
+  };
+};
+
+export default connect(
+  null,
+  mapDispatch
+)(CameraView);
