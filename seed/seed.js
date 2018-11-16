@@ -1,4 +1,4 @@
-const makeRef = require('../server/firebaseconfig')
+const { makeRef } = require('../server/firebaseconfig')
 const { users, profiles, groups } = require('./seedData')
 
 function seed() {
