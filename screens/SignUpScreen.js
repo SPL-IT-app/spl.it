@@ -123,7 +123,6 @@ class SignUpScreen extends React.Component {
                             <Label>Phone</Label>
                             <Input
                                 returnKeyType='done'
-                                returnKeyLabel={true}
                                 keyboardType='phone-pad'
                                 maxLength={11}
                                 dataDetectorTypes='phoneNumber'
