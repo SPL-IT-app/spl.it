@@ -1,9 +1,22 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { Container, Button, Icon, List, ListItem } from 'native-base';
+import {
+  Container,
+  Content,
+  Header,
+  Button,
+  Icon,
+  List,
+  ListItem,
+  Form,
+  Item,
+  Picker,
+  Input,
+} from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
-import  CameraProcessing  from '../components/utilities/CameraProcessing';
+import CameraProcessing from '../components/utilities/CameraProcessing';
+import LineItems from '../components/LineItems'
 
 const styles = StyleSheet.create({
   container: {
@@ -26,6 +39,11 @@ const styles = StyleSheet.create({
     width: '60%',
     alignSelf: 'center',
   },
+  grid: {
+    height: 150,
+    width: 50,
+    backgroundColor: 'yellow',
+  },
 });
 
 export class ListItemConfirmationScreen extends React.Component {
@@ -33,28 +51,54 @@ export class ListItemConfirmationScreen extends React.Component {
     header: null,
   };
 
+  state = {
+    receipt: this.props.receipt
+  }
+
+  handleChange = (event, idx) => {
+    this.setState ({
+      receipt: {}
+    })
+  }
+
   render() {
     const { receipt } = this.props;
     console.log('RECEIPT =====>', receipt);
     return receipt.length ? (
       <Container>
-        <View>
-          {/* <Grid> */}
+        <Header />
+        <Content>
+          <View>
+            <Grid>
+              <Row>
+                <Col>
+                  <Text>QTY</Text>
+                </Col>
+                <Col>
+                  <Text>DESCRIPTION</Text>
+                </Col>
+                <Col>
+                  <Text>PRICE</Text>
+                </Col>
+              </Row>
               {receipt.map((lineItem, idx) => {
-                return <Text key={idx}>{lineItem.name}</Text>;
+                return (
+                  <LineItems key={idx} lineItem={lineItem} idx={idx}/>
+                );
               })}
-          {/* </Grid> */}
-        </View>
-        <View>
-          <Button>
-            <Icon type="MaterialCommunityIcons" name="plus" />
-          </Button>
-        </View>
-        <View >
-          <Button info large block style={styles.button} onPress={() => {}}>
-            <Text>Confirm Items</Text>
-          </Button>
-        </View>
+            </Grid>
+          </View>
+          <View>
+            <Button>
+              <Icon type="MaterialCommunityIcons" name="plus" />
+            </Button>
+          </View>
+          <View>
+            <Button info large block style={styles.button} onPress={() => {}}>
+              <Text>Confirm Items</Text>
+            </Button>
+          </View>
+        </Content>
       </Container>
     ) : (
       <CameraProcessing />

@@ -62,10 +62,10 @@ export class CameraView extends React.Component {
         }`,
         reqBody
       );
-      console.log(
-        'RESPONSE ======>',
-        resp.data.responses[0].fullTextAnnotation.text
-      );
+      // console.log(
+      //   'RESPONSE ======>',
+      //   resp.data.responses[0].fullTextAnnotation.text
+      // );
       const receiptText = resp.data.responses[0].fullTextAnnotation.text;
       const receiptObj = parseReceipt(receiptText);
       this.props.setReceipt(receiptObj);
