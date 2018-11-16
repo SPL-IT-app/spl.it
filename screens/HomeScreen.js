@@ -45,7 +45,11 @@ export default class HomeScreen extends React.Component {
           }}
         >
           <Text>New Receipt</Text>
-          <Icon name="ios-camera" style={styles.icon} />
+          <Icon
+            type="MaterialCommunityIcons"
+            name="camera"
+            style={styles.icon}
+          />
         </Button>
       </View>
     );

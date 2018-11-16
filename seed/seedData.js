@@ -1,21 +1,25 @@
 const users = [
   {
-    firstName: 'cody',
-    lastName: 'pugman',
-    email: 'cody@email.com',
-    phone: '555-555-5555',
-    friends: {},
-    groups: {},
-    events: {},
+    Ul5MOGufA2eYLCMq0CDD8Juojz92: {
+      firstName: 'cody',
+      lastName: 'pugman',
+      email: 'cody@email.com',
+      phone: '555-555-5555',
+      friends: {},
+      groups: {},
+      events: {},
+    },
   },
   {
-    firstName: 'mary',
-    lastName: 'maryman',
-    email: 'mary@email.com',
-    phone: '333-333-3333',
-    friends: {},
-    groups: {},
-    events: {},
+    QUYamusOQnMkQxJaxZVetUgY66D3: {
+      firstName: 'pug',
+      lastName: 'codyman',
+      email: 'pug@email.com',
+      phone: '333-333-3333',
+      friends: {},
+      groups: {},
+      events: {},
+    },
   },
 ];
 
@@ -50,13 +54,13 @@ const events = [
 const receipts = [
   {
     imageUrl: 'fakeURL',
-    creator: { '-LRODPdw3f2DZZ3v51lp': true },
+    creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 10,
     lineItems: {},
   },
   {
     imageUrl: 'secondreceiptfakeurl',
-    creator: { '-LRODPdv6yPBGCXhZYdE': true },
+    creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 25,
     lineItems: {},
   },
@@ -66,12 +70,15 @@ const lineItems = [
   {
     name: 'cheese pizza',
     price: 45,
-    users: { '-LRODPdv6yPBGCXhZYdE': true, '-LRODPdw3f2DZZ3v51lp': true },
+    users: {
+      Ul5MOGufA2eYLCMq0CDD8Juojz92: true,
+      QUYamusOQnMkQxJaxZVetUgY66D3: true,
+    },
   },
   {
     name: 'creamed spinach',
     price: 5,
-    users: { '-LRODPdv6yPBGCXhZYdE': true, '-LRODPdw3f2DZZ3v51lp': true },
+    users: { QUYamusOQnMkQxJaxZVetUgY66D3: true },
   },
 ];
 
