@@ -1,9 +1,16 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  PanResponder,
+} from 'react-native';
+import { PanResponderInstance } from 'PanResponder';
 import { Camera, Permissions, ImageManipulator } from 'expo';
 const axios = require('axios');
 require('../secrets');
-import { Icon, Button } from 'native-base';
+import { Icon, Button, Content, Spinner } from 'native-base';
 import { connect } from 'react-redux';
 import { setReceipt } from '../store';
 
@@ -26,22 +33,33 @@ const styles = StyleSheet.create({
 });
 
 export class CameraView extends React.Component {
-  state = {
-    hasCameraPermission: null,
-    type: Camera.Constants.Type.back,
-    displayLoading: false,
-    crop: {
-      originX: 1,
-      originY: 1,
-      width: 1,
-      height: 1,
-    },
-  };
-
+  constructor() {
+    super();
+    this.state = {
+      hasCameraPermission: null,
+      type: Camera.Constants.Type.back,
+      displayLoading: false,
+      crop: {
+        originX: 1,
+        originY: 1,
+        width: 1,
+        height: 1,
+      },
+    };
+  }
   async componentDidMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
   }
+
+  _panResponder: PanResponderInstance = PanResponder.create({
+    onMoveShouldSetPanResponder: (evt, gestureState) => true,
+    onPanResponderMove: (event, { x0, y0, dx, dy }) => {
+      this.setState({
+        crop: { originX: x0, originY: y0, width: dx, height: dy },
+      });
+    },
+  });
 
   getData = async photo => {
     try {
@@ -95,10 +113,10 @@ export class CameraView extends React.Component {
       [
         {
           crop: {
-            originX: 1,
-            originY: 1,
-            width: 1,
-            height: 1,
+            originX: this.state.crop.originX,
+            originY: this.state.crop.originY,
+            width: this.state.crop.width,
+            height: this.state.crop.height,
           },
         },
       ],
@@ -109,15 +127,33 @@ export class CameraView extends React.Component {
 
   handlePress = evt => {
     this.setState({
-      ...this.state,
       crop: {
         originX: evt.nativeEvt.pageX,
-        originY: evt.nativeEvt.pageX,
-        width: 1,
-        height: 1,
+        originY: evt.nativeEvt.pageY,
       },
     });
   };
+
+  toggleLoading = () => {
+    this.setState({
+      displayLoading: !this.state.displayLoading
+    })
+  }
+
+  _renderLoading = () => {
+    if (this.state.displayLoading) {
+        return (
+          <View>
+          <Content>
+          <Spinner />
+          <Text>Reading Receipt...</Text>
+        </Content>
+        </View>
+        );
+    } else {
+        return null;
+    }
+},
 
   render() {
     const { hasCameraPermission } = this.state;
@@ -135,7 +171,9 @@ export class CameraView extends React.Component {
               this.camera = ref;
             }}
           >
-            <View style={styles.camera} onStartShouldSetResponder="true">
+
+          {this._renderLoading()}
+            <View style={styles.camera} {...this._panResponder.panHandlers}>
               <Button
                 style={styles.button}
                 onPress={() => this.props.navigation.navigate('Home')}
@@ -201,7 +239,7 @@ function parseReceipt(receiptText) {
       name: itemsArr[idx],
       price: price,
       quantity: 1,
-    })
+    });
   });
 
   console.log('RECEIPT ARRAY ====>', parsedReceipt);
