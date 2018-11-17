@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Image, StatusBar, KeyboardAvoidingView, Keyboard } from 'react-native';
-import { Container, Text, Title, Card, CardItem, Body, Accordion, Left, Right, ListItem, Icon, Button, Input, Item } from 'native-base';
+import { Container, Text, Title, Card, CardItem, Body, Accordion, Left, Right, ListItem, Icon, Button, Input, Item, H1, ActionSheet, Form, View } from 'native-base';
 import MyHeader from '../components/Header';
 import { connect } from 'react-redux'
 import { makeRef } from '../server/firebaseconfig'
@@ -14,7 +14,7 @@ class Profile extends React.Component {
       profile: {},
       editing: '',
       value: '',
-      margin: 400
+      value2: ''
     }
   }
   static navigationOptions = {
@@ -37,21 +37,27 @@ class Profile extends React.Component {
     this.profileRef.off()
   }
 
-  handleEditing = (editing, value) => {
+  handleEditing = (editing, value, value2='') => {
     this.setState({
       editing,
-      value
+      value,
+      value2
     })
   }
   handleSubmit = () => {
     if(this.state.editing === 'username'){
-      const profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`)
-      profileRef.update({
+      this.profileRef.update({
         username: this.state.value
       })
-    } else {
-      const userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
-      userRef.update({
+    }
+    else if(this.state.editing === 'name'){
+      this.userRef.update({
+        firstName: this.state.value,
+        lastName: this.state.value2
+      })
+    }
+    else {
+      this.userRef.update({
         [this.state.editing]: this.state.value
       })
     }
@@ -69,21 +75,55 @@ class Profile extends React.Component {
     return (
       <Container>
         <MyHeader title='Profile' />
-        <ScrollView >
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
+        <ScrollView >
           <Card>
-            <CardItem header>
+            <CardItem header bordered>
             <Left />
-              <Body>
-                <Text>{this.state.user.firstName} {this.state.user.lastName}</Text>
+              <Body flexGrow={2}>
+                {this.state.editing === 'name'
+                  ?
+                  // <Form>
+                  <Item rounded flex={4}>
+                    <Input
+                      value={this.state.value}
+                      onChangeText={(value) => this.setState({value})}
+                      />
+                      <Input
+                        value={this.state.value2}
+                        onChangeText={(value2) => this.setState({value2})}
+                      />
+                  </Item>
+                  // <Item rounded>
+                  // <Input
+                  //   value={this.state.value2}
+                  //   onChangeText={(value2) => this.setState({value2})}
+                  //   />
+                  // </Item>
+
+                  // </Form>
+                  :
+                  <H1>{this.state.user.firstName} {this.state.user.lastName}</H1>
+                }
               </Body>
-              <Right />
+              <Right>
+                {this.state.editing === 'name'
+                  ?
+                  <Button icon transparent onPress={this.handleSubmit}>
+                    <Icon type='MaterialCommunityIcons' name='content-save' />
+                    </Button>
+                  :
+                  <Button icon transparent onPress={()=>this.handleEditing('name', this.state.user.firstName, this.state.user.lastName)} >
+                   <Icon type='MaterialCommunityIcons' name='pencil' />
+                  </Button>
+                }
+              </Right>
             </CardItem>
             <CardItem cardBody>
               <Image source={{uri: this.state.profile.imageUrl}} style={{height: 200, width: null, flex: 1}}/>
             </CardItem>
             <CardItem bordered>
-              <Left>
+              <Left flexGrow={5}>
                 <Text note>Username:</Text>
                 {this.state.editing === 'username' ?
                   <Item rounded>
@@ -113,7 +153,7 @@ class Profile extends React.Component {
               </Right>
             </CardItem>
             <CardItem bordered>
-              <Left>
+              <Left flexGrow={3.5}>
                 <Text note>Phone Number:</Text>
                 {this.state.editing === 'phone' ?
                   <Item rounded>
@@ -143,7 +183,7 @@ class Profile extends React.Component {
               </Right>
             </CardItem>
             <CardItem bordered>
-              <Left>
+              <Left flexGrow={7}>
                 <Text note>Email:</Text>
                 {this.state.editing === 'email' ?
                   <Item rounded>
@@ -174,9 +214,9 @@ class Profile extends React.Component {
               </Right>
             </CardItem>
           </Card>
-              <Accordion dataArray={dataArray} icon='add' expandedIcon='remove' />
-        </KeyboardAvoidingView>
+          <Accordion dataArray={dataArray} icon='arrow-down' expandedIcon='arrow-up' />
         </ScrollView>
+        </KeyboardAvoidingView>
       </Container>
     );
   }
@@ -184,9 +224,10 @@ class Profile extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: 15,
-    backgroundColor: '#fff',
+    // flex: 1,
+    // width: '95%',
+    // alignItems: 'center',
+    justifyContent: 'center'
   },
 });
 
