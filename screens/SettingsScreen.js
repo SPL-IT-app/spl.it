@@ -1,5 +1,7 @@
 import React from 'react';
 import { ExpoConfigView } from '@expo/samples';
+import { Container } from 'native-base';
+import MyHeader from '../components/Header';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -9,6 +11,12 @@ export default class SettingsScreen extends React.Component {
   render() {
     /* Go ahead and delete ExpoConfigView and replace it with your
      * content, we just wanted to give you a quick view of your config */
-    return <ExpoConfigView />;
+    return (
+      <Container>
+        <MyHeader title='More' />
+        {/* <ExpoConfigView /> */}
+      </Container>
+
+    )
   }
 }
