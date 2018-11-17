@@ -53,10 +53,31 @@ export class CameraView extends React.Component {
   }
 
   _panResponder: PanResponderInstance = PanResponder.create({
-    onMoveShouldSetPanResponder: (evt, gestureState) => true,
-    onPanResponderMove: (event, { x0, y0, dx, dy }) => {
+    onMoveShouldSetPanResponder: (event, gestureState) => true,
+    // onPanResponderGrant: (event, gestureState) => {
+    //   this.setState({
+    //     crop: {
+    //       originX: event.nativeEvent.locationX,
+    //       originY: event.nativeEvent.locationY,
+    //     },
+    //   });
+    // },
+    onPanResponderMove: (event, gestureState) => {
+      console.log();
+      const { x0, y0, dx, dy, moveX, moveY } = gestureState;
       this.setState({
-        crop: { originX: x0, originY: y0, width: dx, height: dy },
+        crop: {
+          originX: event.nativeEvent.locationX,
+          originY: event.nativeEvent.locationY,
+          width: event.nativeEvent.locationX + dx,
+          height: event.nativeEvent.locationY + dy,
+        },
+      });
+    },
+    onPanResponderRelease: (evt, gestureState) => {
+      this.toggleLoading();
+      this.takePicture().then(() => {
+        this.props.navigation.navigate('ListConfirm');
       });
     },
   });
@@ -80,6 +101,7 @@ export class CameraView extends React.Component {
           },
         ],
       };
+      console.log('request ======>', reqBody);
       const resp = await axios.post(
         `https://vision.googleapis.com/v1/images:annotate?key=${
           process.env.REACT_APP_GOOGLE_API_KEY
@@ -99,6 +121,7 @@ export class CameraView extends React.Component {
     }
   };
   takePicture = async () => {
+    console.log(this.state.crop);
     let photo = await this.camera.takePictureAsync({
       quality: 0,
       base64: true,
@@ -136,24 +159,24 @@ export class CameraView extends React.Component {
 
   toggleLoading = () => {
     this.setState({
-      displayLoading: !this.state.displayLoading
-    })
-  }
+      displayLoading: !this.state.displayLoading,
+    });
+  };
 
   _renderLoading = () => {
     if (this.state.displayLoading) {
-        return (
-          <View>
+      return (
+        <View style={styles.Camera}>
           <Content>
-          <Spinner />
-          <Text>Reading Receipt...</Text>
-        </Content>
+            <Spinner />
+            <Text>Reading Receipt...</Text>
+          </Content>
         </View>
-        );
+      );
     } else {
-        return null;
+      return null;
     }
-},
+  };
 
   render() {
     const { hasCameraPermission } = this.state;
@@ -170,28 +193,28 @@ export class CameraView extends React.Component {
             ref={ref => {
               this.camera = ref;
             }}
+            {...this._panResponder.panHandlers}
           >
-
-          {this._renderLoading()}
-            <View style={styles.camera} {...this._panResponder.panHandlers}>
+            {this._renderLoading()}
+            <View style={styles.camera}>
               <Button
                 style={styles.button}
                 onPress={() => this.props.navigation.navigate('Home')}
               >
-                <Icon name="ios-arrow-back" />
+                <Icon type="MaterialCommunityIcons" name="cancel" />
               </Button>
-              <TouchableOpacity
-                style={styles.touch}
-                onPress={() => {
-                  this.takePicture().then(() => {
-                    this.props.navigation.navigate('ListConfirm');
-                  });
-                }}
-              >
-                <Button>
-                  <Text style={styles.text}> Take Photo </Text>
-                </Button>
-              </TouchableOpacity>
+              {/* <TouchableOpacity
+              style={styles.touch}
+              onPress={() => {
+                this.takePicture().then(() => {
+                  this.props.navigation.navigate('ListConfirm');
+                });
+              }}
+            >
+              <Button>
+                <Text style={styles.text}> Take Photo </Text>
+              </Button>
+            </TouchableOpacity> */}
             </View>
           </Camera>
         </View>

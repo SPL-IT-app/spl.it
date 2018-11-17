@@ -36,7 +36,7 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <Container>
-        <MyHeader title='Events' />
+        <MyHeader title="Events" />
         <Container style={styles.container}>
           <Button
             rounded
@@ -48,7 +48,11 @@ export default class HomeScreen extends React.Component {
             }}
           >
             <Text>New Receipt</Text>
-            <Icon name="ios-camera" style={styles.icon} />
+            <Icon
+              type="MaterialCommunityIcons"
+              name="camera"
+              style={styles.icon}
+            />
           </Button>
         </Container>
       </Container>
