@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     },
     text: {
         textAlign: 'center',
-        marginTop: 10,
+        marginTop: 11,
     },
     signUp: {
         fontWeight: "bold",
