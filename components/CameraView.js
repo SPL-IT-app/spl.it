@@ -40,10 +40,10 @@ export class CameraView extends React.Component {
       type: Camera.Constants.Type.back,
       displayLoading: false,
       crop: {
-        originX: 1,
-        originY: 1,
-        width: 1,
-        height: 1,
+        originX: 0,
+        originY: 0,
+        width: 0,
+        height: 0,
       },
     };
   }
@@ -54,27 +54,19 @@ export class CameraView extends React.Component {
 
   _panResponder: PanResponderInstance = PanResponder.create({
     onMoveShouldSetPanResponder: (event, gestureState) => true,
-    // onPanResponderGrant: (event, gestureState) => {
-    //   this.setState({
-    //     crop: {
-    //       originX: event.nativeEvent.locationX,
-    //       originY: event.nativeEvent.locationY,
-    //     },
-    //   });
-    // },
     onPanResponderMove: (event, gestureState) => {
-      console.log();
       const { x0, y0, dx, dy, moveX, moveY } = gestureState;
       this.setState({
         crop: {
-          originX: event.nativeEvent.locationX,
-          originY: event.nativeEvent.locationY,
-          width: event.nativeEvent.locationX + dx,
-          height: event.nativeEvent.locationY + dy,
+          originX: moveX - dx,
+          originY: moveY - dy,
+          width: moveX + dx,
+          height: moveY + dy,
         },
       });
     },
     onPanResponderRelease: (evt, gestureState) => {
+      console.log('crop on release ===>', this.state.crop);
       this.toggleLoading();
       this.takePicture().then(() => {
         this.props.navigation.navigate('ListConfirm');
@@ -131,9 +123,12 @@ export class CameraView extends React.Component {
   };
 
   cropPicture = async photo => {
+    console.log('height ==> ', photo.height);
+    console.log('width ==> ', photo.width);
     let croppedPhoto = await ImageManipulator.manipulate(
       photo.uri,
       [
+        // { resize: { width: 1000 } },
         {
           crop: {
             originX: this.state.crop.originX,
