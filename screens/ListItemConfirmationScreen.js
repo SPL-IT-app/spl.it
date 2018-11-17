@@ -5,13 +5,7 @@ import {
   Content,
   Header,
   Button,
-  Icon,
-  List,
-  ListItem,
-  Form,
-  Item,
-  Picker,
-  Input,
+  Icon
 } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
@@ -39,27 +33,35 @@ const styles = StyleSheet.create({
     width: '60%',
     alignSelf: 'center',
   },
-  grid: {
-    height: 150,
-    width: 50,
-    backgroundColor: 'yellow',
+  tableHeader: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '15%',
+    borderBottomColor: '#ddd',
+    borderBottomWidth: 1
   },
+  quantity: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '15%',
+  },
+  description: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '60%',
+  },
+  price: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '25%',
+  }
 });
 
 export class ListItemConfirmationScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
-
-  state = {
-    receipt: this.props.receipt
-  }
-
-  handleChange = (event, idx) => {
-    this.setState ({
-      receipt: {}
-    })
-  }
 
   render() {
     const { receipt } = this.props;
@@ -70,14 +72,14 @@ export class ListItemConfirmationScreen extends React.Component {
         <Content>
           <View>
             <Grid>
-              <Row>
-                <Col>
+              <Row style={styles.tableHeader}>
+                <Col style={styles.quantity}>
                   <Text>QTY</Text>
                 </Col>
-                <Col>
+                <Col style={styles.description}>
                   <Text>DESCRIPTION</Text>
                 </Col>
-                <Col>
+                <Col style={styles.price}>
                   <Text>PRICE</Text>
                 </Col>
               </Row>
