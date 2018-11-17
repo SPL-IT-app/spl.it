@@ -1,45 +1,38 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import {
-  Container,
-  Content,
-  Header,
-  Button,
-  Icon
-} from 'native-base';
+import { StyleSheet, Text, ScrollView } from 'react-native';
+import { Container, Content, Header, Button, Icon, View } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import CameraProcessing from '../components/utilities/CameraProcessing';
-import LineItems from '../components/LineItems'
+import LineItems from '../components/LineItems';
+import MyHeader from '../components/Header';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  // content: {
+  //   flex: 1,
+  //   backgroundColor: 'blue',
+  // },
   icon: {
     margin: 0,
     padding: 0,
   },
-  button: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+  confirmItemsButton: {
     marginTop: 10,
-    width: '60%',
+    width: '95%',
     alignSelf: 'center',
+  },
+  addItemButton: {
+    marginTop: 10,
+    alignSelf: 'flex-end',
+    backgroundColor: 'transparent',
   },
   tableHeader: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '15%',
+    height: 60,
     borderBottomColor: '#ddd',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   quantity: {
     display: 'flex',
@@ -55,7 +48,15 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     width: '25%',
-  }
+  },
+  lastRow: {
+    paddingBottom: 80,
+  },
+  buttonText: {
+    textAlign: 'center',
+    letterSpacing: 2,
+    color: 'white'
+  },
 });
 
 export class ListItemConfirmationScreen extends React.Component {
@@ -68,38 +69,38 @@ export class ListItemConfirmationScreen extends React.Component {
     console.log('RECEIPT =====>', receipt);
     return receipt.length ? (
       <Container>
-        <Header />
-        <Content>
-          <View>
-            <Grid>
-              <Row style={styles.tableHeader}>
-                <Col style={styles.quantity}>
-                  <Text>QTY</Text>
-                </Col>
-                <Col style={styles.description}>
-                  <Text>DESCRIPTION</Text>
-                </Col>
-                <Col style={styles.price}>
-                  <Text>PRICE</Text>
-                </Col>
-              </Row>
-              {receipt.map((lineItem, idx) => {
-                return (
-                  <LineItems key={idx} lineItem={lineItem} idx={idx}/>
-                );
-              })}
-            </Grid>
-          </View>
-          <View>
-            <Button>
-              <Icon type="MaterialCommunityIcons" name="plus" />
+        <MyHeader title="Confirmation" />
+        <Content style={styles.content}>
+          <Grid style={styles.grid}>
+            <Row style={styles.tableHeader}>
+              <Col style={styles.quantity}>
+                <Text>QTY</Text>
+              </Col>
+              <Col style={styles.description}>
+                <Text>DESCRIPTION</Text>
+              </Col>
+              <Col style={styles.price}>
+                <Text>PRICE</Text>
+              </Col>
+            </Row>
+            {receipt.map((lineItem, idx) => {
+              return <LineItems key={idx} lineItem={lineItem} idx={idx} />;
+            })}
+            <Button style={styles.addItemButton}>
+              <Icon style={{'color': "black"}} type="MaterialCommunityIcons" name="plus" />
             </Button>
-          </View>
-          <View>
-            <Button info large block style={styles.button} onPress={() => {}}>
-              <Text>Confirm Items</Text>
+            <Button
+              success
+              block
+              style={styles.confirmItemsButton}
+              onPress={() =>
+               console.log('items confirmed - pressed')
+              }
+            >
+              <Text style={styles.buttonText}> LOGIN </Text>
             </Button>
-          </View>
+            <Row style={styles.lastRow} />
+          </Grid>
         </Content>
       </Container>
     ) : (

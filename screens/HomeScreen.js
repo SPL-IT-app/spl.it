@@ -63,11 +63,14 @@ export class HomeScreen extends React.Component {
               await this.props.setReceipt([
                 { quantity: 1, name: "Cheese Curds", price: 7.0 },
                 { quantity: 1, name: "Steak", price: 35.20 },
-                { quantity: 1, name: "Pepperoni Pizza", price: 15.0 },
+                { quantity: 1, name: "Pepperoni Pizza with Olives, Spinach, and Onions", price: 15.0 },
                 { quantity: 1, name: "Pad Thai with Tofu", price: 18.0 },
                 { quantity: 1, name: "Red Curry with Rice", price: 20.0 },
                 { quantity: 1, name: "French Fries", price: 4.50 },
                 { quantity: 1, name: "Burger", price: 11.99 },
+                { quantity: 1, name: "Last Item", price: 11.99 },
+
+
               ]);
               this.props.navigation.navigate('ListConfirm');
             }}
