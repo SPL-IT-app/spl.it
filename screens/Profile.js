@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Image, StatusBar, KeyboardAvoidingView, Keyboard } from 'react-native';
-import { Container, Text, Title, Card, CardItem, Body, Accordion, Left, Right, ListItem, Icon, Button, Input, Item, H1, ActionSheet, Form, View } from 'native-base';
+import { Container, Text, Title, Card, CardItem, Body, Accordion, Left, Right, ListItem, Icon, Button, Input, Item, H1, ActionSheet, Form, View, Thumbnail, Tabs, Tab, TabHeading, Header, List } from 'native-base';
 import MyHeader from '../components/Header';
 import { connect } from 'react-redux'
 import { makeRef } from '../server/firebaseconfig'
@@ -15,7 +15,8 @@ class Profile extends React.Component {
       editing: '',
       value: '',
       value2: '',
-      friends: []
+      friends: [],
+      groups: []
     }
   }
   static navigationOptions = {
@@ -78,10 +79,16 @@ class Profile extends React.Component {
   }
 
   render() {
-    const dataArray=[
-      {title: 'Groups', content: 'No Groups Yet'},
-      {title: 'Friends', content: 'No Friends Yetdscacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjacaaaaaaaaaaaaaaaaaaaaaaaaaalasdbckhbasdchkbasdklihjcbasdlihcbalskdhcblasdhcblaksdbclakdsbclkhasdfvblkhasdvlkjkhasdvlkjad'}
-    ]
+    console.log(this.state)
+    console.log('friends',this.state.friends)
+    if(this.state.friends[0]){
+      console.log('username',this.state.friends[0].username)
+
+    }
+    setTimeout(()=> {
+      console.log(this.state.friends[0].username)
+    }, 3000)
+    console.log(this.state)
     return (
       <Container>
         <MyHeader title='Profile' />
@@ -215,7 +222,35 @@ class Profile extends React.Component {
               </Right>
             </CardItem>
           </Card>
-          <Accordion dataArray={dataArray} icon='arrow-down' expandedIcon='arrow-up' />
+          <Container>
+          {/* <Header hasTabs /> */}
+          <Tabs>
+            <Tab heading={ <TabHeading><Icon type='MaterialIcons' name="group" /><Text>Groups</Text></TabHeading>}>
+              {!this.state.groups.length ?
+                <Text>You don't have a group yet!</Text> :
+                <Text>be filled later</Text>
+            }
+            </Tab>
+            <Tab heading={ <TabHeading><Icon type='MaterialIcons' name="contacts" /><Text>Friends</Text></TabHeading>}>
+              {this.state.friends.length === 0 ?
+              <Text>You don't have friends yet!</Text> :
+              <List>
+                {this.state.friends.map(friend => (
+                  <ListItem avatar key={friend.username} >
+                    <Left>
+                      <Thumbnail source={{uri: friend.imageUrl}} />
+                    </Left>
+                    <Body>
+                      <Text>{friend.username}</Text>
+                    </Body>
+                    <Right />
+                  </ListItem>
+                ))}
+              </List>
+            }
+            </Tab>
+          </Tabs>
+          </Container>
         </ScrollView>
         </KeyboardAvoidingView>
       </Container>
