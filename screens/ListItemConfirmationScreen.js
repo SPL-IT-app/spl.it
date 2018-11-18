@@ -1,33 +1,16 @@
 import React from 'react';
-import { StyleSheet, Text, ScrollView } from 'react-native';
-import { Container, Content, Header, Button, Icon, View } from 'native-base';
+import { StyleSheet, Text } from 'react-native';
+import { Container, Content, Button, Icon } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import CameraProcessing from '../components/utilities/CameraProcessing';
 import LineItems from '../components/LineItems';
 import MyHeader from '../components/Header';
 import { addLineItem } from '../store';
+const {makeRef} = require('../server/firebaseconfig')
 
 
 const styles = StyleSheet.create({
-  // content: {
-  //   flex: 1,
-  //   backgroundColor: 'blue',
-  // },
-  icon: {
-    margin: 0,
-    padding: 0,
-  },
-  confirmItemsButton: {
-    marginTop: 10,
-    width: '95%',
-    alignSelf: 'center',
-  },
-  addItemButton: {
-    marginTop: 10,
-    alignSelf: 'flex-end',
-    backgroundColor: 'transparent',
-  },
   tableHeader: {
     display: 'flex',
     justifyContent: 'center',
@@ -57,7 +40,17 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     letterSpacing: 2,
-    color: 'white'
+    color: 'white',
+  },
+  confirmItemsButton: {
+    marginTop: 10,
+    width: '95%',
+    alignSelf: 'center',
+  },
+  addItemButton: {
+    marginTop: 10,
+    alignSelf: 'flex-end',
+    backgroundColor: 'transparent',
   },
 });
 
@@ -66,9 +59,16 @@ export class ListItemConfirmationScreen extends React.Component {
     header: null,
   };
 
+  handleConfirmItems = () => {
+    console.log('ITEMS CONFIRMED')
+    const eventsRef = makeRef('/events')
+    const usersRef = makeRef('/users')
+
+
+  }
+
   render() {
     const { receipt } = this.props;
-    console.log('RECEIPT =====>', receipt);
     return receipt.length ? (
       <Container>
         <MyHeader title="Confirmation" />
@@ -88,19 +88,24 @@ export class ListItemConfirmationScreen extends React.Component {
             {receipt.map((lineItem, idx) => {
               return <LineItems key={idx} lineItem={lineItem} idx={idx} />;
             })}
-            <Button style={styles.addItemButton} onPress={() => {
-              console.log('ITEM ADDED')
-              this.props.addLineItem()
-              }}>
-              <Icon style={{'color': "black"}} type="MaterialCommunityIcons" name="plus" />
+            <Button
+              style={styles.addItemButton}
+              onPress={() => {
+                console.log('ITEM ADDED');
+                this.props.addLineItem();
+              }}
+            >
+              <Icon
+                style={{ color: 'black' }}
+                type="MaterialCommunityIcons"
+                name="plus"
+              />
             </Button>
             <Button
               success
               block
               style={styles.confirmItemsButton}
-              onPress={() =>
-               console.log('items confirmed - pressed')
-              }
+              onPress={this.handleConfirmItems}
             >
               <Text style={styles.buttonText}> CONFIRM ITEMS </Text>
             </Button>
