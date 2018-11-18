@@ -14,7 +14,8 @@ class Profile extends React.Component {
       profile: {},
       editing: '',
       value: '',
-      value2: ''
+      value2: '',
+      friends: []
     }
   }
   static navigationOptions = {
@@ -23,13 +24,22 @@ class Profile extends React.Component {
 
   componentDidMount(){
     this.userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
-    this.profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`);
+    this.profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`)
     this.userRef.on('value', (snapshot) => {
-      this.setState({user: snapshot.val()})
+      const user = snapshot.val()
+      const friends = []
+      Object.keys(user.friends).forEach(id => {
+        const friendRef = makeRef(`/profiles/${id}`)
+        friendRef.on('value', snapshot => {
+          friends.push(snapshot.val())
+        })
+      })
+      this.setState({user, friends})
     })
     this.profileRef.on('value', (snapshot) => {
       this.setState({profile: snapshot.val()})
     })
+    this.friendRef = (id) => makeRef(`/users/${id}`)
   }
 
   componentWillUnmount(){
@@ -83,7 +93,6 @@ class Profile extends React.Component {
               <Body flexGrow={2}>
                 {this.state.editing === 'name'
                   ?
-                  // <Form>
                   <Item rounded flex={4}>
                     <Input
                       value={this.state.value}
@@ -94,14 +103,6 @@ class Profile extends React.Component {
                         onChangeText={(value2) => this.setState({value2})}
                       />
                   </Item>
-                  // <Item rounded>
-                  // <Input
-                  //   value={this.state.value2}
-                  //   onChangeText={(value2) => this.setState({value2})}
-                  //   />
-                  // </Item>
-
-                  // </Form>
                   :
                   <H1>{this.state.user.firstName} {this.state.user.lastName}</H1>
                 }
