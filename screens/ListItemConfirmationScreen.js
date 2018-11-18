@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import CameraProcessing from '../components/utilities/CameraProcessing';
 import LineItems from '../components/LineItems';
 import MyHeader from '../components/Header';
+import { addLineItem } from '../store';
+
 
 const styles = StyleSheet.create({
   // content: {
@@ -86,7 +88,10 @@ export class ListItemConfirmationScreen extends React.Component {
             {receipt.map((lineItem, idx) => {
               return <LineItems key={idx} lineItem={lineItem} idx={idx} />;
             })}
-            <Button style={styles.addItemButton}>
+            <Button style={styles.addItemButton} onPress={() => {
+              console.log('ITEM ADDED')
+              this.props.addLineItem()
+              }}>
               <Icon style={{'color': "black"}} type="MaterialCommunityIcons" name="plus" />
             </Button>
             <Button
@@ -97,7 +102,7 @@ export class ListItemConfirmationScreen extends React.Component {
                console.log('items confirmed - pressed')
               }
             >
-              <Text style={styles.buttonText}> LOGIN </Text>
+              <Text style={styles.buttonText}> CONFIRM ITEMS </Text>
             </Button>
             <Row style={styles.lastRow} />
           </Grid>
@@ -116,8 +121,13 @@ const mapState = state => {
 };
 
 const mapDispatch = dispatch => {
-  return {};
+  return {
+    addLineItem: () => {
+      dispatch(addLineItem());
+    },
+  };
 };
+
 export default connect(
   mapState,
   mapDispatch

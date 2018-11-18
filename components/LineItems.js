@@ -7,6 +7,7 @@ import {StyleSheet} from 'react-native';
 import numeral from 'numeral'
 
 
+
 const styles = StyleSheet.create({
   lineItemRow: {
     borderBottomColor: '#ddd',
@@ -84,7 +85,7 @@ export class LineItems extends React.Component {
               style ={styles.inputText}
               name="price"
               placeholder="price"
-              value={numeral(this.state.price).format('$0,0.00')}
+              value={this.state.price.toString()}
               onChangeText={this.handleChange('price')}
             />
           </Item>
