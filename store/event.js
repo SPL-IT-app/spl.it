@@ -3,11 +3,11 @@ const SET_EVENT = 'SET_EVENT'
 
 // INITIAL STATE
 const defaultState = {
-    selectedEvent: {}
+    selectedEvent: ''
 }
 
 // ACTION CREATOR
-export const setReceipt = event => ({ type: SET_EVENT, event })
+export const setEvent = event => ({ type: SET_EVENT, event })
 
 // HANDLERS
 const handler = {

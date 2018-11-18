@@ -42,7 +42,7 @@ export class LineItems extends React.Component {
     this.state = {
       quantity: this.props.lineItem.quantity,
       price: this.props.lineItem.price,
-      description: this.props.lineItem.name,
+      name: this.props.lineItem.name,
     };
   }
 
@@ -71,10 +71,10 @@ export class LineItems extends React.Component {
         <Col style={styles.description}>
           <Item style={styles.formInput}>
             <Input
-              name="description"
+              name="name"
               placeholder="description"
-              value={this.state.description}
-              onChangeText={this.handleChange('description')}
+              value={this.state.name}
+              onChangeText={this.handleChange('name')}
             />
           </Item>
         </Col>

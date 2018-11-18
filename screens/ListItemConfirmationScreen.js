@@ -7,8 +7,7 @@ import CameraProcessing from '../components/utilities/CameraProcessing';
 import LineItems from '../components/LineItems';
 import MyHeader from '../components/Header';
 import { addLineItem } from '../store';
-const {makeRef} = require('../server/firebaseconfig')
-
+const { makeRef } = require('../server/firebaseconfig');
 
 const styles = StyleSheet.create({
   tableHeader: {
@@ -60,12 +59,65 @@ export class ListItemConfirmationScreen extends React.Component {
   };
 
   handleConfirmItems = () => {
-    console.log('ITEMS CONFIRMED')
-    const eventsRef = makeRef('/events')
-    const usersRef = makeRef('/users')
+    console.log('ITEMS CONFIRMED');
+    const newEvent = {
+      date: (new Date()).toString(),
+      title: 'new event',
+      status: false,
+      receipts: {},
+      members: {[this.props.user.id]: true},
+    };
 
+    const newReceipt = {
+      imageUrl: 'newReceiptUrl',
+      creator: this.props.user.id,
+      tipPercent: 10,
+      lineItems: {},
+    };
 
-  }
+    let receipt = this.props.receipt;
+    receipt.forEach(lineItem => {
+      if (lineItem.quantity > 1) {
+        const repeatLineItem = {
+          quantity: 1,
+          name: lineItem.name,
+          price: lineItem.price / lineItem.quantity,
+        };
+        receipt.splice(receipt.indexOf(lineItem), 1);
+        for (let i = 0; i < lineItem.quantity; i++) {
+          receipt.push(repeatLineItem);
+        }
+      }
+    });
+    const lineItems = receipt.map(lineItem => {
+      return {
+        name: lineItem.name,
+        price: lineItem.price,
+        users: {},
+      };
+    });
+
+    if (!this.props.event) {
+      console.log('THIS RECEIPT IS BEING ADDED TO A NEW EVENT');
+
+      const eventsRef = makeRef('/events');
+      const newEventRef = eventsRef.push();
+      const eventId = newEventRef.key;
+      newEventRef.set(newEvent);
+
+      const receiptsRef = makeRef(`/events/${eventId}/receipts`);
+      const newReceiptRef = receiptsRef.push();
+      const receiptID = newReceiptRef.key;
+      newReceiptRef.set(newReceipt);
+
+      const lineItemsRef = makeRef(`/events/${eventId}/receipts/${receiptID}`);
+      lineItems.forEach(item => {
+        lineItemsRef.push().set(item);
+      });
+    } else {
+      console.log('THIS RECEIPT IS BEING ADDED TO AN EXISTING EVENT');
+    }
+  };
 
   render() {
     const { receipt } = this.props;
@@ -121,7 +173,9 @@ export class ListItemConfirmationScreen extends React.Component {
 
 const mapState = state => {
   return {
+    user: state.user.currentUser,
     receipt: state.receipt.receipt,
+    event: state.event.selectedEvent,
   };
 };
 
