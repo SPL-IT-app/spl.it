@@ -32,8 +32,9 @@ class Profile extends React.Component {
       user = snapshot.val()
       Object.keys(user.friends).forEach(id => {
         const friendRef = makeRef(`/profiles/${id}`)
-        friendRef.on('value', snapshot => {
+        friendRef.once('value', snapshot => {
           friends.push(snapshot.val())
+          console.log('friends arrau')
         })
       })
     })
@@ -79,7 +80,10 @@ class Profile extends React.Component {
 
   render() {
     console.log(this.state)
-    console.log('friends',this.state.friends)
+    setTimeout(()=>{
+      console.log('friends',this.state.friends)
+
+    }, 3000)
     if(this.state.friends[0]){
       console.log('username',this.state.friends[0].username)
 
@@ -136,9 +140,9 @@ class Profile extends React.Component {
                       onChangeText={(value) => this.setState({value})}
                       />
                     </Item>
-                  ) : (
+                   :
                     <Text>{this.state.profile.username} </Text>
-                  )}
+                  }
                 </Left>
               <Body>
               </Body>

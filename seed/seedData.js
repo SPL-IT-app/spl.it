@@ -4,7 +4,7 @@ const users = [
     lastName: 'pugman',
     email: 'cody@email.com',
     phone: '555-555-5555',
-    friends: {},
+    friends: {Ul5MOGufA2eYLCMq0CDD8Juojz92: true},
     groups: {},
     events: {},
   },
