@@ -3,7 +3,7 @@ import { StyleSheet, Text } from 'react-native';
 import { Container, Content, Button, Icon } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
-import { LineItemsConfirmed, MyHeader } from '../components';
+import { LineItemsConfirmed, MyHeader, DeleteButton } from '../components';
 const { makeRef } = require('../server/firebaseconfig');
 
 const styles = StyleSheet.create({
@@ -74,23 +74,22 @@ export default class LineItemsConfirmedScreen extends React.Component {
   };
 
   componentWillUnmount() {
-    this.receiptRef.off();
+    this.receiptRefUrl.off();
   }
 
   render() {
-    console.log('receipt ref ====>', this.receiptRef);
-    console.log(
-      'state of line items confirmed ===>',
-      this.state.receiptLineItems
-    );
-    console.log(
-      'object entries of state receipt ===>',
-      Object.entries(this.state.receiptLineItems)
-    );
     const receipt = this.state.receiptLineItems;
     return (
       <Container>
-        <MyHeader title="Confirmation" />
+        <MyHeader
+          title="Confirmation"
+          right={() => (
+            <DeleteButton
+              url={this.receiptRef}
+              navigation={this.props.navigation}
+            />
+          )}
+        />
         <Content style={styles.content}>
           <Grid>
             <Row style={styles.tableHeader}>

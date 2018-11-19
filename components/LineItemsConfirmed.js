@@ -12,16 +12,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     height: 50,
   },
-  formInput: {
+  input: {
+    height: '100%',
     borderColor: 'transparent',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
   },
-  inputText: {
+  text: {
     width: '100%',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   quantity: {
     width: '15%',
@@ -56,17 +57,17 @@ export default class LineItemsConfirmed extends React.Component {
     return (
       <Row style={styles.lineItemRow}>
         <Col style={styles.quantity}>
-          <Item type="number" style={styles.formInput}>
-            <Text>{this.state.lineItem.quantity}</Text>
+          <Item type="number" style={styles.input}>
+            <Text>1</Text>
           </Item>
         </Col>
         <Col style={styles.description}>
-          <Item style={styles.formInput}>
-            <Text>{this.state.lineItem.name}</Text>
+          <Item style={styles.input}>
+            <Text style={styles.text}>{this.state.lineItem.name}</Text>
           </Item>
         </Col>
         <Col style={styles.price}>
-          <Item type="number" style={styles.formInput}>
+          <Item type="number" style={styles.input}>
             <Text>{numeral(this.state.lineItem.price).format('$0,0.00')}</Text>
           </Item>
         </Col>

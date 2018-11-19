@@ -3,7 +3,12 @@ import { StyleSheet, Text } from 'react-native';
 import { Container, Content, Button, Icon } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
-import { CameraProcessing, LineItems, MyHeader } from '../components';
+import {
+  CameraProcessing,
+  LineItems,
+  MyHeader,
+  BackButton,
+} from '../components';
 import { addLineItem } from '../store';
 const { makeRef } = require('../server/firebaseconfig');
 import Dialog from 'react-native-dialog';
@@ -147,7 +152,7 @@ export class ListItemConfirmationScreen extends React.Component {
     const { receipt } = this.props;
     return receipt.length ? (
       <Container>
-        <MyHeader title="Confirmation" />
+        <MyHeader title="Confirmation" right={() => <BackButton navigation={this.props.navigation}/>} />
         <Content style={styles.content}>
           <Grid style={styles.grid}>
             <Dialog.Container visible={this.state.dialogVisible}>
