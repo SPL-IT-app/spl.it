@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { Camera, Permissions } from 'expo';
 const axios = require('axios');
 require('../secrets');
@@ -18,9 +18,11 @@ const styles = StyleSheet.create({
   },
   button: { padding: 20, marginTop: 20 },
   touch: {
-    flex: 0.1,
-    alignSelf: 'flex-end',
+    display: 'flex',
     alignItems: 'center',
+    width: '60%',
+    alignSelf: 'flex-end',
+    textAlign: 'center'
   },
   text: { fontSize: 18, marginBottom: 10, color: 'white' },
 });
@@ -58,7 +60,7 @@ export class CameraView extends React.Component {
       };
       const resp = await axios.post(
         `https://vision.googleapis.com/v1/images:annotate?key=${
-          process.env.REACT_APP_GOOGLE_API_KEY
+        process.env.REACT_APP_GOOGLE_API_KEY
         }`,
         reqBody
       );
@@ -66,11 +68,15 @@ export class CameraView extends React.Component {
       //   'RESPONSE ======>',
       //   resp.data.responses[0].fullTextAnnotation.text
       // );
-      const receiptText = resp.data.responses[0].fullTextAnnotation.text;
-      const receiptObj = parseReceipt(receiptText);
-      this.props.setReceipt(receiptObj);
+      if (!resp.data.responses[0].fullTextAnnotation) {
+        this.props.navigation.navigate('Camera')
+        Alert.alert('Error', 'Try again!')
+      } else {
+        const receiptText = resp.data.responses[0].fullTextAnnotation.text;
+        const receiptObj = parseReceipt(receiptText);
+        this.props.setReceipt(receiptObj);
+      }
     } catch (err) {
-      console.log('some error happened');
       console.error(err);
     }
   };
@@ -165,7 +171,6 @@ function parseReceipt(receiptText) {
     })
   });
 
-  console.log('RECEIPT ARRAY ====>', parsedReceipt);
   return parsedReceipt;
 }
 
