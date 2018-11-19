@@ -34,26 +34,37 @@ export class HomeScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      events: [],
       user: {}
     }
+  }
+
+  componentDidMount() {
+    const { user } = this.props
+    
+      this.userRef = makeRef(`/users/${user.id}`)
+
+      this.userRef.on('value', (snapshot) => {
+        let currentUser = snapshot.val()
+        this.setState({ user: currentUser })
+      })
+    
+  }
+
+  componentWillUnmount() {
+    this.userRef.off()
   }
   static navigationOptions = {
     header: null,
   }
 
-  componentDidMount() {
-    //this.userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
-    //this.setState({user: this.userRef})
-
-  }
-
   render() {
+    const { events } = this.state.user
+
     return (
       <Container>
         <MyHeader title="Events" />
         {
-          this.props.events ? <AllEvents /> :
+          events ? <AllEvents events={this.state.user.events} /> :
             <Container style={styles.container}>
               <Button
                 rounded
@@ -108,23 +119,10 @@ export class HomeScreen extends React.Component {
     );
   }
 }
-
-const mapDispatch = dispatch => {
-  return {
-    setReceipt: receiptObj => {
-      dispatch(setReceipt(receiptObj));
-    },
-    setEvent: event => {
-      dispatch(setEvent(event));
-    },
-  };
-}
-
 const mapState = state => {
-
+  return { user: state.user.currentUser }
 }
 
 export default connect(
-  null,
-  mapDispatch
+  mapState,
 )(HomeScreen);

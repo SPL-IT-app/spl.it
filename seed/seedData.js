@@ -44,7 +44,7 @@ const profiles = [
   {
     QUYamusOQnMkQxJaxZVetUgY66D3: {
       username: 'pugCody',
-      imageUrl: 'https://bit.ly/2RXPGbi',
+      imageUrl: 'https://bit.ly/2A52oxA',
     },
   },
   {
