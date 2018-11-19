@@ -3,8 +3,7 @@ import { Button, Form, Container, Item, Input, Label, Text } from 'native-base';
 import firebase from '../server/firebaseconfig';
 import { getUser } from '../store/';
 import { connect } from 'react-redux';
-
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Alert} from 'react-native';
 
 const styles = StyleSheet.create({
   root: {
@@ -62,7 +61,7 @@ class LoginScreen extends React.Component {
     const { getUser } = this.props;
     try {
       if (this.state.password.length < 6) {
-        alert('Please enter at least 6 characters');
+        Alert.alert('Error', 'Please enter at least 6 characters');
         return;
       }
       firebase
