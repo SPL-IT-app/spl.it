@@ -3,8 +3,8 @@ import { Button, Form, Container, Item, Input, Label, Text } from 'native-base';
 import firebase from '../server/firebaseconfig';
 import { getUser } from '../store/';
 import { connect } from 'react-redux';
-
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
+import { makeRef } from '../server/firebaseconfig'
 
 const styles = StyleSheet.create({
   root: {
@@ -61,15 +61,24 @@ class LoginScreen extends React.Component {
     const { getUser } = this.props;
     try {
       if (this.state.password.length < 6) {
-        alert('Please enter at least 6 characters');
+        Alert.alert('Error', 'Please enter at least 6 characters');
         return;
       }
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(user => {
-          getUser({ id: user.user.uid });
-        });
+          const userRef = makeRef(`/users/${user.user.uid}`)
+          const profileRef = makeRef(`/profiles/${user.user.uid}`)
+
+          userRef.on('value', (snapshot) => {
+            let currentUser = snapshot.val()
+            profileRef.on('value', (snap) => {
+              let profile = snap.val()
+                getUser({id: user.user.uid, user: currentUser, profile})
+            })
+          })
+        })
       this.props.navigation.navigate('Main');
     } catch (err) {
       console.error(err);

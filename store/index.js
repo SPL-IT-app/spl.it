@@ -5,8 +5,6 @@ import user from "./user"
 import receipt from './receipt'
 import event from './event'
 
-
-
 const reducer = combineReducers({ user, receipt, event })
 const middleWare = applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
 const store = createStore(reducer, middleWare)
