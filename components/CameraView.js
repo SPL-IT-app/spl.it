@@ -69,7 +69,7 @@ export class CameraView extends React.Component {
       //   resp.data.responses[0].fullTextAnnotation.text
       // );
       if (!resp.data.responses[0].fullTextAnnotation) {
-        this.props.navigation.navigate('Home')
+        this.props.navigation.navigate('Camera')
         Alert.alert('Error', 'Try again!')
       } else {
         const receiptText = resp.data.responses[0].fullTextAnnotation.text;

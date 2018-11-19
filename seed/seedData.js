@@ -26,7 +26,7 @@ const profiles = [
   },
   {
     username: 'maaaary',
-    imageUrl: 'https://bit.ly/2RXPGbi',
+    imageUrl: 'https://bit.ly/2FuSuuV',
   },
 ];
 
