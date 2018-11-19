@@ -15,7 +15,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Alert
 } from 'react-native';
+
+import firebase from '../server/firebaseconfig';
+import { getUser } from '../store/';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   root: {
@@ -49,9 +54,7 @@ const styles = StyleSheet.create({
   },
 });
 
-import firebase from '../server/firebaseconfig';
-import { getUser } from '../store/';
-import { connect } from 'react-redux';
+
 
 class SignUpScreen extends React.Component {
   constructor(props) {
@@ -70,7 +73,7 @@ class SignUpScreen extends React.Component {
     const { getUser } = this.props;
     try {
       if (this.state.password.length < 6) {
-        alert('Please enter at least 6 characters');
+        Alert.alert('Error', 'Please enter at least 6 characters');
         return;
       } else {
         firebase
