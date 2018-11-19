@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Image, StatusBar, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { ScrollView, StyleSheet, Image, StatusBar, KeyboardAvoidingView, Keyboard, Alert } from 'react-native';
 import { Container, Text, Title, Card, CardItem, Body, Accordion, Left, Right, ListItem, Icon, Button, Input, Item, H1, ActionSheet, Form, View, Thumbnail, Tabs, Tab, TabHeading, Header, List } from 'native-base';
 import MyHeader from '../components/Header';
 import { connect } from 'react-redux'
@@ -23,23 +23,16 @@ class Profile extends React.Component {
   };
 
   componentDidMount(){
-    this.userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
-    this.profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`)
-    let user
-    const friends = []
-    // let profile
-    this.userRef.on('value', (snapshot) => {
+    console.log('props', this.props)
+    this.userRef = makeRef(`/users/${this.props.user.id}`)
+    this.profileRef = makeRef(`/profiles/${this.props.user.id}`)
+    this.userRef.on('value', snapshot => {
       user = snapshot.val()
-      Object.keys(user.friends).forEach(id => {
-        const friendRef = makeRef(`/profiles/${id}`)
-        friendRef.once('value', snapshot => {
-          friends.push(snapshot.val())
-          console.log('friends arrau')
-        })
-      })
+      this.setState({user})
     })
-    this.profileRef.on('value', (snapshot) => {
-      this.setState({profile: snapshot.val(), user, friends})
+    this.profileRef.on('value', snapshot => {
+      profile = snapshot.val()
+      this.setState({profile})
     })
   }
 
@@ -80,15 +73,8 @@ class Profile extends React.Component {
 
   render() {
     console.log(this.state)
-    setTimeout(()=>{
-      console.log('friends',this.state.friends)
 
-    }, 3000)
-    if(this.state.friends[0]){
-      console.log('username',this.state.friends[0].username)
-
-    }
-
+    // return <Text>dummy text</Text>
     return (
       <Container>
         <MyHeader title='Profile' />
@@ -268,7 +254,7 @@ const styles = StyleSheet.create({
 });
 
 const mapState = state => ({
-  user: state.user,
+  user: state.user.currentUser,
 });
 
 export default connect(mapState)(Profile);
