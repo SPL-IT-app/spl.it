@@ -1,19 +1,39 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-import { Footer, FooterTab, Text, Button, Icon, Content, Container } from 'native-base'
+import {
+  createStackNavigator,
+  createBottomTabNavigator,
+} from 'react-navigation';
+import {
+  Footer,
+  FooterTab,
+  Text,
+  Button,
+  Icon,
+  Content,
+  Container,
+} from 'native-base';
 
-import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/Profile';
-import SettingsScreen from '../screens/SettingsScreen'
-import MyHeader from '../components/Header';
+import {
+  TabBarIcon,
+  HomeScreen,
+  Profile,
+  More,
+  ListItemConfirmationScreen,
+} from '../screens';
+
+import { MyHeader, CameraView } from '../components';
+
 //import LoginScreen from '../screens/LoginScreen'
 
-
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
-} , {headerMode: 'none'});
+const HomeStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Camera: CameraView,
+    ListConfirm: ListItemConfirmationScreen,
+  },
+  { headerMode: 'none', initialRouteName: 'Home' }
+);
 
 // HomeStack.navigationOptions = {
 //   tabBarLabel: 'Home',
@@ -32,9 +52,12 @@ const HomeStack = createStackNavigator({
 //   ),
 // };
 
-const ProfileStack = createStackNavigator({
-  Links: LinksScreen,
-}, {headerMode: 'none'});
+const ProfileStack = createStackNavigator(
+  {
+    Profile: Profile,
+  },
+  { headerMode: 'none' }
+);
 
 // LinksStack.navigationOptions = {
 //   tabBarLabel: 'Links',
@@ -46,9 +69,12 @@ const ProfileStack = createStackNavigator({
 //   ),
 // };
 
-const MoreStack = createStackNavigator({
-  Settings: SettingsScreen,
-}, {headerMode:'none'});
+const MoreStack = createStackNavigator(
+  {
+    More: More,
+  },
+  { headerMode: 'none' }
+);
 
 // SettingsStack.navigationOptions = {
 //   tabBarLabel: 'Settings',
@@ -60,44 +86,41 @@ const MoreStack = createStackNavigator({
 //   ),
 // };
 
-export default createBottomTabNavigator({
-  HomeStack,
-  ProfileStack,
-  MoreStack,
-}, {
-  tabBarComponent: props => {
-    return (
+export default createBottomTabNavigator(
+  {
+    HomeStack,
+    ProfileStack,
+    MoreStack,
+  },
+  {
+    tabBarComponent: props => {
+      return (
         <Footer>
           <FooterTab>
             <Button
               active={props.navigation.state.index === 0}
-              onPress={() => props.navigation.navigate("HomeStack")}
+              onPress={() => props.navigation.navigate('HomeStack')}
             >
-              <Icon name='calendar' />
-              <Text>
-                Events
-              </Text>
+              <Icon type="MaterialCommunityIcons" name="calendar" />
+              <Text>Events</Text>
             </Button>
             <Button
-              active = {props.navigation.state.index === 1}
-              onPress={() => props.navigation.navigate("ProfileStack")}
+              active={props.navigation.state.index === 1}
+              onPress={() => props.navigation.navigate('ProfileStack')}
             >
-              <Icon type= 'MaterialCommunityIcons' name='account' />
-              <Text>
-                Profile
-              </Text>
+              <Icon type="MaterialCommunityIcons" name="account" />
+              <Text>Profile</Text>
             </Button>
             <Button
               active={props.navigation.state.index === 2}
-              onPress={() => props.navigation.navigate("MoreStack")}
+              onPress={() => props.navigation.navigate('MoreStack')}
             >
-              <Icon name='more' />
-              <Text>
-                More
-              </Text>
+              <Icon type="MaterialCommunityIcons" name="more" />
+              <Text>More</Text>
             </Button>
           </FooterTab>
         </Footer>
-    )
+      );
+    },
   }
-});
+);

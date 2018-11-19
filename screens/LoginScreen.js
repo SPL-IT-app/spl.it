@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '200',
     letterSpacing: 2,
-    marginTop: 11,
   },
   signUpText: {
     marginTop: 20,
