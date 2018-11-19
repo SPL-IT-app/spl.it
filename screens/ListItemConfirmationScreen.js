@@ -3,7 +3,12 @@ import { StyleSheet, Text } from 'react-native';
 import { Container, Content, Button, Icon } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
-import { CameraProcessing, LineItems, MyHeader } from '../components';
+import {
+  CameraProcessing,
+  LineItems,
+  MyHeader,
+  BackButton,
+} from '../components';
 import { addLineItem } from '../store';
 const { makeRef } = require('../server/firebaseconfig');
 import Dialog from 'react-native-dialog';
@@ -58,6 +63,7 @@ export class ListItemConfirmationScreen extends React.Component {
     this.state = {
       dialogVisible: false,
       eventName: '',
+      receiptRef: '',
     };
   }
 
@@ -65,11 +71,14 @@ export class ListItemConfirmationScreen extends React.Component {
     header: null,
   };
 
-  handleConfirmItems = () => {
+  handleConfirmItems = async () => {
     if (!this.props.event) {
       this.setState({ dialogVisible: true });
     } else {
-      this.handleSubmitEventName();
+      await this.handleSubmitEventName();
+      this.props.navigation.navigate('Confirmed', {
+        receiptRef: this.state.receiptRef,
+      });
     }
   };
 
@@ -133,6 +142,7 @@ export class ListItemConfirmationScreen extends React.Component {
     newReceiptRef.set(newReceipt);
 
     const lineItemsRef = makeRef(`/events/${eventId}/receipts/${receiptID}`);
+    this.setState({ receiptRef: `/events/${eventId}/receipts/${receiptID}` });
     lineItems.forEach(item => {
       lineItemsRef.push().set(item);
     });
@@ -142,7 +152,7 @@ export class ListItemConfirmationScreen extends React.Component {
     const { receipt } = this.props;
     return receipt.length ? (
       <Container>
-        <MyHeader title="Confirmation" />
+        <MyHeader title="Confirmation" right={() => <BackButton navigation={this.props.navigation}/>} />
         <Content style={styles.content}>
           <Grid style={styles.grid}>
             <Dialog.Container visible={this.state.dialogVisible}>
@@ -154,7 +164,12 @@ export class ListItemConfirmationScreen extends React.Component {
               <Dialog.Button label="Cancel" onPress={this.handleCancel} />
               <Dialog.Button
                 label="Enter"
-                onPress={this.handleSubmitEventName}
+                onPress={async () => {
+                  await this.handleSubmitEventName();
+                  this.props.navigation.navigate('Confirmed', {
+                    receiptRef: this.state.receiptRef,
+                  });
+                }}
               />
             </Dialog.Container>
 

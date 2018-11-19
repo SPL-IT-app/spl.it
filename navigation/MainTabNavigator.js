@@ -20,6 +20,7 @@ import {
   Profile,
   More,
   ListItemConfirmationScreen,
+  LineItemsConfirmedScreen,
 } from '../screens';
 
 import { MyHeader, CameraView } from '../components';
@@ -31,6 +32,7 @@ const HomeStack = createStackNavigator(
     Home: HomeScreen,
     Camera: CameraView,
     ListConfirm: ListItemConfirmationScreen,
+    Confirmed: LineItemsConfirmedScreen,
   },
   { headerMode: 'none', initialRouteName: 'Home' }
 );
