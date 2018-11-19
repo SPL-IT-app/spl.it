@@ -3,16 +3,13 @@ import { Item, Input } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { updateLineItem } from '../store';
-import {StyleSheet} from 'react-native';
-import numeral from 'numeral'
-
-
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   lineItemRow: {
     borderBottomColor: '#ddd',
     borderBottomWidth: 1,
-    height: 50
+    height: 50,
   },
   formInput: {
     borderColor: 'transparent',
@@ -23,7 +20,7 @@ const styles = StyleSheet.create({
   },
   inputText: {
     width: '100%',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   quantity: {
     width: '15%',
@@ -33,7 +30,7 @@ const styles = StyleSheet.create({
   },
   price: {
     width: '25%',
-  }
+  },
 });
 
 export class LineItems extends React.Component {
@@ -59,7 +56,7 @@ export class LineItems extends React.Component {
         <Col style={styles.quantity}>
           <Item type="number" style={styles.formInput}>
             <Input
-              style ={styles.inputText}
+              style={styles.inputText}
               name="quantity"
               placeholder="quantity"
               value={this.state.quantity.toString()}
@@ -82,7 +79,7 @@ export class LineItems extends React.Component {
         <Col style={styles.price}>
           <Item type="number" style={styles.formInput}>
             <Input
-              style ={styles.inputText}
+              style={styles.inputText}
               name="price"
               placeholder="price"
               value={this.state.price.toString()}

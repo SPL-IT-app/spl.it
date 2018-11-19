@@ -58,6 +58,7 @@ export class ListItemConfirmationScreen extends React.Component {
     this.state = {
       dialogVisible: false,
       eventName: '',
+      receiptRef: '',
     };
   }
 
@@ -65,11 +66,14 @@ export class ListItemConfirmationScreen extends React.Component {
     header: null,
   };
 
-  handleConfirmItems = () => {
+  handleConfirmItems = async () => {
     if (!this.props.event) {
       this.setState({ dialogVisible: true });
     } else {
-      this.handleSubmitEventName();
+      await this.handleSubmitEventName();
+      this.props.navigation.navigate('Confirmed', {
+        receiptRef: this.state.receiptRef,
+      });
     }
   };
 
@@ -133,6 +137,7 @@ export class ListItemConfirmationScreen extends React.Component {
     newReceiptRef.set(newReceipt);
 
     const lineItemsRef = makeRef(`/events/${eventId}/receipts/${receiptID}`);
+    this.setState({ receiptRef: `/events/${eventId}/receipts/${receiptID}` });
     lineItems.forEach(item => {
       lineItemsRef.push().set(item);
     });
@@ -154,7 +159,12 @@ export class ListItemConfirmationScreen extends React.Component {
               <Dialog.Button label="Cancel" onPress={this.handleCancel} />
               <Dialog.Button
                 label="Enter"
-                onPress={this.handleSubmitEventName}
+                onPress={async () => {
+                  await this.handleSubmitEventName();
+                  this.props.navigation.navigate('Confirmed', {
+                    receiptRef: this.state.receiptRef,
+                  });
+                }}
               />
             </Dialog.Container>
 

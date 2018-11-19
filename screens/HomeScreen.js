@@ -77,7 +77,7 @@ export class HomeScreen extends React.Component {
                 { quantity: 1, name: 'Burger', price: 14 },
                 { quantity: 1, name: 'Last Item', price: 12 },
               ]);
-              // await this.props.setEvent('-LRdZ9WLN-pidwhU5bQE')
+              // await this.props.setEvent('-LRh3pvtmovOd60JYmej');
               await this.props.setEvent('');
               this.props.navigation.navigate('ListConfirm');
             }}
