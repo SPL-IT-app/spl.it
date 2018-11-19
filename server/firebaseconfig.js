@@ -1,5 +1,5 @@
-// const firebase = require('firebase');
-import * as firebase from 'firebase';
+const firebase = require('firebase');
+// import * as firebase from 'firebase';
 require('../secrets');
 
 // Initialize Firebase
@@ -10,10 +10,11 @@ const firebaseConfig = {
   projectId: 'spl-it-91619',
   storageBucket: 'spl-it-91619.appspot.com',
 };
-export default (!firebase.apps.length
-  ? firebase.initializeApp(firebaseConfig)
-  : firebase.app());
 
 export const makeRef = path => {
   return firebase.database().ref(path);
 };
+
+export default (!firebase.apps.length
+  ? firebase.initializeApp(firebaseConfig)
+  : firebase.app());
