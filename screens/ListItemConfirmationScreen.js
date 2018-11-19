@@ -8,6 +8,7 @@ import LineItems from '../components/LineItems';
 import MyHeader from '../components/Header';
 import { addLineItem } from '../store';
 const { makeRef } = require('../server/firebaseconfig');
+import Dialog from 'react-native-dialog';
 
 const styles = StyleSheet.create({
   tableHeader: {
@@ -54,18 +55,42 @@ const styles = StyleSheet.create({
 });
 
 export class ListItemConfirmationScreen extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      dialogVisible: false,
+      eventName: ''
+    }
+  }
+
   static navigationOptions = {
     header: null,
   };
 
   handleConfirmItems = () => {
-    console.log('ITEMS CONFIRMED');
+    if (!this.props.event) {
+      this.setState({ dialogVisible: true });
+    } else {
+      this.handleSubmitEventName()
+    }
+  };
+
+  handleCancel = () => {
+    this.setState({ dialogVisible: false });
+  };
+
+  handleEventName=(event) => {
+    this.setState({eventName: event})
+  }
+
+  handleSubmitEventName = () => {
+    this.setState({ dialogVisible: false });
     const newEvent = {
-      date: (new Date()).toString(),
-      title: 'new event',
+      date: new Date().toString(),
+      title: this.state.eventName,
       status: false,
       receipts: {},
-      members: {[this.props.user.id]: true},
+      members: { [this.props.user.id]: true },
     };
 
     const newReceipt = {
@@ -98,8 +123,6 @@ export class ListItemConfirmationScreen extends React.Component {
     });
 
     if (!this.props.event) {
-      console.log('THIS RECEIPT IS BEING ADDED TO A NEW EVENT');
-
       const eventsRef = makeRef('/events');
       const newEventRef = eventsRef.push();
       const eventId = newEventRef.key;
@@ -126,6 +149,21 @@ export class ListItemConfirmationScreen extends React.Component {
         <MyHeader title="Confirmation" />
         <Content style={styles.content}>
           <Grid style={styles.grid}>
+
+            <Dialog.Container visible={this.state.dialogVisible}>
+              <Dialog.Title>Event Name</Dialog.Title>
+              <Dialog.Description>
+                Please enter a name for your event
+              </Dialog.Description>
+              <Dialog.Input
+              lable="test"
+              onChangeText={this.handleEventName}
+              />
+              <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+              <Dialog.Button label="Enter" onPress={this.handleSubmitEventName} />
+            </Dialog.Container>
+
+
             <Row style={styles.tableHeader}>
               <Col style={styles.quantity}>
                 <Text>QTY</Text>
@@ -143,7 +181,6 @@ export class ListItemConfirmationScreen extends React.Component {
             <Button
               style={styles.addItemButton}
               onPress={() => {
-                console.log('ITEM ADDED');
                 this.props.addLineItem();
               }}
             >

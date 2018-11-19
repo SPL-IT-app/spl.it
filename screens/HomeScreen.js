@@ -89,8 +89,8 @@ const mapDispatch = dispatch => {
     setReceipt: receiptObj => {
       dispatch(setReceipt(receiptObj));
     },
-    setEvent: () => {
-      dispatch(setEvent(''))
+    setEvent: (event) => {
+      dispatch(setEvent(event))
     }
   };
 };
