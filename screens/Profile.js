@@ -6,9 +6,8 @@ import { connect } from 'react-redux'
 import { makeRef } from '../server/firebaseconfig'
 
 class Profile extends React.Component {
-
-  constructor(){
-    super()
+  constructor() {
+    super();
     this.state = {
       user: {},
       profile: {},
@@ -43,9 +42,9 @@ class Profile extends React.Component {
     })
   }
 
-  componentWillUnmount(){
-    this.userRef.off()
-    this.profileRef.off()
+  componentWillUnmount() {
+    this.userRef.off();
+    this.profileRef.off();
   }
 
   handleEditing = (editing, value, value2='') => {
@@ -74,9 +73,9 @@ class Profile extends React.Component {
     }
     this.setState({
       editing: '',
-      value: ''
-    })
-  }
+      value: '',
+    });
+  };
 
   render() {
     console.log(this.state)
@@ -136,10 +135,10 @@ class Profile extends React.Component {
                       value={this.state.value}
                       onChangeText={(value) => this.setState({value})}
                       />
-                  </Item>
-                  :
-                  <Text>{this.state.profile.username} </Text>
-                }
+                    </Item>
+                  ) : (
+                    <Text>{this.state.profile.username} </Text>
+                  )}
                 </Left>
               <Body>
               </Body>
@@ -265,7 +264,7 @@ const styles = StyleSheet.create({
 });
 
 const mapState = state => ({
-  user: state.user
-})
+  user: state.user,
+});
 
-export default connect(mapState)(Profile)
+export default connect(mapState)(Profile);
