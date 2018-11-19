@@ -10,11 +10,10 @@ const firebaseConfig = {
   projectId: 'spl-it-91619',
   storageBucket: 'spl-it-91619.appspot.com',
 };
+export default (!firebase.apps.length
+  ? firebase.initializeApp(firebaseConfig)
+  : firebase.app());
 
-firebase.initializeApp(firebaseConfig);
-
-const makeRef = path => {
+export const makeRef = path => {
   return firebase.database().ref(path);
 };
-
-module.exports = makeRef;

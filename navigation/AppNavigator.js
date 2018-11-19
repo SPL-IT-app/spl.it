@@ -2,8 +2,8 @@ import React from 'react';
 import { createSwitchNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
-import LoginScreen from '../screens/LoginScreen';
-import CameraView from '../components/CameraView';
+
+import { LoginScreen, SignUpScreen } from '../screens';
 
 export default createSwitchNavigator(
   {
@@ -11,7 +11,7 @@ export default createSwitchNavigator(
     // Read more at https://reactnavigation.org/docs/en/auth-flow.html
     Main: MainTabNavigator,
     Login: LoginScreen,
-    Camera: CameraView,
+    SignUp: SignUpScreen,
   },
   {
     initialRouteName: 'Login',

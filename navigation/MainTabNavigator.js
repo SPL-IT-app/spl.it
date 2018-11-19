@@ -4,19 +4,35 @@ import {
   createStackNavigator,
   createBottomTabNavigator,
 } from 'react-navigation';
-import { Footer, FooterTab, Text, Button, Icon } from 'native-base';
+import {
+  Footer,
+  FooterTab,
+  Text,
+  Button,
+  Icon,
+  Content,
+  Container,
+} from 'native-base';
 
-import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import {
+  TabBarIcon,
+  HomeScreen,
+  Profile,
+  More,
+  ListItemConfirmationScreen,
+} from '../screens';
+
+import { MyHeader, CameraView } from '../components';
+
 //import LoginScreen from '../screens/LoginScreen'
 
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
+    Camera: CameraView,
+    ListConfirm: ListItemConfirmationScreen,
   },
-  { headerMode: 'none' }
+  { headerMode: 'none', initialRouteName: 'Home' }
 );
 
 // HomeStack.navigationOptions = {
@@ -38,7 +54,7 @@ const HomeStack = createStackNavigator(
 
 const ProfileStack = createStackNavigator(
   {
-    Links: LinksScreen,
+    Profile: Profile,
   },
   { headerMode: 'none' }
 );
@@ -55,7 +71,7 @@ const ProfileStack = createStackNavigator(
 
 const MoreStack = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    More: More,
   },
   { headerMode: 'none' }
 );

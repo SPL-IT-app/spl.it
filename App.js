@@ -3,7 +3,9 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import Expo, { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import getTheme from './native-base-theme/components';
-import { StyleProvider, Container } from "native-base";
+import { StyleProvider, Container } from "native-base"
+import {Provider} from 'react-redux'
+import  store  from "./store";
 
 
 
@@ -23,13 +25,15 @@ export default class App extends React.Component {
       );
     } else {
       return (
+        <Provider store={store}>
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <StyleProvider style={getTheme()}>
             <AppNavigator />
           </StyleProvider>
         </View>
-      );
+        </Provider>
+      )
     }
   }
 
@@ -38,6 +42,7 @@ export default class App extends React.Component {
       Asset.loadAsync([
         require('./assets/images/robot-dev.png'),
         require('./assets/images/robot-prod.png'),
+        require('./assets/images/logo.png')
       ]),
       Font.loadAsync({
         // This is the font that we are using for our tab bar
