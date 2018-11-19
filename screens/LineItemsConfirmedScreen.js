@@ -56,7 +56,7 @@ export default class LineItemsConfirmedScreen extends React.Component {
     this.state = {
       receiptNameVisible: false,
       addGroupMemberVisible: false,
-      receiptLineItems: {},
+      receiptLineItems: [],
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -64,12 +64,14 @@ export default class LineItemsConfirmedScreen extends React.Component {
     );
   }
 
-  componentDidMount() {
-    this.receiptRef = makeRef(this.receiptRef);
-    this.receiptRef.on('value', snapshot => {
-      this.setState({ receiptLineItems: snapshot.val() });
+  componentDidMount = () => {
+    this.receiptRefUrl = makeRef(this.receiptRef);
+    let lineItems = {};
+    this.receiptRefUrl.on('value', snapshot => {
+      lineItems = snapshot.val();
     });
-  }
+    this.setState({ receiptLineItems: Object.entries(lineItems) });
+  };
 
   componentWillUnmount() {
     this.receiptRef.off();
@@ -85,6 +87,7 @@ export default class LineItemsConfirmedScreen extends React.Component {
       'object entries of state receipt ===>',
       Object.entries(this.state.receiptLineItems)
     );
+    const receipt = this.state.receiptLineItems;
     return (
       <Container>
         <MyHeader title="Confirmation" />
@@ -101,6 +104,19 @@ export default class LineItemsConfirmedScreen extends React.Component {
                 <Text>PRICE</Text>
               </Col>
             </Row>
+            {receipt.map((lineItem, idx) => {
+              if (typeof lineItem[1] === 'object') {
+                return (
+                  <LineItemsConfirmed
+                    key={idx}
+                    dataRef={this.receiptRef}
+                    id={lineItem[0]}
+                    lineItem={lineItem[1]}
+                    idx={idx}
+                  />
+                );
+              }
+            })}
             <Button
               success
               block

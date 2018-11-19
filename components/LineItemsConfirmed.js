@@ -2,7 +2,7 @@ import React from 'react';
 import { Item } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 import numeral from 'numeral';
 
@@ -38,15 +38,39 @@ import { makeRef } from '../server/firebaseconfig';
 import { MyHeader } from './index';
 
 export default class LineItemsConfirmed extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: this.props.dataRef + '/' + this.props.id,
+      lineItem: this.props.lineItem,
+      index: this.props.idx,
+    };
   }
 
   componentDidMount() {
-    this.receiptRef = makeRef(`/events/`);
+    this.lineItemRef = makeRef(this.state.id);
   }
 
   render() {
-    return <MyHeader />;
+    console.log('lineItemRef ===> ', this.lineItemRef);
+    return (
+      <Row style={styles.lineItemRow}>
+        <Col style={styles.quantity}>
+          <Item type="number" style={styles.formInput}>
+            <Text>{this.state.lineItem.quantity}</Text>
+          </Item>
+        </Col>
+        <Col style={styles.description}>
+          <Item style={styles.formInput}>
+            <Text>{this.state.lineItem.name}</Text>
+          </Item>
+        </Col>
+        <Col style={styles.price}>
+          <Item type="number" style={styles.formInput}>
+            <Text>{numeral(this.state.lineItem.price).format('$0,0.00')}</Text>
+          </Item>
+        </Col>
+      </Row>
+    );
   }
 }
