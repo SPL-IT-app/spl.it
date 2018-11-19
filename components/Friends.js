@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { List, ListItem, Thumbnail, Right, Left, Body, Text } from 'native-base'
+import { List, ListItem, Thumbnail, Right, Left, Body, Text, Button, Icon } from 'native-base'
 import { makeRef } from '../server/firebaseconfig'
 
 export class Friends extends Component {
@@ -30,7 +30,7 @@ export class Friends extends Component {
     }
 
     render() {
-        if(!this.props.friends) {
+        if(!this.props.friends || !this.state.friends) {
             return <Text>You don't have any friends!</Text>
         }
         return (
@@ -46,6 +46,16 @@ export class Friends extends Component {
                         <Right />
                     </ListItem>
                 ))}
+                <ListItem>
+                    <Left />
+                    <Body />
+                    <Right flexGrow={5}>
+                        <Button iconLeft  >
+                            <Icon type='MaterialIcons' name='add-circle' />
+                            <Text>Add Friend</Text>
+                        </Button>
+                    </Right>
+                </ListItem>
             </List>
         )
     }
