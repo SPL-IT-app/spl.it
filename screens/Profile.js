@@ -57,7 +57,6 @@ class Profile extends React.Component {
   };
 
   componentDidMount() {
-    console.log("props", this.props);
     this.userRef = makeRef(`/users/${this.props.user.id}`);
     this.profileRef = makeRef(`/profiles/${this.props.user.id}`);
     this.userRef.on("value", snapshot => {
