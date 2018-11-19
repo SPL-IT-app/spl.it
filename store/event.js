@@ -3,7 +3,7 @@ const SET_EVENT = 'SET_EVENT'
 
 // INITIAL STATE
 const defaultState = {
-    selectedEvent: ''
+    eventId: ''
 }
 
 // ACTION CREATOR
@@ -12,7 +12,7 @@ export const setEvent = event => ({ type: SET_EVENT, event })
 // HANDLERS
 const handler = {
     [SET_EVENT]: (state, action) => {
-        return { ...state, selectedEvent: action.event }
+        return { ...state, eventId: action.event }
     }
 }
 

@@ -55,12 +55,12 @@ const styles = StyleSheet.create({
 });
 
 export class ListItemConfirmationScreen extends React.Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       dialogVisible: false,
-      eventName: ''
-    }
+      eventName: '',
+    };
   }
 
   static navigationOptions = {
@@ -71,7 +71,7 @@ export class ListItemConfirmationScreen extends React.Component {
     if (!this.props.event) {
       this.setState({ dialogVisible: true });
     } else {
-      this.handleSubmitEventName()
+      this.handleSubmitEventName();
     }
   };
 
@@ -79,16 +79,16 @@ export class ListItemConfirmationScreen extends React.Component {
     this.setState({ dialogVisible: false });
   };
 
-  handleEventName=(event) => {
-    this.setState({eventName: event})
-  }
+  handleEventName = event => {
+    this.setState({ eventName: event });
+  };
 
   handleSubmitEventName = () => {
     this.setState({ dialogVisible: false });
     const newEvent = {
       date: new Date().toString(),
       title: this.state.eventName,
-      status: false,
+      status: true,
       receipts: {},
       members: { [this.props.user.id]: true },
     };
@@ -122,24 +122,23 @@ export class ListItemConfirmationScreen extends React.Component {
       };
     });
 
+    let eventId = this.props.event
+    console.log("EVENT ID =====>", eventId)
     if (!this.props.event) {
       const eventsRef = makeRef('/events');
       const newEventRef = eventsRef.push();
-      const eventId = newEventRef.key;
+      eventId = newEventRef.key;
       newEventRef.set(newEvent);
-
-      const receiptsRef = makeRef(`/events/${eventId}/receipts`);
-      const newReceiptRef = receiptsRef.push();
-      const receiptID = newReceiptRef.key;
-      newReceiptRef.set(newReceipt);
-
-      const lineItemsRef = makeRef(`/events/${eventId}/receipts/${receiptID}`);
-      lineItems.forEach(item => {
-        lineItemsRef.push().set(item);
-      });
-    } else {
-      console.log('THIS RECEIPT IS BEING ADDED TO AN EXISTING EVENT');
     }
+    const receiptsRef = makeRef(`/events/${eventId}/receipts`);
+    const newReceiptRef = receiptsRef.push();
+    const receiptID = newReceiptRef.key;
+    newReceiptRef.set(newReceipt);
+
+    const lineItemsRef = makeRef(`/events/${eventId}/receipts/${receiptID}`);
+    lineItems.forEach(item => {
+      lineItemsRef.push().set(item);
+    });
   };
 
   render() {
@@ -149,20 +148,18 @@ export class ListItemConfirmationScreen extends React.Component {
         <MyHeader title="Confirmation" />
         <Content style={styles.content}>
           <Grid style={styles.grid}>
-
             <Dialog.Container visible={this.state.dialogVisible}>
               <Dialog.Title>Event Name</Dialog.Title>
               <Dialog.Description>
                 Please enter a name for your event
               </Dialog.Description>
-              <Dialog.Input
-              lable="test"
-              onChangeText={this.handleEventName}
-              />
+              <Dialog.Input lable="test" onChangeText={this.handleEventName} />
               <Dialog.Button label="Cancel" onPress={this.handleCancel} />
-              <Dialog.Button label="Enter" onPress={this.handleSubmitEventName} />
+              <Dialog.Button
+                label="Enter"
+                onPress={this.handleSubmitEventName}
+              />
             </Dialog.Container>
-
 
             <Row style={styles.tableHeader}>
               <Col style={styles.quantity}>
@@ -212,7 +209,7 @@ const mapState = state => {
   return {
     user: state.user.currentUser,
     receipt: state.receipt.receipt,
-    event: state.event.selectedEvent,
+    event: state.event.eventId,
   };
 };
 
