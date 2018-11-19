@@ -104,9 +104,6 @@ class Profile extends React.Component {
   };
 
   render() {
-    console.log(this.state);
-
-    // return <Text>dummy text</Text>
     return (
       <Container>
         <MyHeader title="Profile" />
