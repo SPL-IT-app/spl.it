@@ -3,9 +3,7 @@ import { StyleSheet, Text } from 'react-native';
 import { Container, Content, Button, Icon } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
-import CameraProcessing from '../components/utilities/CameraProcessing';
-import LineItems from '../components/LineItems';
-import MyHeader from '../components/Header';
+import { CameraProcessing, LineItems, MyHeader } from '../components';
 import { addLineItem } from '../store';
 const { makeRef } = require('../server/firebaseconfig');
 import Dialog from 'react-native-dialog';
@@ -122,7 +120,7 @@ export class ListItemConfirmationScreen extends React.Component {
       };
     });
 
-    let eventId = this.props.event
+    let eventId = this.props.event;
     if (!this.props.event) {
       const eventsRef = makeRef('/events');
       const newEventRef = eventsRef.push();
