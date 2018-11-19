@@ -26,21 +26,21 @@ class Profile extends React.Component {
   componentDidMount(){
     this.userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
     this.profileRef = makeRef(`/profiles/${this.props.user.currentUser.id}`)
+    let user
+    const friends = []
+    // let profile
     this.userRef.on('value', (snapshot) => {
-      const user = snapshot.val()
-      const friends = []
+      user = snapshot.val()
       Object.keys(user.friends).forEach(id => {
         const friendRef = makeRef(`/profiles/${id}`)
         friendRef.on('value', snapshot => {
           friends.push(snapshot.val())
         })
       })
-      this.setState({user, friends})
     })
     this.profileRef.on('value', (snapshot) => {
-      this.setState({profile: snapshot.val()})
+      this.setState({profile: snapshot.val(), user, friends})
     })
-    this.friendRef = (id) => makeRef(`/users/${id}`)
   }
 
   componentWillUnmount(){
@@ -85,10 +85,7 @@ class Profile extends React.Component {
       console.log('username',this.state.friends[0].username)
 
     }
-    setTimeout(()=> {
-      console.log(this.state.friends[0].username)
-    }, 3000)
-    console.log(this.state)
+
     return (
       <Container>
         <MyHeader title='Profile' />
