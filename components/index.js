@@ -5,3 +5,4 @@ export { default as LineItems } from './LineItems';
 export { default as StyledText } from './StyledText';
 export { default as TabBarIcon } from './TabBarIcon';
 export { default as Friends } from './Friends';
+export { default as Groups } from './Groups';

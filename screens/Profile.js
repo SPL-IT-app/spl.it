@@ -37,7 +37,7 @@ import {
 import MyHeader from "../components/Header";
 import { connect } from "react-redux";
 import { makeRef } from "../server/firebaseconfig";
-import { Friends } from '../components'
+import { Friends, Groups } from '../components'
 
 class Profile extends React.Component {
   constructor() {
@@ -290,11 +290,7 @@ class Profile extends React.Component {
                   </TabHeading>
                 }
               >
-                {!this.state.groups.length ? (
-                  <Text>You don't have a group yet!</Text>
-                ) : (
-                  <Text>be filled later</Text>
-                )}
+              <Groups groups={this.state.user.groups} />
               </Tab>
               <Tab
                 heading={
