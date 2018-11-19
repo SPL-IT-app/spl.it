@@ -123,7 +123,6 @@ export class ListItemConfirmationScreen extends React.Component {
     });
 
     let eventId = this.props.event
-    console.log("EVENT ID =====>", eventId)
     if (!this.props.event) {
       const eventsRef = makeRef('/events');
       const newEventRef = eventsRef.push();
