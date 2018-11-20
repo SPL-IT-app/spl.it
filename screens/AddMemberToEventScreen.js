@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Container } from 'native-base';
+import { Text } from 'react-native';
 import { makeRef } from '../server/firebaseconfig';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -10,7 +11,7 @@ import {
   MyHeader,
 } from '../components';
 
-export class Friends extends Component {
+export class AddMemberToEventScreen extends Component {
   constructor() {
     super();
     this.state = {
@@ -22,13 +23,15 @@ export class Friends extends Component {
   componentDidMount() {
     // all of user's friends
     this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
-    this.usersFriendsRef.on('value', snapshot => {
+    console.log("REFERENCE =====> ", `/users/${this.props.user}/friends`)
+    this.usersFriendsRef.on("value", snapshot => {
+      console.log("SNAPSHOT ====>", snapshot.val())
       this.friendsArr = Object.keys(snapshot.val());
       this.friendsArr.forEach(friend => {
         this.friendProfileRef = makeRef(`/profiles/${friend}`);
-        this.friendProfileRef.once(value => {
+        this.friendProfileRef.once("value", value => {
           this.setState({
-            friendProfiles: this.state.friendProfiles.push(value),
+            friendProfiles: [...this.state.friendProfiles, value.val()],
           });
         });
       });
@@ -43,25 +46,25 @@ export class Friends extends Component {
       });
       this.eventMembersArr.forEach(member => {
         this.eventMembersArrProfileRef = makeRef(`/profiles/${member}`);
-        this.eventMembersArrProfileRef.once(value => {
+        this.eventMembersArrProfileRef.once("value", value => {
           this.setState({
-            eventMemberProfiles: this.state.eventMemberProfiles.push(value),
+            eventMemberProfiles: [...this.state.eventMemberProfiles, value.val()],
           });
         });
       });
     });
   }
 
-  componentWillUnmount() {
-    this.usersFriendsRef.off();
-    this.eventMembersRef.off();
-  }
+  // componentWillUnmount() {
+  //   this.usersFriendsRef.off();
+  //   this.eventMembersRef.off();
+  // }
 
   render() {
-    const { navigate } = this.props.navigation;
-    if (!this.state.friendProfiles) {
-      return <Text>You don't have any friends!</Text>;
-    }
+    // const { navigate } = this.props.navigation;
+    // if (!this.state.friendProfiles) {
+    //   return <Text>You don't have any friends!</Text>;
+    // }
     return (
       <Container>
         <MyHeader title="Add Members" right={() => <BackButton />} />
@@ -78,4 +81,9 @@ const mapState = state => {
     event: state.event.eventId,
   };
 };
-export default connect(mapState)(AddMemberToEventScreen);
+
+const mapDispatch = dispatch => {
+  return {}
+}
+
+export default connect(mapState, mapDispatch)(AddMemberToEventScreen);

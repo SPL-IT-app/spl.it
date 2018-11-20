@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     color: 'white',
   },
-  confirmItemsButton: {
+  button: {
     marginTop: 10,
     width: '95%',
     alignSelf: 'center',
@@ -117,9 +117,23 @@ export default class LineItemsConfirmedScreen extends React.Component {
               }
             })}
             <Button
+              warning
+              block
+              style={styles.button}
+              onPress={() => {this.props.navigation.navigate('AddMembers')}}
+            >
+              <Icon
+                type="MaterialCommunityIcons"
+                name="account-multiple-plus"
+                style={styles.icon}
+              />
+              <Text style={styles.buttonText}> ADD MEMBERS </Text>
+            </Button>
+            <Button
               success
               block
-              style={styles.confirmItemsButton}
+              disabled
+              style={styles.button}
               // onPress={this.handleConfirmItems}
             >
               <Text style={styles.buttonText}> SAVE RECEIPT </Text>

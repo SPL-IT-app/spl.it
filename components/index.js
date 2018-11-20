@@ -9,3 +9,7 @@ export { default as Groups } from './Groups';
 export { default as LineItemsConfirmed } from './LineItemsConfirmed';
 export { default as BackButton } from './BackButton';
 export { default as DeleteButton } from './DeleteButton'
+export { default as EventMembers } from './EventMembers'
+export { default as EventFriends } from './EventFriends'
+
+
