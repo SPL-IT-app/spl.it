@@ -48,8 +48,7 @@ class Profile extends React.Component {
       editing: "",
       value: "",
       value2: "",
-      friends: [],
-      groups: []
+      friends: []
     };
   }
   static navigationOptions = {
@@ -60,18 +59,29 @@ class Profile extends React.Component {
     this.userRef = makeRef(`/users/${this.props.user.id}`);
     this.profileRef = makeRef(`/profiles/${this.props.user.id}`);
     this.userRef.on("value", snapshot => {
-      user = snapshot.val();
-      this.setState({ user });
+      user = snapshot.val()
+      this.setState({ user })
     });
     this.profileRef.on("value", snapshot => {
-      profile = snapshot.val();
-      this.setState({ profile });
+      profile = snapshot.val()
+      this.setState({ profile })
     });
+    this.friendsRef = makeRef(`/users/${this.props.user.id}/friends`)
+    this.friendsRef.on('child_added', snapshot => {
+      makeRef(`/profiles/${snapshot.key}`).once('value', snapshot => {
+        this.setState({friends: [...this.state.friends, snapshot.val()]})
+      })
+      // this.setState({friends: Object.assign(this.state.friends, {[snapshot.key]:true}) })
+    })
+    // this.friendsRef.on('value', snapshot => {
+    //   this.setState({friends: snapshot.val()})
+    // })
   }
 
   componentWillUnmount() {
-    this.userRef.off();
-    this.profileRef.off();
+    this.userRef.off()
+    this.profileRef.off()
+    this.friendsRef.off()
   }
 
   handleEditing = (editing, value, value2 = "") => {
@@ -300,7 +310,7 @@ class Profile extends React.Component {
                   </TabHeading>
                 }
               >
-                <Friends friends={this.state.user.friends} />
+                <Friends friends={this.state.friends} />
               </Tab>
             </Tabs>
 
