@@ -12,43 +12,34 @@ import {
 } from 'native-base';
 import { StyleSheet } from 'react-native';
 import CheckBox from 'react-native-checkbox-heaven';
-import { getTimeFieldValues } from 'uuid-js';
 import { makeRef } from '../server/firebaseconfig';
-
 
 const styles = StyleSheet.create({
   listItem: {
     display: 'flex',
     alignItems: 'flex-end',
   },
-  checkbox: {
-    paddingBottom: 0,
-    margin: 0,
-  },
   right: {
-    display:'flex',
-    justifyContent: 'flex-end'
-  }
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
 });
 
 export class EventMembers extends Component {
-
   componentDidMount() {
     this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
   }
   handleSelect = (val, id) => {
-    this.eventRef = makeRef(`/events/${this.props.event}/members`)
-    this.eventMemberRef = makeRef(`/events/${this.props.event}/members/${id}`)
-    if(val === true) {
+    this.eventRef = makeRef(`/events/${this.props.event}/members`);
+    this.eventMemberRef = makeRef(`/events/${this.props.event}/members/${id}`);
+    if (val === true) {
       this.eventRef.update({
-        [id]: true
-      })
+        [id]: true,
+      });
     } else if (val === false) {
-      this.eventMemberRef.remove()
+      this.eventMemberRef.remove();
     }
-    console.log("FRIEND SELECTED", val, "USER ID", id)
-
-  }
+  };
 
   render() {
     const { friends } = this.props;
@@ -56,7 +47,11 @@ export class EventMembers extends Component {
       <Container>
         <List>
           {friends.map(friend => (
-            <ListItem style={styles.listItem} avatar key={friend.profile.username}>
+            <ListItem
+              style={styles.listItem}
+              avatar
+              key={friend.profile.username}
+            >
               <Left>
                 <Thumbnail source={{ uri: friend.profile.imageUrl }} />
               </Left>
@@ -65,9 +60,9 @@ export class EventMembers extends Component {
               </Body>
               <Right style={styles.right}>
                 <CheckBox
-                  onChange={(val) => this.handleSelect(val, friend.id)}
+                  onChange={val => this.handleSelect(val, friend.id)}
                   checked={false}
-                  iconName='matCircleMix'
+                  iconName="matCircleMix"
                 />
               </Right>
             </ListItem>
@@ -80,7 +75,7 @@ export class EventMembers extends Component {
 
 const mapState = state => {
   return {
-    event: state.event.eventId
+    event: state.event.eventId,
   };
 };
 
