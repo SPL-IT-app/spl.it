@@ -57,7 +57,7 @@ class LoginScreen extends React.Component {
     };
   }
 
-  loginUser = (email, password) => {
+  loginUser =  (email, password) => {
     const { getUser } = this.props;
     try {
       if (this.state.password.length < 6) {
@@ -68,9 +68,11 @@ class LoginScreen extends React.Component {
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(user => {
-            getUser({id: user.user.uid})
+          getUser({ id: user.user.uid })
         })
-      this.props.navigation.navigate('Main');
+        .finally(() => {
+          this.props.navigation.navigate('Main');
+        })
     } catch (err) {
       console.error(err);
     }
