@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Button, Icon } from 'native-base';
 import { StyleSheet } from 'react-native';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   button: {
@@ -15,7 +16,7 @@ const BackButton = props => {
     <Button
       style={styles.button}
       onPress={() => {
-        props.navigation.navigate('Home');
+        props.navigation.goBack();
       }}
     >
       <Icon
@@ -27,4 +28,4 @@ const BackButton = props => {
   );
 };
 
-export default BackButton;
+export default withNavigation(BackButton);

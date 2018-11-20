@@ -9,7 +9,7 @@ import {
   MyHeader,
   BackButton,
 } from '../components';
-import { addLineItem } from '../store';
+import { addLineItem, setEvent } from '../store';
 const { makeRef } = require('../server/firebaseconfig');
 import Dialog from 'react-native-dialog';
 
@@ -146,13 +146,18 @@ export class ListItemConfirmationScreen extends React.Component {
     lineItems.forEach(item => {
       lineItemsRef.push().set(item);
     });
+
+    this.props.setEvent(eventId);
   };
 
   render() {
     const { receipt } = this.props;
     return receipt.length ? (
       <Container>
-        <MyHeader title="Confirmation" right={() => <BackButton navigation={this.props.navigation}/>} />
+        <MyHeader
+          title="Confirmation"
+          right={() => <BackButton navigation={this.props.navigation} />}
+        />
         <Content style={styles.content}>
           <Grid style={styles.grid}>
             <Dialog.Container visible={this.state.dialogVisible}>
@@ -229,6 +234,9 @@ const mapDispatch = dispatch => {
   return {
     addLineItem: () => {
       dispatch(addLineItem());
+    },
+    setEvent: id => {
+      dispatch(setEvent(id));
     },
   };
 };
