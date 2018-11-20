@@ -48,9 +48,18 @@ class AllEvents extends React.Component {
         })
     }
 
+    handleEventAdd = () => {
+
+    }
+
+    handleEventView = () => {
+
+    }
+
     render() {
         const { events } = this.state
         if (events.length === 0) return <Container />
+        console.log(events, 'she\'s events')
 
         return (
             <Container >
@@ -64,7 +73,6 @@ class AllEvents extends React.Component {
                                 <Button block style={styles.eventButton} key={parseInt(idx, 2)}>
                                     <Text>{event.title}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
                                 </Button>
-
                             )
                         })
                     }
