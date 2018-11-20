@@ -3,7 +3,12 @@ import { StyleSheet, Text } from 'react-native';
 import { Container, Content, Button, Icon } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
-import { LineItemsConfirmed, MyHeader, DeleteButton } from '../components';
+import {
+  LineItemsConfirmed,
+  MyHeader,
+  DeleteButton,
+  EventMembers,
+} from '../components';
 const { makeRef } = require('../server/firebaseconfig');
 
 const styles = StyleSheet.create({
@@ -50,13 +55,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class LineItemsConfirmedScreen extends React.Component {
+export class LineItemsConfirmedScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       receiptNameVisible: false,
       addGroupMemberVisible: false,
       receiptLineItems: [],
+      eventMemberProfiles: [],
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -71,6 +77,28 @@ export default class LineItemsConfirmedScreen extends React.Component {
       lineItems = snapshot.val();
     });
     this.setState({ receiptLineItems: Object.entries(lineItems) });
+
+    this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
+    this.eventMembersRef.on('child_added', snapshot => {
+      const profileRef = makeRef(`/profiles/${snapshot.key}`);
+      profileRef.once('value', profileSnapshot =>
+        this.setState({
+          eventMemberProfiles: [
+            ...this.state.eventMemberProfiles,
+            profileSnapshot.val(),
+          ],
+        })
+      );
+    });
+    this.eventMembersRef.on('child_removed', snapshot => {
+      const profileRef = makeRef(`/profiles/${snapshot.key}`);
+      profileRef.once('value', profileSnapshot => {
+        const newArr = [...this.state.eventMemberProfiles].filter(member => {
+          return member.username !== profileSnapshot.val().username;
+        });
+        this.setState({ eventMemberProfiles: newArr });
+      });
+    });
   };
 
   componentWillUnmount() {
@@ -116,11 +144,14 @@ export default class LineItemsConfirmedScreen extends React.Component {
                 );
               }
             })}
+            <EventMembers members={this.state.eventMemberProfiles} />
             <Button
               warning
               block
               style={styles.button}
-              onPress={() => {this.props.navigation.navigate('AddMembers')}}
+              onPress={() => {
+                this.props.navigation.navigate('AddMembers');
+              }}
             >
               <Icon
                 type="MaterialCommunityIcons"
@@ -145,3 +176,12 @@ export default class LineItemsConfirmedScreen extends React.Component {
     );
   }
 }
+
+const mapState = state => {
+  return {
+    user: state.user.currentUser.id,
+    event: state.event.eventId,
+  };
+};
+
+export default connect(mapState)(LineItemsConfirmedScreen);

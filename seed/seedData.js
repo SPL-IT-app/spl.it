@@ -1,3 +1,5 @@
+import { randomColor } from 'randomcolor';
+
 const users = [
   {
     Ul5MOGufA2eYLCMq0CDD8Juojz92: {
@@ -16,7 +18,7 @@ const users = [
       lastName: 'codyman',
       email: 'pug@email.com',
       phone: '333-333-3333',
-      friends: {Ul5MOGufA2eYLCMq0CDD8Juojz92: true},
+      friends: { Ul5MOGufA2eYLCMq0CDD8Juojz92: true },
       groups: {},
       events: {},
     },
@@ -39,12 +41,20 @@ const profiles = [
     Ul5MOGufA2eYLCMq0CDD8Juojz92: {
       username: 'codyPug',
       imageUrl: 'https://bit.ly/2q1fzuM',
+      color: randomColor({
+        luminosity: 'bright',
+        hue: 'random',
+      }).toString(),
     },
   },
   {
     QUYamusOQnMkQxJaxZVetUgY66D3: {
       username: 'pugCody',
       imageUrl: 'https://bit.ly/2A52oxA',
+      color: randomColor({
+        luminosity: 'bright',
+        hue: 'random',
+      }).toString(),
     },
   },
   {
@@ -52,6 +62,10 @@ const profiles = [
       username: 'memememe',
       imageUrl:
         'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+      color: randomColor({
+        luminosity: 'bright',
+        hue: 'random',
+      }).toString(),
     },
   },
 ];

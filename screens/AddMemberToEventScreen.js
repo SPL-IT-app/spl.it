@@ -45,21 +45,28 @@ export class AddMemberToEventScreen extends Component {
 
 
     // all of event's members
-    // this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
-    // this.eventMembersRef.on('value', snapshot => {
-    //   this.eventMembersArr = Object.entries(snapshot.val());
-    //   this.friendsArr = this.friendsArr.filter(friend => {
-    //     return !this.eventMembersArr.includes(friend);
-    //   });
-    //   this.eventMembersArr.forEach(member => {
-    //     this.eventMembersArrProfileRef = makeRef(`/profiles/${member}`);
-    //     this.eventMembersArrProfileRef.once("value", value => {
-    //       this.setState({
-    //         eventMemberProfiles: [...this.state.eventMemberProfiles, value.val()],
-    //       });
-    //     });
-    //   });
-    // });
+
+    this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
+    this.eventMembersRef.on('child_added', snapshot => {
+      const profileRef = makeRef(`/profiles/${snapshot.key}`);
+      profileRef.once('value', profileSnapshot =>
+        this.setState({
+          eventMemberProfiles: [
+            ...this.state.eventMemberProfiles,
+            profileSnapshot.val(),
+          ],
+        })
+      );
+    });
+    this.eventMembersRef.on('child_removed', snapshot => {
+      const profileRef = makeRef(`/profiles/${snapshot.key}`);
+      profileRef.once('value', profileSnapshot => {
+        const newArr = [...this.state.eventMemberProfiles].filter(member => {
+          return member.username !== profileSnapshot.val().username;
+        });
+        this.setState({ eventMemberProfiles: newArr });
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -68,15 +75,16 @@ export class AddMemberToEventScreen extends Component {
   }
 
   render() {
-    // console.log("FRIEND PROFILE ====> ", this.state.friendProfiles)
-    const { navigate } = this.props.navigation;
-    if (!this.state.friendProfiles) {
-      return <Text>You don't have any friends!</Text>;
-    }
+
+    console.log('state====> ', this.state);
+    // const { navigate } = this.props.navigation;
+    // if (!this.state.friendProfiles) {
+    //   return <Text>You don't have any friends!</Text>;
+    // }
     return (
       <Container>
         <MyHeader title="Add Members" right={() => <BackButton />} />
-        <EventMembers />
+        <EventMembers members={this.state.eventMemberProfiles} />
         <EventFriends friends={this.state.friendProfiles} />
       </Container>
     );
@@ -91,7 +99,10 @@ const mapState = state => {
 };
 
 const mapDispatch = dispatch => {
-  return {}
-}
+  return {};
+};
 
-export default connect(mapState, mapDispatch)(AddMemberToEventScreen);
+export default connect(
+  mapState,
+  mapDispatch
+)(AddMemberToEventScreen);
