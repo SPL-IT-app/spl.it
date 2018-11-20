@@ -20,8 +20,7 @@ export class AddFriend extends Component {
     handleChange = event => {
         this.setState({search: event.value})
         this.profileRef.orderByChild('username').startAt(this.state.value).once('child_added', snapshot => {
-            console.log(snapshot.val())
-            // this.setState({results: snapshot.val()})
+            this.setState({results: snapshot.val()})
         })
     }
 
@@ -37,8 +36,8 @@ export class AddFriend extends Component {
                     </Item>
                     <List>
                         {this.state.results ?
-                        this.state.results.map(result => (
-                            <ListItem>{result.username}</ListItem>
+                        Object.entries(this.state.results).map(result => (
+                            <ListItem>{result[1].username}</ListItem>
                         ))
                         : <Text>No Results</Text>
                     }
