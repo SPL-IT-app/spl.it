@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Button, Icon } from 'native-base';
 import { StyleSheet } from 'react-native';
+import { withNavigation } from 'react-navigation';
 
 const { makeRef } = require('../server/firebaseconfig');
 
@@ -26,7 +27,7 @@ const DeleteButton = props => {
       style={styles.button}
       onPress={() => {
         deleteData(props.url);
-        props.navigation.navigate('Home');
+        props.navigation.goBack();
       }}
     >
       <Icon
@@ -38,4 +39,4 @@ const DeleteButton = props => {
   );
 };
 
-export default DeleteButton;
+export default withNavigation(DeleteButton);
