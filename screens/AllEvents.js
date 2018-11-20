@@ -52,14 +52,25 @@ class AllEvents extends React.Component {
         })
     }
 
-    handleEventAdd = () => {
+    handleEventClick = async (id) => {
+        const { navigation } = this.props
 
+        await setEvent(id)
+        navigation.navigate('SingleEvent', {
+            id
+        })
+    }
+
+    handleEventAdd = async () => {
+        const { navigation } = this.props
+
+        await setEvent('')
+        navigation.navigate('Camera')
     }
 
 
     render() {
         const { events } = this.state
-        const { navigation } = this.props
         if (events.length === 0) return <Container />
 
         return (
@@ -75,9 +86,7 @@ class AllEvents extends React.Component {
                                     block
                                     style={styles.eventButton}
                                     key={parseInt(idx, 2)}
-                                    onPress={() => navigation.navigate('SingleEvent', {
-                                        id: this.eventId[idx]
-                                    })}
+                                    onPress={() => this.handleEventClick(this.eventId[idx])}
                                 >
                                     <Text>{event.title}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
                                 </Button>
@@ -88,7 +97,7 @@ class AllEvents extends React.Component {
                 <Container >
                     <Fab
                         position='bottomRight'
-                        onPress={() => navigation.navigate('Camera')}
+                        onPress={() => this.handleEventAdd()}
                     >
                         <Icon type="MaterialCommunityIcons" name="plus" />
                     </Fab>

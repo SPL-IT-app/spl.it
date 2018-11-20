@@ -1,26 +1,26 @@
 // ACTION TYPE
-const SET_EVENT = 'SET_EVENT'
+const SET_EVENT = 'SET_EVENT';
 
 // INITIAL STATE
 const defaultState = {
-    eventId: ''
-}
+  eventId: '',
+};
 
 // ACTION CREATOR
-export const setEvent = event => ({ type: SET_EVENT, event })
+export const setEvent = eventId => ({ type: SET_EVENT, eventId });
 
 // HANDLERS
 const handler = {
-    [SET_EVENT]: (state, action) => {
-        return { ...state, eventId: action.event }
-    }
-}
+  [SET_EVENT]: (state, action) => {
+    return { ...state, eventId: action.eventId };
+  },
+};
 
 // REDUCER
-export default function (state = defaultState, action) {
-    if (!handler.hasOwnProperty(action.type)) {
-        return state
-    } else {
-        return handler[action.type](state, action)
-    }
+export default function(state = defaultState, action) {
+  if (!handler.hasOwnProperty(action.type)) {
+    return state;
+  } else {
+    return handler[action.type](state, action);
+  }
 }
