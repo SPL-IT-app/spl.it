@@ -23,13 +23,13 @@ export class AddMemberToEventScreen extends Component {
   componentDidMount() {
     // all of user's friends
     this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
-    console.log("REFERENCE =====> ", `/users/${this.props.user}/friends`)
-    this.usersFriendsRef.on("value", snapshot => {
-      console.log("SNAPSHOT ====>", snapshot.val())
+    // console.log('REFERENCE =====> ', `/users/${this.props.user}/friends`);
+    this.usersFriendsRef.on('value', snapshot => {
+      // console.log('SNAPSHOT ====>', snapshot.val());
       this.friendsArr = Object.keys(snapshot.val());
       this.friendsArr.forEach(friend => {
         this.friendProfileRef = makeRef(`/profiles/${friend}`);
-        this.friendProfileRef.once("value", value => {
+        this.friendProfileRef.once('value', value => {
           this.setState({
             friendProfiles: [...this.state.friendProfiles, value.val()],
           });
@@ -39,28 +39,35 @@ export class AddMemberToEventScreen extends Component {
 
     // all of event's members
     this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
-    this.eventMembersRef.on('value', snapshot => {
-      this.eventMembersArr = Object.entries(snapshot.val());
-      this.friendsArr = this.friendsArr.filter(friend => {
-        return !this.eventMembersArr.includes(friend);
-      });
-      this.eventMembersArr.forEach(member => {
-        this.eventMembersArrProfileRef = makeRef(`/profiles/${member}`);
-        this.eventMembersArrProfileRef.once("value", value => {
-          this.setState({
-            eventMemberProfiles: [...this.state.eventMemberProfiles, value.val()],
-          });
+    this.eventMembersRef.on('child_added', snapshot => {
+      const profileRef = makeRef(`/profiles/${snapshot.key}`);
+      profileRef.once('value', profileSnapshot =>
+        this.setState({
+          eventMemberProfiles: [
+            ...this.state.eventMemberProfiles,
+            profileSnapshot.val(),
+          ],
+        })
+      );
+    });
+    this.eventMembersRef.on('child_removed', snapshot => {
+      const profileRef = makeRef(`/profiles/${snapshot.key}`);
+      profileRef.once('value', profileSnapshot => {
+        const newArr = [...this.state.eventMemberProfiles].filter(member => {
+          return member.username !== profileSnapshot.val().username;
         });
+        this.setState({ eventMemberProfiles: newArr });
       });
     });
   }
 
-  // componentWillUnmount() {
-  //   this.usersFriendsRef.off();
-  //   this.eventMembersRef.off();
-  // }
+  componentWillUnmount() {
+    this.usersFriendsRef.off();
+    this.eventMembersRef.off();
+  }
 
   render() {
+    console.log('state====> ', this.state);
     // const { navigate } = this.props.navigation;
     // if (!this.state.friendProfiles) {
     //   return <Text>You don't have any friends!</Text>;
@@ -68,7 +75,7 @@ export class AddMemberToEventScreen extends Component {
     return (
       <Container>
         <MyHeader title="Add Members" right={() => <BackButton />} />
-        <EventMembers />
+        <EventMembers members={this.state.eventMemberProfiles} />
         <EventFriends />
       </Container>
     );
@@ -83,7 +90,10 @@ const mapState = state => {
 };
 
 const mapDispatch = dispatch => {
-  return {}
-}
+  return {};
+};
 
-export default connect(mapState, mapDispatch)(AddMemberToEventScreen);
+export default connect(
+  mapState,
+  mapDispatch
+)(AddMemberToEventScreen);
