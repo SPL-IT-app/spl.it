@@ -64,7 +64,7 @@ export class Friends extends Component {
             <Left />
             <Body />
             <Right flexGrow={5}>
-              <Button iconLeft onPress={() => navigate("AddFriend")}>
+              <Button iconLeft onPress={() => navigate("AddFriend", {friends: this.state.friends})}>
                 <Icon type="MaterialIcons" name="add-circle" />
                 <Text>Add Friend</Text>
               </Button>
