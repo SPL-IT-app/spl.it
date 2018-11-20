@@ -7,6 +7,10 @@ import { StyleSheet } from 'react-native';
 import { randomColor } from 'randomcolor';
 
 const styles = StyleSheet.create({
+  view: {
+    height: 115,
+    padding: 10,
+  },
   item: {
     padding: 10,
   },
@@ -18,14 +22,10 @@ const styles = StyleSheet.create({
 
 export class EventMembers extends Component {
   render() {
-    console.log('members in eventmembers component ====> ', this.props.members);
     return (
-      <Container>
+      <Container style={styles.view}>
         <ScrollView horizontal={true}>
           {this.props.members.map((member, idx) => {
-            // let memberRef = makeRef(
-            //   `events/${this.props.event}/members/${member}`
-            // );
             return (
               <Content key={idx} style={styles.item}>
                 <Thumbnail
