@@ -3,6 +3,7 @@ import { Text, Container, Content, Item, Icon, Input, List, ListItem, Left, Thum
 import { MyHeader } from '../components';
 import { makeRef } from '../server/firebaseconfig'
 import { Alert } from 'react-native'
+import { connect } from 'react-redux'
 
 export class AddFriend extends Component {
 
@@ -19,6 +20,7 @@ export class AddFriend extends Component {
         this.profileRef = makeRef('/profiles')
         const friends = this.props.navigation.getParam('friends').map(friend => friend.username)
         this.setState({friends})
+        this.friendsRef = makeRef(`/users/${this.props.id}/friends`)
     }
 
     handleChange = value => {
@@ -26,6 +28,11 @@ export class AddFriend extends Component {
         this.profileRef.orderByChild('username').startAt(value).endAt(value + "\uf8ff").once('value', snapshot => {
             this.setState({results: snapshot.val()})
         })
+    }
+
+    addFriend = (id, username) => {
+        this.friendsRef.update({[id]: true})
+        this.setState({friends: [...this.state.friends, username]})
     }
 
     render() {
@@ -48,7 +55,7 @@ export class AddFriend extends Component {
                                 </Left>
                                 <Body />
                                 <Right flexGrow={5}>
-                                    <Button icon transparent>
+                                    <Button icon transparent onPress={()=>this.addFriend(result[0], result[1].username)}>
                                         {this.state.friends.indexOf(result[1].username) >= 0
                                             ?
                                             <Icon type='MaterialCommunityIcons' name='check' style={{color: '#159192'}}  />
@@ -69,4 +76,8 @@ export class AddFriend extends Component {
     }
 }
 
-export default AddFriend
+const mapState = state => ({
+    id: state.user.currentUser.id
+})
+
+export default connect(mapState)(AddFriend)
