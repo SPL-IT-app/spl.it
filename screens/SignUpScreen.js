@@ -11,11 +11,13 @@ import {
   Container,
 } from 'native-base';
 
+import { randomColor } from 'randomcolor';
+
 import {
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Alert
+  Alert,
 } from 'react-native';
 
 import firebase from '../server/firebaseconfig';
@@ -53,8 +55,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
 });
-
-
 
 class SignUpScreen extends React.Component {
   constructor(props) {
@@ -99,11 +99,17 @@ class SignUpScreen extends React.Component {
                 [user.user.uid]: {
                   imageUrl: 'https://bit.ly/2qQRtn6',
                   username,
+                  color: randomColor({
+                    luminosity: 'bright',
+                    hue: 'random',
+                  }).toString(),
                 },
               });
             getUser({ id: user.user.uid });
+          })
+          .finally(() => {
+            this.props.navigation.navigate('Main');
           });
-        this.props.navigation.navigate('Main');
       }
     } catch (err) {
       console.error(err);

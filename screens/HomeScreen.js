@@ -121,7 +121,7 @@ export class HomeScreen extends React.Component {
 }
 const mapState = state => {
   return { user: state.user.currentUser };
-}
+};
 
 const mapDispatch = dispatch => {
   return {
@@ -134,4 +134,7 @@ const mapDispatch = dispatch => {
   };
 };
 
-export default connect(mapState, mapDispatch)(HomeScreen);
+export default connect(
+  mapState,
+  mapDispatch
+)(HomeScreen);
