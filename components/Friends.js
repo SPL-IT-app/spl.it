@@ -11,22 +11,14 @@ export class Friends extends Component {
     }
 
     componentDidMount(){
-        this.refs = []
         if(this.props.friends){
             Object.keys(this.props.friends).forEach(id => {
                 const friendRef = makeRef(`/profiles/${id}`)
-                this.refs.push(friendRef)
-                friendRef.on('value', snapshot => {
+                friendRef.once('value', snapshot => {
                     this.setState({friends: [...this.state.friends, snapshot.val()]})
                 })
             })
         }
-    }
-
-    componentWillUnmount(){
-        this.refs.forEach(ref => {
-            ref.off()
-        })
     }
 
     render() {

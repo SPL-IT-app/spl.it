@@ -11,22 +11,14 @@ export class Groups extends Component {
     }
 
     componentDidMount(){
-        this.refs = []
         if(this.props.groups){
             Object.keys(this.props.groups).forEach(id => {
                 const groupRef = makeRef(`groups/${id}`)
-                this.refs.push(groupRef)
-                groupRef.on('value', snapshot => {
+                groupRef.once('value', snapshot => {
                     this.setState({groups: [...this.state.groups, snapshot.val()]})
                 })
             })
         }
-    }
-
-    componentWillUnmount(){
-        this.refs.forEach(ref => {
-            ref.off()
-        })
     }
 
     render() {
