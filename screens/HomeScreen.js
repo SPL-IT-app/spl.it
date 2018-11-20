@@ -121,6 +121,17 @@ export class HomeScreen extends React.Component {
 }
 const mapState = state => {
   return { user: state.user.currentUser };
+}
+
+const mapDispatch = dispatch => {
+  return {
+    setReceipt: receiptObj => {
+      dispatch(setReceipt(receiptObj));
+    },
+    setEvent: event => {
+      dispatch(setEvent(event));
+    },
+  };
 };
 
-export default connect(mapState)(HomeScreen);
+export default connect(mapState, mapDispatch)(HomeScreen);
