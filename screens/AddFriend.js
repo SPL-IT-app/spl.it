@@ -14,13 +14,14 @@ export class AddFriend extends Component {
     }
 
     componentDidMount(){
-        this.profileRef = makeRef('/profile')
+        this.profileRef = makeRef('/profiles')
     }
 
     handleChange = event => {
         this.setState({search: event.value})
         this.profileRef.orderByChild('username').startAt(this.state.value).once('child_added', snapshot => {
-            this.setState({results: snapshot.val()})
+            console.log(snapshot.val())
+            // this.setState({results: snapshot.val()})
         })
     }
 
