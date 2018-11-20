@@ -3,7 +3,8 @@ import { StyleSheet, Text } from 'react-native';
 import { Button, Icon, Container, Content, List, ListItem, View, Fab } from 'native-base';
 import { setReceipt, setEvent } from '../store'
 import { connect } from 'react-redux';
-import { makeRef } from "../server/firebaseconfig";
+import { makeRef } from "../server/firebaseconfig"
+import { withNavigation } from "react-navigation";
 
 const styles = StyleSheet.create({
     listItemTitle: {
@@ -27,13 +28,16 @@ class AllEvents extends React.Component {
     }
 
     componentDidMount() {
+        const { events } = this.props
         this.refs = []
+        this.eventId = []
 
-        Object.keys(this.props.events).forEach(id => {
+        Object.keys(events).forEach(id => {
             const eventsRef = makeRef(`/events/${id}`)
             const { events } = this.state
 
             this.refs.push(eventsRef)
+            this.eventId.push(id)
             eventsRef.on('value', snapshot => {
                 this.setState({
                     events: [...events, snapshot.val()]
@@ -52,14 +56,11 @@ class AllEvents extends React.Component {
 
     }
 
-    handleEventView = () => {
-
-    }
 
     render() {
         const { events } = this.state
+        const { navigation } = this.props
         if (events.length === 0) return <Container />
-        console.log(events, 'she\'s events')
 
         return (
             <Container >
@@ -70,7 +71,14 @@ class AllEvents extends React.Component {
                     {
                         events.map((event, idx) => {
                             return (
-                                <Button block style={styles.eventButton} key={parseInt(idx, 2)}>
+                                <Button
+                                    block
+                                    style={styles.eventButton}
+                                    key={parseInt(idx, 2)}
+                                    onPress={() => navigation.navigate('SingleEvent', {
+                                        id: this.eventId[idx]
+                                    })}
+                                >
                                     <Text>{event.title}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
                                 </Button>
                             )
@@ -80,6 +88,7 @@ class AllEvents extends React.Component {
                 <Container >
                     <Fab
                         position='bottomRight'
+                        onPress={() => navigation.navigate('Camera')}
                     >
                         <Icon type="MaterialCommunityIcons" name="plus" />
                     </Fab>
@@ -89,4 +98,4 @@ class AllEvents extends React.Component {
     }
 }
 
-export default connect(null, { setEvent })(AllEvents)
+export default withNavigation(connect(null, { setEvent })(AllEvents))

@@ -3,9 +3,9 @@ import { StyleSheet, Text } from 'react-native';
 import { Button, Icon, Container } from 'native-base';
 import MyHeader from '../components/Header';
 import { connect } from 'react-redux';
-import { setReceipt, setEvent } from '../store';
 import AllEvents from './AllEvents';
 import { makeRef } from '../server/firebaseconfig';
+import { setEvent, setReceipt } from "../store/index";
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +34,7 @@ export class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       user: {}
     }
   }
@@ -47,12 +48,12 @@ export class HomeScreen extends React.Component {
       let currentUser = snapshot.val()
       this.setState({ user: currentUser })
     })
-
   }
 
   componentWillUnmount() {
     this.userRef.off()
   }
+
   static navigationOptions = {
     header: null,
   }
@@ -119,10 +120,23 @@ export class HomeScreen extends React.Component {
     )
   }
 }
+
 const mapState = state => {
   return { user: state.user.currentUser }
 }
 
+const mapDispatch = dispatch => {
+  return {
+    setReceipt: receiptObj => {
+      dispatch(setReceipt(receiptObj));
+    },
+    setEvent: event => {
+      dispatch(setEvent(event));
+    },
+  };
+ };
+
 export default connect(
   mapState,
+  mapDispatch
 )(HomeScreen);

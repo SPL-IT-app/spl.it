@@ -10,3 +10,4 @@ export {
   default as LineItemsConfirmedScreen,
 } from './LineItemsConfirmedScreen';
 export { default as AddFriend } from './AddFriend'
+export { default as SingleEvent } from './SingleEvent'
