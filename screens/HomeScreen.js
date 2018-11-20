@@ -40,14 +40,14 @@ export class HomeScreen extends React.Component {
 
   componentDidMount() {
     const { user } = this.props
-    
+
       this.userRef = makeRef(`/users/${user.id}`)
 
       this.userRef.on('value', (snapshot) => {
         let currentUser = snapshot.val()
         this.setState({ user: currentUser })
       })
-    
+
   }
 
   componentWillUnmount() {
@@ -114,7 +114,7 @@ export class HomeScreen extends React.Component {
             </Button>
             {/* END OF TEMPORARY BUTTON WITH HARD-CODED RECEIPT */}
           </Container>
-        )}
+        }
       </Container>
     );
   }

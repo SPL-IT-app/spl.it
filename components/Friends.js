@@ -77,7 +77,7 @@ export class Friends extends Component {
             </Fab>
         </Container>
       </Container>
-    );
+    )
   }
 }
 
