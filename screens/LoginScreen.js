@@ -68,16 +68,7 @@ class LoginScreen extends React.Component {
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(user => {
-          const userRef = makeRef(`/users/${user.user.uid}`)
-          const profileRef = makeRef(`/profiles/${user.user.uid}`)
-
-          userRef.on('value', (snapshot) => {
-            let currentUser = snapshot.val()
-            profileRef.on('value', (snap) => {
-              let profile = snap.val()
-                getUser({id: user.user.uid, user: currentUser, profile})
-            })
-          })
+            getUser({id: user.user.uid})
         })
       this.props.navigation.navigate('Main');
     } catch (err) {

@@ -9,3 +9,4 @@ export { default as More } from './SettingsScreen';
 export {
   default as LineItemsConfirmedScreen,
 } from './LineItemsConfirmedScreen';
+export { default as AddFriend } from './AddFriend'
