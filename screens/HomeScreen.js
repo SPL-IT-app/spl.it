@@ -34,44 +34,55 @@ export class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: [],
-      user: {},
-    };
+      user: {}
+    }
+  }
+
+  componentDidMount() {
+    const { user } = this.props
+    
+      this.userRef = makeRef(`/users/${user.id}`)
+
+      this.userRef.on('value', (snapshot) => {
+        let currentUser = snapshot.val()
+        this.setState({ user: currentUser })
+      })
+    
+  }
+
+  componentWillUnmount() {
+    this.userRef.off()
   }
   static navigationOptions = {
     header: null,
-  };
-
-  componentDidMount() {
-    //this.userRef = makeRef(`/users/${this.props.user.currentUser.id}`)
-    //this.setState({user: this.userRef})
   }
 
   render() {
+    const { events } = this.state.user
+
     return (
       <Container>
         <MyHeader title="Events" />
-        {this.props.events ? (
-          <AllEvents />
-        ) : (
-          <Container style={styles.container}>
-            <Button
-              rounded
-              info
-              large
-              style={styles.button}
-              onPress={async () => {
-                await this.props.setEvent('');
-                this.props.navigation.navigate('Camera');
-              }}
-            >
-              <Text>Add Receipt</Text>
-              <Icon
-                type="MaterialCommunityIcons"
-                name="camera"
-                style={styles.icon}
-              />
-            </Button>
+        {
+          events ? <AllEvents events={this.state.user.events} /> :
+            <Container style={styles.container}>
+              <Button
+                rounded
+                info
+                large
+                style={styles.button}
+                onPress={async () => {
+                  await this.props.setEvent('');
+                  this.props.navigation.navigate('Camera');
+                }}
+              >
+                <Text>Add Receipt</Text>
+                <Icon
+                  type="MaterialCommunityIcons"
+                  name="camera"
+                  style={styles.icon}
+                />
+              </Button>
 
             {/* TEMPORARY BUTTON WITH HARD-CODED RECEIPT */}
             <Button
@@ -109,20 +120,10 @@ export class HomeScreen extends React.Component {
   }
 }
 
-const mapDispatch = dispatch => {
-  return {
-    setReceipt: receiptObj => {
-      dispatch(setReceipt(receiptObj));
-    },
-    setEvent: event => {
-      dispatch(setEvent(event));
-    },
-  };
-};
-
-const mapState = state => {};
+const mapState = state => {
+  return { user: state.user.currentUser }
+}
 
 export default connect(
-  null,
-  mapDispatch
+  mapState,
 )(HomeScreen);

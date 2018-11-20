@@ -68,9 +68,11 @@ class LoginScreen extends React.Component {
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(user => {
-            getUser({id: user.user.uid})
+          getUser({ id: user.user.uid })
         })
-      this.props.navigation.navigate('Main');
+      setTimeout(() => {
+        this.props.navigation.navigate('Main');
+      }, 2000)
     } catch (err) {
       console.error(err);
     }
