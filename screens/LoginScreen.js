@@ -70,9 +70,9 @@ class LoginScreen extends React.Component {
         .then(user => {
           getUser({ id: user.user.uid })
         })
-        setTimeout(() => {
-          this.props.navigation.navigate('Main');
-        }, 3000)
+      setTimeout(() => {
+        this.props.navigation.navigate('Main');
+      }, 2000)
     } catch (err) {
       console.error(err);
     }

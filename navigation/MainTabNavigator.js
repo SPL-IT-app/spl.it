@@ -20,6 +20,8 @@ import {
   Profile,
   More,
   ListItemConfirmationScreen,
+  LineItemsConfirmedScreen,
+  AddFriend
 } from '../screens';
 
 import { MyHeader, CameraView } from '../components';
@@ -31,6 +33,7 @@ const HomeStack = createStackNavigator(
     Home: HomeScreen,
     Camera: CameraView,
     ListConfirm: ListItemConfirmationScreen,
+    Confirmed: LineItemsConfirmedScreen,
   },
   { headerMode: 'none', initialRouteName: 'Home' }
 );
@@ -55,6 +58,7 @@ const HomeStack = createStackNavigator(
 const ProfileStack = createStackNavigator(
   {
     Profile: Profile,
+    AddFriend: AddFriend
   },
   { headerMode: 'none' }
 );
