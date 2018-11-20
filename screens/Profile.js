@@ -71,11 +71,12 @@ class Profile extends React.Component {
       makeRef(`/profiles/${snapshot.key}`).once('value', snapshot => {
         this.setState({friends: [...this.state.friends, snapshot.val()]})
       })
-      // this.setState({friends: Object.assign(this.state.friends, {[snapshot.key]:true}) })
     })
-    // this.friendsRef.on('value', snapshot => {
-    //   this.setState({friends: snapshot.val()})
-    // })
+    this.friendsRef.on('child_removed', snapshot => {
+       makeRef(`/profiles/${snapshot.key}`).once('value', snapshot => {
+         this.setState({friends: this.state.friends.filter(friend => friend.username !== snapshot.val().username)})
+       })
+    })
   }
 
   componentWillUnmount() {
