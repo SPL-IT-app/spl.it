@@ -1,26 +1,23 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { Button, Icon, Container, Content, List, ListItem, } from 'native-base';
+import { Button, Icon, Container, Content, List, ListItem, View, Fab } from 'native-base';
 import { setReceipt, setEvent } from '../store'
 import { connect } from 'react-redux';
 import { makeRef } from "../server/firebaseconfig";
 
 const styles = StyleSheet.create({
-    eventName: {
-
-    },
-    addEvent: {
-
-    },
     listItemTitle: {
         display: 'flex',
         justifyContent: 'space-between'
     },
     eventButton: {
+        marginTop: 20,
         display: 'flex',
-        flexGrow: 1,
-    }
+        justifyContent: 'space-between',
+        width: '99%'
+    },
 })
+
 class AllEvents extends React.Component {
     constructor(props) {
         super(props)
@@ -28,15 +25,18 @@ class AllEvents extends React.Component {
             events: []
         }
     }
+
     componentDidMount() {
         this.refs = []
 
         Object.keys(this.props.events).forEach(id => {
             const eventsRef = makeRef(`/events/${id}`)
+            const { events } = this.state
+
             this.refs.push(eventsRef)
             eventsRef.on('value', snapshot => {
                 this.setState({
-                    events: [...this.state.events, snapshot.val()]
+                    events: [...events, snapshot.val()]
                 })
             })
         })
@@ -47,29 +47,35 @@ class AllEvents extends React.Component {
             ref.off()
         })
     }
+
     render() {
         const { events } = this.state
         if (events.length === 0) return <Container />
 
         return (
-            <Container>
+            <Container >
                 <List>
-                    <ListItem>
-                        <Text>Event Name <Text>+</Text></Text>
+                    <ListItem style={styles.listItemTitle}>
+                        <Text>Event Name</Text><Text />
                     </ListItem>
                     {
                         events.map((event, idx) => {
                             return (
-                                <Button style={styles.eventButton} key={parseInt(idx, 2)}>
-                                    <Text>{event.title}</Text>
+                                <Button block style={styles.eventButton} key={parseInt(idx, 2)}>
+                                    <Text>{event.title}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
                                 </Button>
 
                             )
                         })
                     }
-
-
                 </List>
+                <Container >
+                    <Fab
+                        position='bottomRight'
+                    >
+                        <Icon type="MaterialCommunityIcons" name="plus" />
+                    </Fab>
+                </Container>
             </Container>
         )
     }
