@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   PanResponder,
+  Alert,
 } from 'react-native';
 import { PanResponderInstance } from 'PanResponder';
 import { Camera, Permissions, ImageManipulator } from 'expo';
@@ -25,9 +26,11 @@ const styles = StyleSheet.create({
   },
   button: { padding: 20, marginTop: 20 },
   touch: {
-    flex: 0.1,
-    alignSelf: 'flex-end',
+    display: 'flex',
     alignItems: 'center',
+    width: '60%',
+    alignSelf: 'flex-end',
+    textAlign: 'center',
   },
   text: { fontSize: 18, marginBottom: 10, color: 'white' },
 });
@@ -104,11 +107,15 @@ export class CameraView extends React.Component {
       //   'RESPONSE ======>',
       //   resp.data.responses[0].fullTextAnnotation.text
       // );
-      const receiptText = resp.data.responses[0].fullTextAnnotation.text;
-      const receiptObj = parseReceipt(receiptText);
-      this.props.setReceipt(receiptObj);
+      if (!resp.data.responses[0].fullTextAnnotation) {
+        this.props.navigation.navigate('Camera');
+        Alert.alert('Error', 'Try again!');
+      } else {
+        const receiptText = resp.data.responses[0].fullTextAnnotation.text;
+        const receiptObj = parseReceipt(receiptText);
+        this.props.setReceipt(receiptObj);
+      }
     } catch (err) {
-      console.log('some error happened');
       console.error(err);
     }
   };
@@ -260,7 +267,6 @@ function parseReceipt(receiptText) {
     });
   });
 
-  console.log('RECEIPT ARRAY ====>', parsedReceipt);
   return parsedReceipt;
 }
 

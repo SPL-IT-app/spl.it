@@ -14,18 +14,30 @@ import {
   Container,
 } from 'native-base';
 
-import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/Profile';
-import SettingsScreen from '../screens/SettingsScreen';
-import MyHeader from '../components/Header';
+import {
+  TabBarIcon,
+  HomeScreen,
+  Profile,
+  More,
+  ListItemConfirmationScreen,
+  LineItemsConfirmedScreen,
+  AddFriend,
+  AddMemberToEventScreen,
+} from '../screens';
+
+import { MyHeader, CameraView } from '../components';
+
 //import LoginScreen from '../screens/LoginScreen'
 
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
+    Camera: CameraView,
+    ListConfirm: ListItemConfirmationScreen,
+    Confirmed: LineItemsConfirmedScreen,
+    AddMembers: AddMemberToEventScreen,
   },
-  { headerMode: 'none' }
+  { headerMode: 'none', initialRouteName: 'Home' }
 );
 
 // HomeStack.navigationOptions = {
@@ -47,7 +59,8 @@ const HomeStack = createStackNavigator(
 
 const ProfileStack = createStackNavigator(
   {
-    Links: LinksScreen,
+    Profile: Profile,
+    AddFriend: AddFriend,
   },
   { headerMode: 'none' }
 );
@@ -64,7 +77,7 @@ const ProfileStack = createStackNavigator(
 
 const MoreStack = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    More: More,
   },
   { headerMode: 'none' }
 );

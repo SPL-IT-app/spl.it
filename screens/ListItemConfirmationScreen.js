@@ -1,103 +1,219 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import {
-  Container,
-  Content,
-  Header,
-  Button,
-  Icon,
-  List,
-  ListItem,
-  Form,
-  Item,
-  Picker,
-  Input,
-} from 'native-base';
+import { StyleSheet, Text } from 'react-native';
+import { Container, Content, Button, Icon } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
-import CameraProcessing from '../components/utilities/CameraProcessing';
-import LineItems from '../components/LineItems'
+import {
+  CameraProcessing,
+  LineItems,
+  MyHeader,
+  BackButton,
+} from '../components';
+import { addLineItem, setEvent } from '../store';
+const { makeRef } = require('../server/firebaseconfig');
+import Dialog from 'react-native-dialog';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  icon: {
-    margin: 0,
-    padding: 0,
-  },
-  button: {
+  tableHeader: {
     display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
+    alignItems: 'center',
+    height: 60,
+    borderBottomColor: '#ddd',
+    borderBottomWidth: 1,
+  },
+  quantity: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '15%',
+  },
+  description: {
+    display: 'flex',
+    alignItems: 'center',
     width: '60%',
+  },
+  price: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '25%',
+  },
+  lastRow: {
+    paddingBottom: 80,
+  },
+  buttonText: {
+    textAlign: 'center',
+    letterSpacing: 2,
+    color: 'white',
+  },
+  confirmItemsButton: {
+    marginTop: 10,
+    width: '95%',
     alignSelf: 'center',
   },
-  grid: {
-    height: 150,
-    width: 50,
-    backgroundColor: 'yellow',
+  addItemButton: {
+    marginTop: 10,
+    alignSelf: 'flex-end',
+    backgroundColor: 'transparent',
   },
 });
 
 export class ListItemConfirmationScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dialogVisible: false,
+      eventName: '',
+      receiptRef: '',
+    };
+  }
+
   static navigationOptions = {
     header: null,
   };
 
-  state = {
-    receipt: this.props.receipt
-  }
+  handleConfirmItems = async () => {
+    if (!this.props.event) {
+      this.setState({ dialogVisible: true });
+    } else {
+      await this.handleSubmitEventName();
+      this.props.navigation.navigate('Confirmed', {
+        receiptRef: this.state.receiptRef,
+      });
+    }
+  };
 
-  handleChange = (event, idx) => {
-    this.setState ({
-      receipt: {}
-    })
-  }
+  handleCancel = () => {
+    this.setState({ dialogVisible: false });
+  };
+
+  handleEventName = event => {
+    this.setState({ eventName: event });
+  };
+
+  handleSubmitEventName = () => {
+    this.setState({ dialogVisible: false });
+    const newEvent = {
+      date: new Date().toString(),
+      title: this.state.eventName,
+      status: true,
+      receipts: {},
+      members: { [this.props.user.id]: true },
+    };
+
+    const newReceipt = {
+      imageUrl: 'newReceiptUrl',
+      creator: this.props.user.id,
+      tipPercent: 10,
+      lineItems: {},
+    };
+
+    let receipt = this.props.receipt;
+    receipt.forEach(lineItem => {
+      if (lineItem.quantity > 1) {
+        const repeatLineItem = {
+          quantity: 1,
+          name: lineItem.name,
+          price: lineItem.price / lineItem.quantity,
+        };
+        receipt.splice(receipt.indexOf(lineItem), 1);
+        for (let i = 0; i < lineItem.quantity; i++) {
+          receipt.push(repeatLineItem);
+        }
+      }
+    });
+    const lineItems = receipt.map(lineItem => {
+      return {
+        name: lineItem.name,
+        price: lineItem.price,
+        users: {},
+      };
+    });
+
+    let eventId = this.props.event;
+    if (!this.props.event) {
+      const eventsRef = makeRef('/events');
+      const newEventRef = eventsRef.push();
+      eventId = newEventRef.key;
+      newEventRef.set(newEvent);
+    }
+    const receiptsRef = makeRef(`/events/${eventId}/receipts`);
+    const newReceiptRef = receiptsRef.push();
+    const receiptID = newReceiptRef.key;
+    newReceiptRef.set(newReceipt);
+
+    const lineItemsRef = makeRef(`/events/${eventId}/receipts/${receiptID}`);
+    this.setState({ receiptRef: `/events/${eventId}/receipts/${receiptID}` });
+    lineItems.forEach(item => {
+      lineItemsRef.push().set(item);
+    });
+
+    this.props.setEvent(eventId);
+  };
 
   render() {
     const { receipt } = this.props;
-    console.log('RECEIPT =====>', receipt);
     return receipt.length ? (
       <Container>
-        <Header />
-        <Content>
-          <View>
-            <Grid>
-              <Row>
-                <Col>
-                  <Text>QTY</Text>
-                </Col>
-                <Col>
-                  <Text>DESCRIPTION</Text>
-                </Col>
-                <Col>
-                  <Text>PRICE</Text>
-                </Col>
-              </Row>
-              {receipt.map((lineItem, idx) => {
-                return (
-                  <LineItems key={idx} lineItem={lineItem} idx={idx}/>
-                );
-              })}
-            </Grid>
-          </View>
-          <View>
-            <Button>
-              <Icon type="MaterialCommunityIcons" name="plus" />
+        <MyHeader
+          title="Confirmation"
+          right={() => <BackButton navigation={this.props.navigation} />}
+        />
+        <Content style={styles.content}>
+          <Grid style={styles.grid}>
+            <Dialog.Container visible={this.state.dialogVisible}>
+              <Dialog.Title>Event Name</Dialog.Title>
+              <Dialog.Description>
+                Please enter a name for your event
+              </Dialog.Description>
+              <Dialog.Input lable="test" onChangeText={this.handleEventName} />
+              <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+              <Dialog.Button
+                label="Enter"
+                onPress={async () => {
+                  await this.handleSubmitEventName();
+                  this.props.navigation.navigate('Confirmed', {
+                    receiptRef: this.state.receiptRef,
+                  });
+                }}
+              />
+            </Dialog.Container>
+
+            <Row style={styles.tableHeader}>
+              <Col style={styles.quantity}>
+                <Text>QTY</Text>
+              </Col>
+              <Col style={styles.description}>
+                <Text>DESCRIPTION</Text>
+              </Col>
+              <Col style={styles.price}>
+                <Text>PRICE</Text>
+              </Col>
+            </Row>
+            {receipt.map((lineItem, idx) => {
+              return <LineItems key={idx} lineItem={lineItem} idx={idx} />;
+            })}
+            <Button
+              style={styles.addItemButton}
+              onPress={() => {
+                this.props.addLineItem();
+              }}
+            >
+              <Icon
+                style={{ color: 'black' }}
+                type="MaterialCommunityIcons"
+                name="plus"
+              />
             </Button>
-          </View>
-          <View>
-            <Button info large block style={styles.button} onPress={() => {}}>
-              <Text>Confirm Items</Text>
+            <Button
+              success
+              block
+              style={styles.confirmItemsButton}
+              onPress={this.handleConfirmItems}
+            >
+              <Text style={styles.buttonText}> CONFIRM ITEMS </Text>
             </Button>
-          </View>
+            <Row style={styles.lastRow} />
+          </Grid>
         </Content>
       </Container>
     ) : (
@@ -108,13 +224,23 @@ export class ListItemConfirmationScreen extends React.Component {
 
 const mapState = state => {
   return {
+    user: state.user.currentUser,
     receipt: state.receipt.receipt,
+    event: state.event.eventId,
   };
 };
 
 const mapDispatch = dispatch => {
-  return {};
+  return {
+    addLineItem: () => {
+      dispatch(addLineItem());
+    },
+    setEvent: id => {
+      dispatch(setEvent(id));
+    },
+  };
 };
+
 export default connect(
   mapState,
   mapDispatch

@@ -11,11 +11,18 @@ import {
   Container,
 } from 'native-base';
 
+import { randomColor } from 'randomcolor';
+
 import {
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
+
+import firebase from '../server/firebaseconfig';
+import { getUser } from '../store/';
+import { connect } from 'react-redux';
 
 const styles = StyleSheet.create({
   root: {
@@ -49,10 +56,6 @@ const styles = StyleSheet.create({
   },
 });
 
-import firebase from '../server/firebaseconfig';
-import { getUser } from '../store/';
-import { connect } from 'react-redux';
-
 class SignUpScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -70,7 +73,7 @@ class SignUpScreen extends React.Component {
     const { getUser } = this.props;
     try {
       if (this.state.password.length < 6) {
-        alert('Please enter at least 6 characters');
+        Alert.alert('Error', 'Please enter at least 6 characters');
         return;
       } else {
         firebase
@@ -96,11 +99,17 @@ class SignUpScreen extends React.Component {
                 [user.user.uid]: {
                   imageUrl: 'https://bit.ly/2qQRtn6',
                   username,
+                  color: randomColor({
+                    luminosity: 'bright',
+                    hue: 'random',
+                  }).toString(),
                 },
               });
             getUser({ id: user.user.uid });
+          })
+          .finally(() => {
+            this.props.navigation.navigate('Main');
           });
-        this.props.navigation.navigate('Main');
       }
     } catch (err) {
       console.error(err);
