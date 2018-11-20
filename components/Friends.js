@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { List, ListItem, Thumbnail, Right, Left, Body, Text, Button, Icon } from 'native-base'
 import { makeRef } from '../server/firebaseconfig'
+import { withNavigation } from 'react-navigation'
 
 export class Friends extends Component {
     constructor(){
@@ -22,6 +23,7 @@ export class Friends extends Component {
     }
 
     render() {
+        const { navigate } = this.props.navigation
         if(!this.props.friends || !this.state.friends) {
             return <Text>You don't have any friends!</Text>
         }
@@ -42,7 +44,7 @@ export class Friends extends Component {
                     <Left />
                     <Body />
                     <Right flexGrow={5}>
-                        <Button iconLeft  >
+                        <Button iconLeft onPress={() => navigate('AddFriend')} >
                             <Icon type='MaterialIcons' name='add-circle' />
                             <Text>Add Friend</Text>
                         </Button>
@@ -53,4 +55,4 @@ export class Friends extends Component {
     }
 }
 
-export default Friends
+export default withNavigation(Friends)

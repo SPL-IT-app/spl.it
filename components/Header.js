@@ -9,6 +9,7 @@ import {
   Icon,
   Thumbnail,
   Container,
+  Subtitle,
 } from 'native-base';
 import { Image } from 'react-native';
 import { Asset } from 'expo';
@@ -29,6 +30,7 @@ export class MyHeader extends Component {
         </Left>
         <Body>
           <Title>{this.props.title}</Title>
+          {this.props.subtitle && <Subtitle>{this.props.subtitle}</Subtitle>}
         </Body>
         <Right>{this.props.right ? this.props.right() : null}</Right>
       </Header>
