@@ -56,7 +56,7 @@ export class HomeScreen extends React.Component {
         ) : (
           <Container style={styles.container}>
             <Button
-              rounded
+              block
               info
               large
               style={styles.button}
@@ -75,7 +75,7 @@ export class HomeScreen extends React.Component {
 
             {/* TEMPORARY BUTTON WITH HARD-CODED RECEIPT */}
             <Button
-              rounded
+              block
               warning
               large
               style={styles.button}
