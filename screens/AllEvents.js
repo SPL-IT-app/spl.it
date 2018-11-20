@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Button, Icon, Container, Content, List, ListItem, View, Fab } from 'native-base';
-import { setReceipt, setEvent } from '../store'
+import { setEvent } from '../store'
 import { connect } from 'react-redux';
 import { makeRef } from "../server/firebaseconfig"
 import { withNavigation } from "react-navigation";
@@ -77,7 +77,7 @@ class AllEvents extends React.Component {
             <Container >
                 <List>
                     <ListItem style={styles.listItemTitle}>
-                        <Text>Event Name</Text><Text />
+                        <Text>Event Name</Text><Text>View</Text>
                     </ListItem>
                     {
                         events.map((event, idx) => {
@@ -88,7 +88,7 @@ class AllEvents extends React.Component {
                                     key={parseInt(idx, 2)}
                                     onPress={() => this.handleEventClick(this.eventId[idx])}
                                 >
-                                    <Text>{event.title}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
+                                    <Text>{event.title.toUpperCase()}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
                                 </Button>
                             )
                         })
