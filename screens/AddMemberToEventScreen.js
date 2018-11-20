@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
-import {
-  List,
-  ListItem,
-  Thumbnail,
-  Right,
-  Left,
-  Body,
-  Text,
-  Button,
-  Icon,
-} from 'native-base';
+import { Container } from 'native-base';
 import { makeRef } from '../server/firebaseconfig';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
+import {
+  EventFriends,
+  EventMembers,
+  BackButton,
+  MyHeader,
+} from '../components';
 
 export class Friends extends Component {
   constructor() {
@@ -24,69 +20,54 @@ export class Friends extends Component {
   }
 
   componentDidMount() {
-    let friendsArr = [];
-    let eventMembersArr = [];
-
     // all of user's friends
-    const usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
-    usersFriendsRef.on('value', snapshot => {
-      friendsArr = Object.keys(snapshot.val());
-    });
-    // all of event's members
-    const eventMembersRef = makeRef(`/events/${this.props.event}/members`);
-    eventMembersRef.on('value', snapshot => {
-      eventMembersArr = Object.entries(snapshot.val());
-    });
-
-    // get usernames
-    friendsArr.forEach(friend => {
-      const friendProfileRef = makeRef(`/profiles/${friend}`);
-      friendProfileRef.once(value => {
-        this.setState({
-          friendProfiles: this.state.friendProfiles.push(value),
+    this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
+    this.usersFriendsRef.on('value', snapshot => {
+      this.friendsArr = Object.keys(snapshot.val());
+      this.friendsArr.forEach(friend => {
+        this.friendProfileRef = makeRef(`/profiles/${friend}`);
+        this.friendProfileRef.once(value => {
+          this.setState({
+            friendProfiles: this.state.friendProfiles.push(value),
+          });
         });
       });
     });
 
-    eventMembersArr.forEach(member => {
-      const eventMembersArrProfileRef = makeRef(`/profiles/${member}`);
-      eventMembersArrProfileRef.once(value => {
-        this.setState({
-          eventMemberProfiles: this.state.eventMemberProfiles.push(value),
+    // all of event's members
+    this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
+    this.eventMembersRef.on('value', snapshot => {
+      this.eventMembersArr = Object.entries(snapshot.val());
+      this.friendsArr = this.friendsArr.filter(friend => {
+        return !this.eventMembersArr.includes(friend);
+      });
+      this.eventMembersArr.forEach(member => {
+        this.eventMembersArrProfileRef = makeRef(`/profiles/${member}`);
+        this.eventMembersArrProfileRef.once(value => {
+          this.setState({
+            eventMemberProfiles: this.state.eventMemberProfiles.push(value),
+          });
         });
       });
     });
   }
 
+  componentWillUnmount() {
+    this.usersFriendsRef.off();
+    this.eventMembersRef.off();
+  }
+
   render() {
     const { navigate } = this.props.navigation;
-    if (!this.props.friends || !this.state.friends) {
+    if (!this.state.friendProfiles) {
       return <Text>You don't have any friends!</Text>;
     }
     return (
-      <List>
-        {this.state.friends.map(friend => (
-          <ListItem avatar key={friend.username}>
-            <Left>
-              <Thumbnail source={{ uri: friend.imageUrl }} />
-            </Left>
-            <Body>
-              <Text>{friend.username}</Text>
-            </Body>
-            <Right />
-          </ListItem>
-        ))}
-        <ListItem>
-          <Left />
-          <Body />
-          <Right flexGrow={5}>
-            <Button iconLeft onPress={() => navigate('AddFriend')}>
-              <Icon type="MaterialIcons" name="add-circle" />
-              <Text>Add Friend</Text>
-            </Button>
-          </Right>
-        </ListItem>
-      </List>
+      <Container>
+        <MyHeader title="Add Members" right={() => <BackButton />} />
+        <EventMembers />
+        <EventFriends />
+      </Container>
     );
   }
 }
@@ -97,4 +78,4 @@ const mapState = state => {
     event: state.event.eventId,
   };
 };
-export default connect(mapState)(withNavigation(Friends));
+export default connect(mapState)(AddMemberToEventScreen);
