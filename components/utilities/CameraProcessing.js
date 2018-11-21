@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Content, Spinner } from 'native-base';
+import { Container, Spinner, Content } from 'native-base';
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,9 +22,8 @@ export default class CameraProcessing extends Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Content>
-          <Spinner />
-        </Content>
+        <Spinner />
+        <Text>Loading...</Text>
       </Container>
     );
   }

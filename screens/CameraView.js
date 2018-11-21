@@ -153,9 +153,9 @@ export class CameraView extends React.Component {
         {
           crop: {
             originX: this.state.crop.originX,
-            originY: this.state.crop.originY + platformStyle.toolbarHeight / 3,
+            originY: this.state.crop.originY + platformStyle.toolbarHeight / 4,
             width: this.state.crop.width,
-            height: this.state.crop.height,
+            height: this.state.crop.height + platformStyle.toolbarHeight / 3,
           },
         },
       ],
