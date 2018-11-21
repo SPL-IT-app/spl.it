@@ -26,9 +26,20 @@ const styles = StyleSheet.create({
 });
 
 export class EventMembers extends Component {
-  componentDidMount() {
-    this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
+  state = {
+    addedFriends: []
   }
+  componentDidMount() {
+    this.eventRef = makeRef(`/events/${this.props.event}/members`);
+    this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
+    this.eventRef.on("value", snapshot => {
+      this.setState({
+        addedFriends: Object.keys(snapshot.val())
+      })
+    })
+
+  }
+
   handleSelect = (val, id) => {
     this.eventRef = makeRef(`/events/${this.props.event}/members`);
     this.eventMemberRef = makeRef(`/events/${this.props.event}/members/${id}`);
@@ -46,7 +57,9 @@ export class EventMembers extends Component {
     return (
       <Container>
         <List>
-          {friends.map(friend => (
+          {friends.map(friend => {
+            console.log("TOGGLE CHECK ===>", this.state.addedFriends)
+            return (
             <ListItem
               style={styles.listItem}
               avatar
@@ -61,12 +74,12 @@ export class EventMembers extends Component {
               <Right style={styles.right}>
                 <CheckBox
                   onChange={val => this.handleSelect(val, friend.id)}
-                  checked={false}
+                  checked={this.state.addedFriends.includes(friend.id)}
                   iconName="matCircleMix"
                 />
               </Right>
             </ListItem>
-          ))}
+          )})}
         </List>
       </Container>
     );
