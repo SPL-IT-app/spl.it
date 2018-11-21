@@ -146,11 +146,13 @@ class Profile extends React.Component {
     })
     if(!result.cancelled){
       // const fs = new FileSystem
-      let file = await FileSystem.readAsStringAsync(result.uri, {encoding: 'Base64'})
+      // let file = await FileSystem.readAsStringAsync(result.uri, {encoding: 'Base64'})
+      let file = await FileSystem.readAsStringAsync(result.uri)
       // console.log(file)
       // this.setState({image: file, dialogVisible: false})
-      file = 'data:image/jpg;base64,' + file
-      await storageRef.child(this.props.user.id).putString(file, 'data_url', {contentType:'image/jpeg'})
+      // file = 'data:image/jpeg;base64,' + file
+      console.log(file)
+      await storageRef.child(this.props.user.id).putString(file, 'raw', {contentType:'image/jpeg'})
       const url = await storageRef.child(this.props.user.id).getDownloadURL()
       console.log(url)
       // this.setState({image: url, dialogVisible: false})
