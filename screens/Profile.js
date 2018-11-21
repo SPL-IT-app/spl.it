@@ -38,6 +38,7 @@ import MyHeader from "../components/Header";
 import { connect } from "react-redux";
 import { makeRef } from "../server/firebaseconfig";
 import { Friends, Groups } from '../components'
+import Dialog from 'react-native-dialog'
 
 class Profile extends React.Component {
   constructor() {
@@ -48,7 +49,8 @@ class Profile extends React.Component {
       editing: "",
       value: "",
       value2: "",
-      friends: []
+      friends: [],
+      dialogVisible: false,
     };
   }
   static navigationOptions = {
@@ -113,9 +115,23 @@ class Profile extends React.Component {
     });
   };
 
+  handleNo = () => {
+    this.setState({dialogVisible: false})
+  }
+
+  handleYes = () => {
+
+  }
+
   render() {
     return (
       <Container>
+        <Dialog.Container visible={this.state.dialogVisible}>
+                <Dialog.Title>Profile Photo</Dialog.Title>
+                <Dialog.Description>Do you want to change your profile photo?</Dialog.Description>
+                <Dialog.Button label='No' onPress={this.handleNo} />
+                <Dialog.Button label='Yes' onPress={this.handleYes} />
+        </Dialog.Container>
         <MyHeader title="Profile" />
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
           <ScrollView>
@@ -174,7 +190,7 @@ class Profile extends React.Component {
                       )}
                     </Right>
                   </CardItem>
-                  <CardItem cardBody>
+                  <CardItem button cardBody onLongPress={()=>this.setState({dialogVisible:true})}>
                     <Image
                       source={{ uri: this.state.profile.imageUrl }}
                       style={{ height: 200, width: null, flex: 1 }}

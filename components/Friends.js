@@ -15,8 +15,7 @@ import {
 import { withNavigation } from "react-navigation";
 import { makeRef } from '../server/firebaseconfig'
 import { connect } from 'react-redux'
-import Dialog from 'react-native-dialog';
-import { TouchableHighlight } from 'react-native'
+import Dialog from 'react-native-dialog'
 
 export class Friends extends Component {
 
@@ -68,7 +67,6 @@ export class Friends extends Component {
                 <Dialog.Button label='No' onPress={this.handleCancel} />
                 <Dialog.Button label='Yes' onPress={this.handleDelete} />
             </Dialog.Container>
-
             <List>
             {this.props.friends.map(friend => (
 
