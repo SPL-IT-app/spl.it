@@ -17,6 +17,7 @@ import { Icon, Button, Content, Spinner } from 'native-base';
 import { connect } from 'react-redux';
 import { setReceipt } from '../store';
 import { MyHeader, BackButton } from '../components/index';
+import platformStyle from '../native-base-theme/variables/platform.js';
 
 const styles = StyleSheet.create({
   view: {
@@ -152,7 +153,7 @@ export class CameraView extends React.Component {
         {
           crop: {
             originX: this.state.crop.originX,
-            originY: this.state.crop.originY,
+            originY: this.state.crop.originY + platformStyle.toolbarHeight / 3,
             width: this.state.crop.width,
             height: this.state.crop.height,
           },
@@ -191,12 +192,11 @@ export class CameraView extends React.Component {
     if (this.state.displayCrop) {
       return (
         <View
-          style={styles.view}
-          // onLayout={evt => {
-          //   const { x, y, width, height } = evt.nativeEvent.layout;
-          //   currentHeight = height;
-          //   currentWidth = width;
-          // }}
+        // onLayout={evt => {
+        //   const { x, y, width, height } = evt.nativeEvent.layout;
+        //   currentHeight = height;
+        //   currentWidth = width;
+        // }}
         >
           {/* <Svg height={currentHeight} width={currentWidth}> */}
           <Svg height={height} width={width}>
@@ -204,7 +204,7 @@ export class CameraView extends React.Component {
               // originX={this.state.crop.originX}
               // originY={this.state.crop.originY}
               x={this.state.crop.originX}
-              y={this.state.crop.originY}
+              y={this.state.crop.originY - platformStyle.toolbarHeight}
               width={this.state.crop.width}
               height={this.state.crop.height}
               strokeWidth={2}
