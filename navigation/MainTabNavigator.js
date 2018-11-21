@@ -22,10 +22,12 @@ import {
   ListItemConfirmationScreen,
   LineItemsConfirmedScreen,
   AddFriend,
-  AddMemberToEventScreen
+  AddMemberToEventScreen,
+  CameraView,
+  SingleEvent,
 } from '../screens';
 
-import { MyHeader, CameraView } from '../components';
+import { MyHeader } from '../components';
 
 //import LoginScreen from '../screens/LoginScreen'
 
@@ -35,6 +37,7 @@ const HomeStack = createStackNavigator(
     Camera: CameraView,
     ListConfirm: ListItemConfirmationScreen,
     Confirmed: LineItemsConfirmedScreen,
+    SingleEvent: SingleEvent,
     AddMembers: AddMemberToEventScreen
   },
   { headerMode: 'none', initialRouteName: 'Home' }
@@ -60,7 +63,7 @@ const HomeStack = createStackNavigator(
 const ProfileStack = createStackNavigator(
   {
     Profile: Profile,
-    AddFriend: AddFriend
+    AddFriend: AddFriend,
   },
   { headerMode: 'none' }
 );
