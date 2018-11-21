@@ -26,18 +26,35 @@ const styles = StyleSheet.create({
 });
 
 export class EventMembers extends Component {
-  componentDidMount() {
-    this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
+  state = {
+    addedFriends: []
   }
+  componentDidMount() {
+    this.eventRef = makeRef(`/events/${this.props.event}/members`);
+    this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
+    this.eventRef.on("value", snapshot => {
+      this.setState({
+        addedFriends: Object.keys(snapshot.val())
+      })
+    })
+
+  }
+
   handleSelect = (val, id) => {
     this.eventRef = makeRef(`/events/${this.props.event}/members`);
     this.eventMemberRef = makeRef(`/events/${this.props.event}/members/${id}`);
+    this.userRef = makeRef(`/users/${id}/events`)
+    this.userEventRef = makeRef(`/users/${id}/events/${this.props.event}`)
     if (val === true) {
       this.eventRef.update({
         [id]: true,
       });
+      this.userRef.update({
+        [this.props.event]: true,
+      })
     } else if (val === false) {
       this.eventMemberRef.remove();
+      this.userEventRef.remove();
     }
   };
 
@@ -46,7 +63,8 @@ export class EventMembers extends Component {
     return (
       <Container>
         <List>
-          {friends.map(friend => (
+          {friends.map(friend => {
+            return (
             <ListItem
               style={styles.listItem}
               avatar
@@ -61,12 +79,12 @@ export class EventMembers extends Component {
               <Right style={styles.right}>
                 <CheckBox
                   onChange={val => this.handleSelect(val, friend.id)}
-                  checked={false}
+                  checked={this.state.addedFriends.includes(friend.id)}
                   iconName="matCircleMix"
                 />
               </Right>
             </ListItem>
-          ))}
+          )})}
         </List>
       </Container>
     );
@@ -75,6 +93,7 @@ export class EventMembers extends Component {
 
 const mapState = state => {
   return {
+    user: state.user.currentUser.id,
     event: state.event.eventId,
   };
 };
