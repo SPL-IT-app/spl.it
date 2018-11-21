@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '25%',
   },
+  lastRow: {
+    paddingBottom: 80,
+  },
   buttonText: {
     textAlign: 'center',
     letterSpacing: 2,
@@ -55,7 +58,7 @@ const styles = StyleSheet.create({
   footer: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
-    paddingBottom: 20
+    paddingBottom: 15
   }
 });
 
@@ -210,6 +213,7 @@ export class ListItemConfirmationScreen extends React.Component {
                 name="plus"
               />
             </Button>
+            {/* <Row style={styles.lastRow} /> */}
           </Grid>
         </Content>
         <Footer style={styles.footer}>
