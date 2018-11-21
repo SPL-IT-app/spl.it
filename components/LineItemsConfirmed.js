@@ -1,7 +1,7 @@
 import React from 'react';
 import { Item } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
-
+import { LinearGradient } from 'expo';
 import { StyleSheet, Text } from 'react-native';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
@@ -90,35 +90,44 @@ class LineItemsConfirmed extends React.Component {
   render() {
     // const color =
     return (
-      <Row
-        button
-        style={{
-          ...styles.lineItemRow,
-          backgroundImage: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        }}
+      <LinearGradient
+        colors={this.state.colors}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 1 }}
       >
-        <Col style={styles.quantity}>
-          <Item type="number" style={styles.input}>
-            <Text>1</Text>
-          </Item>
-        </Col>
-        <Col style={styles.description}>
-          <Item
-            style={styles.input}
-            onPress={() => {
-              this.handlePress();
-              console.log('pressed?');
-            }}
-          >
-            <Text style={styles.text}>{this.state.lineItem.name}</Text>
-          </Item>
-        </Col>
-        <Col style={styles.price}>
-          <Item type="number" style={styles.input}>
-            <Text>{numeral(this.state.lineItem.price).format('$0,0.00')}</Text>
-          </Item>
-        </Col>
-      </Row>
+        <Row
+          button
+          style={{
+            ...styles.lineItemRow,
+            backgroundColor:
+              this.state.colors.length < 2 ? this.state.colors[0] : null,
+          }}
+        >
+          <Col style={styles.quantity}>
+            <Item type="number" style={styles.input}>
+              <Text>1</Text>
+            </Item>
+          </Col>
+          <Col style={styles.description}>
+            <Item
+              style={styles.input}
+              onPress={() => {
+                this.handlePress();
+                console.log('pressed?');
+              }}
+            >
+              <Text style={styles.text}>{this.state.lineItem.name}</Text>
+            </Item>
+          </Col>
+          <Col style={styles.price}>
+            <Item type="number" style={styles.input}>
+              <Text>
+                {numeral(this.state.lineItem.price).format('$0,0.00')}
+              </Text>
+            </Item>
+          </Col>
+        </Row>
+      </LinearGradient>
     );
   }
 }
