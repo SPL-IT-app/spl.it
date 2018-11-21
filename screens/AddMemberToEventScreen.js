@@ -44,34 +44,34 @@ export class AddMemberToEventScreen extends Component {
     });
 
 
-    // all of event's members
+    // // all of event's members
 
-    this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
-    this.eventMembersRef.on('child_added', snapshot => {
-      const profileRef = makeRef(`/profiles/${snapshot.key}`);
-      profileRef.once('value', profileSnapshot =>
-        this.setState({
-          eventMemberProfiles: [
-            ...this.state.eventMemberProfiles,
-            profileSnapshot.val(),
-          ],
-        })
-      );
-    });
-    this.eventMembersRef.on('child_removed', snapshot => {
-      const profileRef = makeRef(`/profiles/${snapshot.key}`);
-      profileRef.once('value', profileSnapshot => {
-        const newArr = [...this.state.eventMemberProfiles].filter(member => {
-          return member.username !== profileSnapshot.val().username;
-        });
-        this.setState({ eventMemberProfiles: newArr });
-      });
-    });
+    // this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
+    // this.eventMembersRef.on('child_added', snapshot => {
+    //   const profileRef = makeRef(`/profiles/${snapshot.key}`);
+    //   profileRef.once('value', profileSnapshot =>
+    //     this.setState({
+    //       eventMemberProfiles: [
+    //         ...this.state.eventMemberProfiles,
+    //         profileSnapshot.val(),
+    //       ],
+    //     })
+    //   );
+    // });
+    // this.eventMembersRef.on('child_removed', snapshot => {
+    //   const profileRef = makeRef(`/profiles/${snapshot.key}`);
+    //   profileRef.once('value', profileSnapshot => {
+    //     const newArr = [...this.state.eventMemberProfiles].filter(member => {
+    //       return member.username !== profileSnapshot.val().username;
+    //     });
+    //     this.setState({ eventMemberProfiles: newArr });
+    //   });
+    // });
   }
 
   componentWillUnmount() {
     this.usersFriendsRef.off();
-    this.eventMembersRef.off();
+    // this.eventMembersRef.off();
   }
 
   render() {
@@ -84,7 +84,7 @@ export class AddMemberToEventScreen extends Component {
     return (
       <Container>
         <MyHeader title="Add Members" right={() => <BackButton />} />
-        <EventMembers members={this.state.eventMemberProfiles} />
+        <EventMembers />
         <EventFriends friends={this.state.friendProfiles} />
       </Container>
     );
