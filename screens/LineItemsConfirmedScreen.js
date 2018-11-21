@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { Container, Content, Button, Icon } from 'native-base';
+import { Container, Content, Button, Icon, Footer } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import {
@@ -53,6 +53,15 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: 'transparent',
   },
+  footer: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    paddingBottom: 15,
+  },
+  avatarFooter: {
+    borderColor: 'transparent',
+    height: 'auto'
+  }
 });
 
 export class LineItemsConfirmedScreen extends React.Component {
@@ -110,7 +119,7 @@ export class LineItemsConfirmedScreen extends React.Component {
     return (
       <Container>
         <MyHeader
-          title="Confirmation"
+          title="Receipt"
           right={() => (
             <DeleteButton
               url={this.receiptRef}
@@ -144,34 +153,41 @@ export class LineItemsConfirmedScreen extends React.Component {
                 );
               }
             })}
-            <EventMembers members={this.state.eventMemberProfiles} />
-            <Button
-              warning
-              block
-              style={styles.button}
-              onPress={() => {
-                this.props.navigation.navigate('AddMembers');
-              }}
-            >
-              <Icon
-                type="MaterialCommunityIcons"
-                name="account-multiple-plus"
-                style={styles.icon}
-              />
-              <Text style={styles.buttonText}> ADD MEMBERS </Text>
-            </Button>
-            <Button
-              success
-              block
-              disabled
-              style={styles.button}
-              // onPress={this.handleConfirmItems}
-            >
-              <Text style={styles.buttonText}> SAVE RECEIPT </Text>
-            </Button>
+
             <Row style={styles.lastRow} />
           </Grid>
         </Content>
+        <Footer style={styles.avatarFooter}>
+          <EventMembers members={this.state.eventMemberProfiles} />
+        </Footer>
+        <Footer style={styles.footer}>
+          <Button
+            warning
+            block
+            style={styles.button}
+            onPress={() => {
+              this.props.navigation.navigate('AddMembers');
+            }}
+          >
+            <Icon
+              type="MaterialCommunityIcons"
+              name="account-multiple-plus"
+              style={styles.icon}
+            />
+            <Text style={styles.buttonText}> ADD MEMBERS </Text>
+          </Button>
+        </Footer>
+
+        <Footer style={styles.footer}>
+          <Button
+            success
+            block
+            style={styles.button}
+            onPress={() => {this.props.navigation.navigate('Home')}}
+          >
+            <Text style={styles.buttonText}> SAVE RECEIPT </Text>
+          </Button>
+        </Footer>
       </Container>
     );
   }
