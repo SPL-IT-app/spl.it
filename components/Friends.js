@@ -16,6 +16,7 @@ import { withNavigation } from "react-navigation";
 import { makeRef } from '../server/firebaseconfig'
 import { connect } from 'react-redux'
 import Dialog from 'react-native-dialog';
+import { TouchableHighlight } from 'react-native'
 
 export class Friends extends Component {
 
@@ -62,7 +63,7 @@ export class Friends extends Component {
         return (
         <Container>
             <Dialog.Container visible={this.state.dialogVisible}>
-                <Dialog.Title>Unfriend {this.state.toBeDeletedFriendId}</Dialog.Title>
+                <Dialog.Title>Unfriend</Dialog.Title>
                 <Dialog.Description><Text>Do you want to unfriend {this.state.toBeDeletedFriendUsername}?</Text></Dialog.Description>
                 <Dialog.Button label='No' onPress={this.handleCancel} />
                 <Dialog.Button label='Yes' onPress={this.handleDelete} />
@@ -70,31 +71,23 @@ export class Friends extends Component {
 
             <List>
             {this.props.friends.map(friend => (
-                <ListItem avatar key={friend.username} onLongPress={()=>{this.handleSelect(friend.id, friend.username)}}>
-                <Left>
+
+                <ListItem key={friend.username} onLongPress={()=>{this.handleSelect(friend.id, friend.username)}} onPress={()=>{console.log('simpe press')}}>
+                <Left flexGrow={12}>
                     <Thumbnail source={{ uri: friend.imageUrl }} />
+                    <Text>{'  '}{friend.username}</Text>
                 </Left>
-                <Body>
-                    <Text>{friend.username}</Text>
-                </Body>
+                <Body />
                 <Right />
                 </ListItem>
             ))}
-            <ListItem>
-                <Left />
-                <Body />
-                <Right flexGrow={5}>
+            </List>
+            <Container style={{flexDirection:'row', justifyContent:'flex-end', marginRight:20, marginTop:20 }} >
+
                 <Button iconLeft onPress={() => navigate("AddFriend", {friends: this.props.friends})}>
                     <Icon type="MaterialIcons" name="add-circle" />
                     <Text>Add Friend</Text>
                 </Button>
-                </Right>
-            </ListItem>
-            </List>
-            <Container>
-                <Fab position="bottomRight" onPress={() => navigate("AddFriend")}>
-                <Icon type="MaterialCommunityIcons" name="plus" />
-                </Fab>
             </Container>
         </Container>
         )
