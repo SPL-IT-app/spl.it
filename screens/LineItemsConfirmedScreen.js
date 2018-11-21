@@ -119,7 +119,7 @@ export class LineItemsConfirmedScreen extends React.Component {
     return (
       <Container>
         <MyHeader
-          title="Confirmation"
+          title="Confirmed Receipt"
           right={() => (
             <DeleteButton
               url={this.receiptRef}
