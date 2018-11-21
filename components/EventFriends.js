@@ -64,7 +64,6 @@ export class EventMembers extends Component {
       <Container>
         <List>
           {friends.map(friend => {
-            console.log("TOGGLE CHECK ===>", this.state.addedFriends)
             return (
             <ListItem
               style={styles.listItem}
