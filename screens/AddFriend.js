@@ -24,10 +24,14 @@ export class AddFriend extends Component {
     }
 
     handleChange = value => {
-        this.setState({search: value})
-        this.profileRef.orderByChild('username').startAt(value).endAt(value + "\uf8ff").once('value', snapshot => {
-            this.setState({results: snapshot.val()})
-        })
+        if(value){
+            this.setState({search: value})
+            this.profileRef.orderByChild('username').startAt(value).endAt(value + "\uf8ff").once('value', snapshot => {
+                this.setState({results: snapshot.val()})
+            })
+        } else {
+            this.setState({search: value, results: []})
+        }
     }
 
     addFriend = (id, username) => {
