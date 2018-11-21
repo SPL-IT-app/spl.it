@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { Container, Content, Button, Icon } from 'native-base';
+import { Container, Content, Button, Icon, Footer } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import {
@@ -55,6 +55,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: 'transparent',
   },
+  footer: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    paddingBottom: 15
+  }
 });
 
 export class ListItemConfirmationScreen extends React.Component {
@@ -148,6 +153,10 @@ export class ListItemConfirmationScreen extends React.Component {
     });
 
     this.props.setEvent(eventId);
+    const userRef = makeRef(`/users/${this.props.user.id}/events`);
+    userRef.update({
+      [eventId]: true,
+    });
   };
 
   render() {
@@ -204,17 +213,19 @@ export class ListItemConfirmationScreen extends React.Component {
                 name="plus"
               />
             </Button>
-            <Button
-              success
-              block
-              style={styles.confirmItemsButton}
-              onPress={this.handleConfirmItems}
-            >
-              <Text style={styles.buttonText}> CONFIRM ITEMS </Text>
-            </Button>
-            <Row style={styles.lastRow} />
+            {/* <Row style={styles.lastRow} /> */}
           </Grid>
         </Content>
+        <Footer style={styles.footer}>
+          <Button
+            success
+            block
+            style={styles.confirmItemsButton}
+            onPress={this.handleConfirmItems}
+          >
+            <Text style={styles.buttonText}> CONFIRM ITEMS </Text>
+          </Button>
+        </Footer>
       </Container>
     ) : (
       <CameraProcessing />
