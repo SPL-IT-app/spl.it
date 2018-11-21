@@ -97,37 +97,39 @@ export class HomeScreen extends React.Component {
                 />
               </Button>
 
-              {/* TEMPORARY BUTTON WITH HARD-CODED RECEIPT */}
-              <Button
-                rounded
-                warning
-                large
-                style={styles.button}
-                onPress={async () => {
-                  await this.props.setReceipt([
-                    { quantity: 1, name: 'Cheese Curds', price: 7.0 },
-                    { quantity: 1, name: 'Steak', price: 35.5 },
-                    {
-                      quantity: 1,
-                      name: 'Pepperoni Pizza with Olives, Spinach, and Onions',
-                      price: 15.0,
-                    },
-                    { quantity: 1, name: 'Pad Thai with Tofu', price: 18.0 },
-                    { quantity: 1, name: 'Red Curry with Rice', price: 20.0 },
-                    { quantity: 1, name: 'French Fries', price: 4.5 },
-                    { quantity: 1, name: 'Burger', price: 14 },
-                    { quantity: 1, name: 'Last Item', price: 12 },
-                  ]);
-                  // await this.props.setEvent('-LRdZ9WLN-pidwhU5bQE')
-                  await this.props.setEvent('');
-                  this.props.navigation.navigate('ListConfirm');
-                }}
-              >
-                <Text>HARD CODED RECEIPT</Text>
-              </Button>
-              {/* END OF TEMPORARY BUTTON WITH HARD-CODED RECEIPT */}
-            </Container>
-          )}
+            {/* TEMPORARY BUTTON WITH HARD-CODED RECEIPT */}
+            <Button
+              rounded
+              warning
+              large
+              style={styles.button}
+              onPress={async () => {
+                await this.props.setReceipt([
+                  { quantity: 1, name: 'Cheese Curds', price: 7.0 },
+                  { quantity: 1, name: 'Steak', price: 35.5 },
+                  {
+                    quantity: 1,
+                    name: 'Pepperoni Pizza with Olives, Spinach, and Onions',
+                    price: 15.0,
+                  },
+                  { quantity: 1, name: 'Pad Thai with Tofu', price: 18.0 },
+                  { quantity: 1, name: 'Red Curry with Rice', price: 20.0 },
+                  { quantity: 1, name: 'French Fries', price: 4.5 },
+                  { quantity: 1, name: 'Burger', price: 14 },
+                  { quantity: 1, name: 'Thanksgiving Cranberries', price: 12 },
+                  { quantity: 1, name: 'Burrito with black beans and rice', price: 17 },
+                  { quantity: 1, name: 'Last Item', price: 12 },
+                ]);
+                // await this.props.setEvent('-LRdZ9WLN-pidwhU5bQE')
+                await this.props.setEvent('');
+                this.props.navigation.navigate('ListConfirm');
+              }}
+            >
+              <Text>HARD CODED RECEIPT</Text>
+            </Button>
+            {/* END OF TEMPORARY BUTTON WITH HARD-CODED RECEIPT */}
+          </Container>
+        )}
       </Container>
     );
   }
@@ -135,7 +137,7 @@ export class HomeScreen extends React.Component {
 
 const mapState = state => {
   return { user: state.user.currentUser };
-}
+};
 
 const mapDispatch = dispatch => {
   return {
@@ -148,4 +150,7 @@ const mapDispatch = dispatch => {
   };
 };
 
-export default connect(mapState, mapDispatch)(HomeScreen);
+export default connect(
+  mapState,
+  mapDispatch
+)(HomeScreen);
