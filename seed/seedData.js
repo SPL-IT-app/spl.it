@@ -81,7 +81,7 @@ const events = [
   {
     date: 'nov 15',
     title: 'first date',
-    status: false,
+    status: true,
     receipts: {},
     members: {},
   },
