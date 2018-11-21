@@ -69,7 +69,7 @@ class Profile extends React.Component {
     this.friendsRef = makeRef(`/users/${this.props.user.id}/friends`)
     this.friendsRef.on('child_added', snapshot => {
       makeRef(`/profiles/${snapshot.key}`).once('value', snapshot => {
-        this.setState({friends: [...this.state.friends, snapshot.val()]})
+        this.setState({friends: [...this.state.friends, {...snapshot.val(), id: snapshot.key}]})
       })
     })
     this.friendsRef.on('child_removed', snapshot => {
