@@ -22,6 +22,7 @@ import {
   ListItemConfirmationScreen,
   LineItemsConfirmedScreen,
   AddFriend,
+  SingleEvent,
   AddMemberToEventScreen
 } from '../screens';
 
@@ -35,6 +36,7 @@ const HomeStack = createStackNavigator(
     Camera: CameraView,
     ListConfirm: ListItemConfirmationScreen,
     Confirmed: LineItemsConfirmedScreen,
+    SingleEvent: SingleEvent,
     AddMembers: AddMemberToEventScreen
   },
   { headerMode: 'none', initialRouteName: 'Home' }
