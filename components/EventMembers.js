@@ -64,7 +64,7 @@ export class EventMembers extends Component {
                     borderColor: member.color
                       ? member.color
                       : randomColor({
-                          luminosity: 'bright',
+                          luminosity: 'light',
                           hue: 'random',
                         }).toString(),
                   }}

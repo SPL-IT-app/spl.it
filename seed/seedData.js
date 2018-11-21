@@ -42,7 +42,7 @@ const profiles = [
       username: 'codyPug',
       imageUrl: 'https://bit.ly/2q1fzuM',
       color: randomColor({
-        luminosity: 'bright',
+        luminosity: 'light',
         hue: 'random',
       }).toString(),
     },
@@ -52,7 +52,7 @@ const profiles = [
       username: 'pugCody',
       imageUrl: 'https://bit.ly/2A52oxA',
       color: randomColor({
-        luminosity: 'bright',
+        luminosity: 'light',
         hue: 'random',
       }).toString(),
     },
@@ -63,7 +63,7 @@ const profiles = [
       imageUrl:
         'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
       color: randomColor({
-        luminosity: 'bright',
+        luminosity: 'light',
         hue: 'random',
       }).toString(),
     },
