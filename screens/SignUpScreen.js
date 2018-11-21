@@ -100,7 +100,7 @@ class SignUpScreen extends React.Component {
                   imageUrl: 'https://bit.ly/2qQRtn6',
                   username,
                   color: randomColor({
-                    luminosity: 'bright',
+                    luminosity: 'light',
                     hue: 'random',
                   }).toString(),
                 },
