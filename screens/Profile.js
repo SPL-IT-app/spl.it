@@ -39,6 +39,8 @@ import { connect } from "react-redux";
 import { makeRef } from "../server/firebaseconfig";
 import { Friends, Groups } from '../components'
 import Dialog from 'react-native-dialog'
+import { ImagePicker, FileSystem } from 'expo'
+import { storageRef } from '../server/firebaseconfig'
 
 class Profile extends React.Component {
   constructor() {
@@ -51,6 +53,7 @@ class Profile extends React.Component {
       value2: "",
       friends: [],
       dialogVisible: false,
+      image: null
     };
   }
   static navigationOptions = {
@@ -119,7 +122,39 @@ class Profile extends React.Component {
     this.setState({dialogVisible: false})
   }
 
-  handleYes = () => {
+  handleYes = async () => {
+    // const Blob = RNFetchBlob.polyfill.Blob
+    // const fs = RNFetchBlob.fs
+    // window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+    // window.Blob = Blob
+    // this.setState({dialogVisible: false})
+    // let result = await ImagePicker.launchImageLibraryAsync({
+    //   allowsEditing: true,
+    //   aspect: [4, 3]
+    // })
+    // const data = await fs.readFile(result.uri, 'base64')
+    // const blob = await Blob.build(data, { type: `${mime};BASE64` })
+    // storageRef.child(this.props.user.id).put(blob, {contentType: mime })
+    // const url = storageRef.child(this.props.user.id).getDownloadURL()
+    // if(!result.cancelled){
+    //   this.setState({image: url})
+    // }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4,3]
+    })
+    if(!result.cancelled){
+      // const fs = new FileSystem
+      let file = await FileSystem.readAsStringAsync(result.uri, {encoding: 'Base64'})
+      // console.log(file)
+      // this.setState({image: file, dialogVisible: false})
+      file = 'data:image/jpg;base64,' + file
+      await storageRef.child(this.props.user.id).putString(file, 'data_url', {contentType:'image/jpeg'})
+      const url = await storageRef.child(this.props.user.id).getDownloadURL()
+      console.log(url)
+      // this.setState({image: url, dialogVisible: false})
+    }
 
   }
 
@@ -146,7 +181,7 @@ class Profile extends React.Component {
               >
                 <Card>
                   <CardItem header bordered>
-                    <Left />
+                    <Left><Text>{this.state.image}</Text></Left>
                     <Body flexGrow={2}>
                       {this.state.editing === "name" ? (
                         <Item rounded flex={4}>
