@@ -36,15 +36,14 @@ class SingleEvent extends React.Component {
 
     componentDidMount() {
         const { navigation } = this.props
-        const { event, receipts, receiptIds } = this.state
 
         this.eventRef = makeRef(`/events/${navigation.getParam('id')}`)
         this.receiptsRef = makeRef(`/events/${navigation.getParam('id')}/receipts`)
 
-        this.receiptsRef.on('value', snapshot => {
+        this.receiptsRef.on('child_added', snapshot => {
             this.setState({
-                receiptIds: [...receiptIds, Object.keys(snapshot.val())],
-                receipts: [...receipts, ...Object.values(snapshot.val())]
+                receiptIds: [...this.state.receiptIds, Object.keys(snapshot.val())],
+                receipts: [...this.state.receipts, ...Object.values(snapshot.val())]
             })
         })
 
@@ -61,10 +60,8 @@ class SingleEvent extends React.Component {
     }
 
     render() {
-        const { event, receipts, receiptIds } = this.state
+        const { event, receipts } = this.state
         if (!event.title) return <Container />
-        console.log(receipts.length, 'she')
-        console.log(receipts, 'her')
 
         return (
             <Container styles={styles.container}>
@@ -83,22 +80,23 @@ class SingleEvent extends React.Component {
                     </ListItem>
                 </List>
 
-                {receipts.length && receipts.map((receipt, idx) => {
-                    console.log(CardItem, 'TEST')
-                    return (
-                        <Content key={parseInt(idx, 2)}>
-                            <Card>
-                                <CardItem>
-                                    <Image source={{ uri: receipt.imageUrl }} style={{ height: 100, width: null, flex: 1 }} />
-                                </CardItem>
-                                <CardItem>
-                                    <Text>Receipt</Text>
-                                </CardItem>
-                            </Card>
-                        </Content>
-                    )
-                })
-                }
+                <Content >
+                    {receipts.length > 0 ?
+                        receipts.map((receipt, idx) => {
+                            return (
+                                <Card key={parseInt(idx, 2)}>
+                                    <CardItem>
+                                        <Image source={{ uri: receipt.imageUrl }} style={{ height: 100, width: null, flex: 1 }} />
+                                    </CardItem>
+                                    <CardItem>
+                                        <Text>Receipt {idx + 1}</Text>
+                                    </CardItem>
+                                </Card>
+                            )
+                        }) :
+                        <Text>No receipts</Text>
+                    }
+                </Content>
 
                 <Button
                     block

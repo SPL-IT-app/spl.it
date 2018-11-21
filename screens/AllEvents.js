@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, ScrollView } from 'react-native';
 import { Button, Icon, Container, Content, List, ListItem, View, Fab } from 'native-base';
 import { setEvent } from '../store'
 import { connect } from 'react-redux';
 import { makeRef } from "../server/firebaseconfig"
 import { withNavigation } from "react-navigation";
+import { user } from "../store/index";
 
 const styles = StyleSheet.create({
     listItemTitle: {
@@ -28,28 +29,24 @@ class AllEvents extends React.Component {
     }
 
     componentDidMount() {
-        const { events } = this.props
-        this.refs = []
-        this.eventId = []
+        const { user } = this.props
+        this.eventIds = []
 
-        Object.keys(events).forEach(id => {
-            const eventsRef = makeRef(`/events/${id}`)
-            const { events } = this.state
+        this.userEventsRef = makeRef(`/users/${user.id}/events`)
 
-            this.refs.push(eventsRef)
-            this.eventId.push(id)
-            eventsRef.on('value', snapshot => {
+        this.userEventsRef.on('child_added', snapshot => {
+            const eventsRef = makeRef(`/events/${snapshot.key}`)
+            eventsRef.once('value', eventSnapshot => {
                 this.setState({
-                    events: [...events, snapshot.val()]
+                    events: [...this.state.events, eventSnapshot.val()]
                 })
+                this.eventIds.push(eventSnapshot.key)
             })
         })
     }
 
     componentWillUnmount() {
-        this.refs.forEach(ref => {
-            ref.off()
-        })
+        this.userEventsRef.off()
     }
 
     handleEventClick = async (id) => {
@@ -72,28 +69,32 @@ class AllEvents extends React.Component {
     render() {
         const { events } = this.state
         if (events.length === 0) return <Container />
-
         return (
             <Container >
                 <List>
                     <ListItem style={styles.listItemTitle}>
                         <Text>Event Name</Text><Text>View</Text>
                     </ListItem>
-                    {
-                        events.map((event, idx) => {
-                            return (
-                                <Button
-                                    block
-                                    style={styles.eventButton}
-                                    key={parseInt(idx, 2)}
-                                    onPress={() => this.handleEventClick(this.eventId[idx])}
-                                >
-                                    <Text>{event.title.toUpperCase()}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
-                                </Button>
-                            )
-                        })
-                    }
                 </List>
+                <ScrollView>
+                    <List>
+                        {
+                            events.map((event, idx) => {
+                                return event.status ?
+                                    (
+                                        <Button
+                                            block
+                                            style={styles.eventButton}
+                                            key={this.eventIds[idx]}
+                                            onPress={() => this.handleEventClick(this.eventIds[idx])}
+                                        >
+                                            <Text>{event.title === '' ? `Event ${idx + 1}` : event.title.toUpperCase()}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
+                                        </Button>
+                                    ) : <Text />
+                            })
+                        }
+                    </List>
+                </ScrollView>
                 <Container >
                     <Fab
                         position='bottomRight'
@@ -107,4 +108,9 @@ class AllEvents extends React.Component {
     }
 }
 
-export default withNavigation(connect(null, { setEvent })(AllEvents))
+
+const mapState = state => {
+    return { user: state.user.currentUser }
+}
+
+export default withNavigation(connect(mapState, { setEvent })(AllEvents))
