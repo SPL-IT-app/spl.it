@@ -182,9 +182,8 @@ export class LineItemsConfirmedScreen extends React.Component {
           <Button
             success
             block
-            disabled
             style={styles.button}
-            // onPress={this.handleConfirmItems}
+            onPress={() => {this.props.navigation.navigate('Home')}}
           >
             <Text style={styles.buttonText}> SAVE RECEIPT </Text>
           </Button>
