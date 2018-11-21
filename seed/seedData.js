@@ -1,4 +1,4 @@
-import { randomColor } from 'randomcolor';
+const { randomColor } = require('randomcolor');
 
 const users = [
   {
