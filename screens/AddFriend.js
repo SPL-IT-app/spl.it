@@ -42,7 +42,7 @@ export class AddFriend extends Component {
                 <Content>
                     <Item>
                         <Icon name="ios-search" />
-                        <Input placeholder="Search" value={this.state.search} onChangeText={value=>this.handleChange(value)} />
+                        <Input autoCapitalize='none' placeholder="Search" value={this.state.search} onChangeText={value=>this.handleChange(value)} />
                         <Icon name="ios-people" />
                     </Item>
                     <List>
