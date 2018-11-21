@@ -68,10 +68,7 @@ export class LineItemsConfirmedScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      receiptNameVisible: false,
-      addGroupMemberVisible: false,
       receiptLineItems: [],
-      eventMemberProfiles: [],
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -86,28 +83,6 @@ export class LineItemsConfirmedScreen extends React.Component {
       lineItems = snapshot.val();
     });
     this.setState({ receiptLineItems: Object.entries(lineItems) });
-
-    this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
-    this.eventMembersRef.on('child_added', snapshot => {
-      const profileRef = makeRef(`/profiles/${snapshot.key}`);
-      profileRef.once('value', profileSnapshot =>
-        this.setState({
-          eventMemberProfiles: [
-            ...this.state.eventMemberProfiles,
-            profileSnapshot.val(),
-          ],
-        })
-      );
-    });
-    this.eventMembersRef.on('child_removed', snapshot => {
-      const profileRef = makeRef(`/profiles/${snapshot.key}`);
-      profileRef.once('value', profileSnapshot => {
-        const newArr = [...this.state.eventMemberProfiles].filter(member => {
-          return member.username !== profileSnapshot.val().username;
-        });
-        this.setState({ eventMemberProfiles: newArr });
-      });
-    });
   };
 
   componentWillUnmount() {
@@ -153,7 +128,6 @@ export class LineItemsConfirmedScreen extends React.Component {
                 );
               }
             })}
-
             <Row style={styles.lastRow} />
           </Grid>
         </Content>
