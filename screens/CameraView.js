@@ -6,6 +6,8 @@ import {
   StyleSheet,
   PanResponder,
   Alert,
+  Dimensions,
+  PixelRatio,
 } from 'react-native';
 import { PanResponderInstance } from 'PanResponder';
 import { Camera, Permissions, ImageManipulator } from 'expo';
@@ -14,6 +16,7 @@ require('../secrets');
 import { Icon, Button, Content, Spinner } from 'native-base';
 import { connect } from 'react-redux';
 import { setReceipt } from '../store';
+import { MyHeader, BackButton } from '../components/index';
 
 const styles = StyleSheet.create({
   view: {
@@ -21,8 +24,9 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
+    backgroundColor: 'rgba(220, 220, 220, 0.8)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: { padding: 20, marginTop: 20 },
   touch: {
@@ -48,6 +52,10 @@ export class CameraView extends React.Component {
         width: 0,
         height: 0,
       },
+      // dimensions: {
+      //   width: 0,
+      //   height: 0,
+      // },
     };
   }
   async componentDidMount() {
@@ -61,10 +69,12 @@ export class CameraView extends React.Component {
       const { x0, y0, dx, dy, moveX, moveY } = gestureState;
       this.setState({
         crop: {
-          originX: moveX - dx,
-          originY: moveY - dy,
-          width: moveX + dx,
-          height: moveY + dy,
+          // originX: moveX - dx,
+          // originY: moveY - dy,
+          originX: x0,
+          originY: y0,
+          width: dx,
+          height: dy,
         },
       });
     },
@@ -103,10 +113,6 @@ export class CameraView extends React.Component {
         }`,
         reqBody
       );
-      // console.log(
-      //   'RESPONSE ======>',
-      //   resp.data.responses[0].fullTextAnnotation.text
-      // );
       if (!resp.data.responses[0].fullTextAnnotation) {
         this.props.navigation.navigate('Camera');
         Alert.alert('Error', 'Try again!');
@@ -120,22 +126,27 @@ export class CameraView extends React.Component {
     }
   };
   takePicture = async () => {
-    console.log(this.state.crop);
     let photo = await this.camera.takePictureAsync({
       quality: 0,
       base64: true,
     });
     this.cropPicture(photo);
-    // this.getData(photo);
   };
 
   cropPicture = async photo => {
-    console.log('height ==> ', photo.height);
-    console.log('width ==> ', photo.width);
-    let croppedPhoto = await ImageManipulator.manipulate(
-      photo.uri,
+    let resizedPhoto = await ImageManipulator.manipulateAsync(photo.uri, [
+      {
+        resize: {
+          width: Dimensions.get('window').width,
+          height: Dimensions.get('window').height,
+          // width: this.state.dimensions.width,
+          // height: this.state.dimensions.height,
+        },
+      },
+    ]);
+    let croppedPhoto = await ImageManipulator.manipulateAsync(
+      resizedPhoto.uri,
       [
-        // { resize: { width: 1000 } },
         {
           crop: {
             originX: this.state.crop.originX,
@@ -147,16 +158,8 @@ export class CameraView extends React.Component {
       ],
       { base64: true }
     );
-    this.getData(croppedPhoto);
-  };
 
-  handlePress = evt => {
-    this.setState({
-      crop: {
-        originX: evt.nativeEvt.pageX,
-        originY: evt.nativeEvt.pageY,
-      },
-    });
+    this.getData(croppedPhoto);
   };
 
   toggleLoading = () => {
@@ -168,11 +171,9 @@ export class CameraView extends React.Component {
   _renderLoading = () => {
     if (this.state.displayLoading) {
       return (
-        <View style={styles.Camera}>
-          <Content>
-            <Spinner />
-            <Text>Reading Receipt...</Text>
-          </Content>
+        <View style={styles.camera}>
+          <Spinner />
+          <Text>Reading receipt...</Text>
         </View>
       );
     } else {
@@ -185,10 +186,11 @@ export class CameraView extends React.Component {
     if (hasCameraPermission === null) {
       return <View />;
     } else if (hasCameraPermission === false) {
-      return <Text>No access to camera</Text>;
+      return <Text>No access to camera!</Text>;
     } else {
       return (
         <View style={styles.view}>
+          <MyHeader title="Take Photo" right={() => <BackButton />} />
           <Camera
             style={styles.view}
             type={this.state.type}
@@ -196,28 +198,37 @@ export class CameraView extends React.Component {
               this.camera = ref;
             }}
             {...this._panResponder.panHandlers}
+            // onLayout={evt => {
+            //   const { x, y, width, height } = evt.nativeEvent.layout;
+            //   this.setState({
+            //     dimensions: {
+            //       width,
+            //       height,
+            //     },
+            //   });
+            // }}
           >
             {this._renderLoading()}
-            <View style={styles.camera}>
+            {/* <View style={styles.camera}>
               <Button
                 style={styles.button}
                 onPress={() => this.props.navigation.navigate('Home')}
               >
                 <Icon type="MaterialCommunityIcons" name="cancel" />
               </Button>
-              {/* <TouchableOpacity
-              style={styles.touch}
-              onPress={() => {
-                this.takePicture().then(() => {
-                  this.props.navigation.navigate('ListConfirm');
-                });
-              }}
-            >
-              <Button>
-                <Text style={styles.text}> Take Photo </Text>
-              </Button>
-            </TouchableOpacity> */}
-            </View>
+              <TouchableOpacity
+                style={styles.touch}
+                onPress={() => {
+                  this.takePicture().then(() => {
+                    this.props.navigation.navigate('ListConfirm');
+                  });
+                }}
+              >
+                <Button>
+                  <Text style={styles.text}> Take Photo </Text>
+                </Button>
+              </TouchableOpacity>
+            </View> */}
           </Camera>
         </View>
       );

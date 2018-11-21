@@ -23,9 +23,10 @@ import {
   LineItemsConfirmedScreen,
   AddFriend,
   AddMemberToEventScreen,
+  CameraView,
 } from '../screens';
 
-import { MyHeader, CameraView } from '../components';
+import { MyHeader } from '../components';
 
 //import LoginScreen from '../screens/LoginScreen'
 
