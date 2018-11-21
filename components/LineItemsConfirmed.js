@@ -88,7 +88,11 @@ class LineItemsConfirmed extends React.Component {
   }
 
   render() {
-    // const color =
+    let newArr = [...this.state.colors];
+    newArr.forEach((col, idx) => {
+      newArr.splice(idx, 0, 'transparent');
+    });
+    console.log('newArr ===>', newArr);
     return (
       <LinearGradient
         colors={this.state.colors}
