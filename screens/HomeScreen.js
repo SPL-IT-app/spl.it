@@ -103,6 +103,8 @@ export class HomeScreen extends React.Component {
                   { quantity: 1, name: 'Red Curry with Rice', price: 20.0 },
                   { quantity: 1, name: 'French Fries', price: 4.5 },
                   { quantity: 1, name: 'Burger', price: 14 },
+                  { quantity: 1, name: 'Thanksgiving Cranberries', price: 12 },
+                  { quantity: 1, name: 'Burrito with black beans and rice', price: 17 },
                   { quantity: 1, name: 'Last Item', price: 12 },
                 ]);
                 // await this.props.setEvent('-LRdZ9WLN-pidwhU5bQE')
