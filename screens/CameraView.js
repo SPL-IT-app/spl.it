@@ -10,7 +10,7 @@ import {
   PixelRatio,
 } from 'react-native';
 import { PanResponderInstance } from 'PanResponder';
-import { Camera, Permissions, ImageManipulator } from 'expo';
+import { Camera, Permissions, ImageManipulator, Svg } from 'expo';
 const axios = require('axios');
 require('../secrets');
 import { Icon, Button, Content, Spinner } from 'native-base';
@@ -56,6 +56,7 @@ export class CameraView extends React.Component {
       //   width: 0,
       //   height: 0,
       // },
+      displayCrop: false,
     };
   }
   async componentDidMount() {
@@ -76,6 +77,7 @@ export class CameraView extends React.Component {
           width: dx,
           height: dy,
         },
+        displayCrop: true,
       });
     },
     onPanResponderRelease: (evt, gestureState) => {
@@ -164,6 +166,7 @@ export class CameraView extends React.Component {
 
   toggleLoading = () => {
     this.setState({
+      displayCrop: false,
       displayLoading: !this.state.displayLoading,
     });
   };
@@ -174,6 +177,41 @@ export class CameraView extends React.Component {
         <View style={styles.camera}>
           <Spinner />
           <Text>Reading receipt...</Text>
+        </View>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  _rectangleDisplay = () => {
+    const { width, height } = Dimensions.get('window');
+    // let currentWidth = 0;
+    // let currentHeight = 0;
+    if (this.state.displayCrop) {
+      return (
+        <View
+          style={styles.view}
+          // onLayout={evt => {
+          //   const { x, y, width, height } = evt.nativeEvent.layout;
+          //   currentHeight = height;
+          //   currentWidth = width;
+          // }}
+        >
+          {/* <Svg height={currentHeight} width={currentWidth}> */}
+          <Svg height={height} width={width}>
+            <Svg.Rect
+              // originX={this.state.crop.originX}
+              // originY={this.state.crop.originY}
+              x={this.state.crop.originX}
+              y={this.state.crop.originY}
+              width={this.state.crop.width}
+              height={this.state.crop.height}
+              strokeWidth={2}
+              stroke="#FFC000"
+              fill="transparent"
+            />
+          </Svg>
         </View>
       );
     } else {
@@ -198,16 +236,8 @@ export class CameraView extends React.Component {
               this.camera = ref;
             }}
             {...this._panResponder.panHandlers}
-            // onLayout={evt => {
-            //   const { x, y, width, height } = evt.nativeEvent.layout;
-            //   this.setState({
-            //     dimensions: {
-            //       width,
-            //       height,
-            //     },
-            //   });
-            // }}
           >
+            {this._rectangleDisplay()}
             {this._renderLoading()}
             {/* <View style={styles.camera}>
               <Button
