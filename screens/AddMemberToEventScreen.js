@@ -21,23 +21,31 @@ export class AddMemberToEventScreen extends Component {
   }
 
   componentDidMount() {
-    // all of user's friends
     this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
-    // console.log('REFERENCE =====> ', `/users/${this.props.user}/friends`);
-    this.usersFriendsRef.on('value', snapshot => {
-      // console.log('SNAPSHOT ====>', snapshot.val());
-      this.friendsArr = Object.keys(snapshot.val());
-      this.friendsArr.forEach(friend => {
-        this.friendProfileRef = makeRef(`/profiles/${friend}`);
-        this.friendProfileRef.once('value', value => {
-          this.setState({
-            friendProfiles: [...this.state.friendProfiles, value.val()],
-          });
+    this.usersFriendsRef.on('child_added', snapshot => {
+      const profileRef = makeRef(`/profiles/${snapshot.key}`);
+      profileRef.once('value', profileSnapshot =>
+        this.setState({
+          friendProfiles: [
+            ...this.state.friendProfiles,
+            {profile: profileSnapshot.val(), id: snapshot.key},
+          ],
+        })
+      );
+    });
+    this.usersFriendsRef.on('child_removed', snapshot => {
+      const profileRef = makeRef(`/profiles/${snapshot.key}`);
+      profileRef.once('value', profileSnapshot => {
+        const newArr = [...this.state.friendProfiles].filter(friend => {
+          return friend.profile.username !== profileSnapshot.val().username;
         });
+        this.setState({ friendProfiles: newArr });
       });
     });
 
+
     // all of event's members
+
     this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
     this.eventMembersRef.on('child_added', snapshot => {
       const profileRef = makeRef(`/profiles/${snapshot.key}`);
@@ -67,6 +75,7 @@ export class AddMemberToEventScreen extends Component {
   }
 
   render() {
+
     console.log('state====> ', this.state);
     // const { navigate } = this.props.navigation;
     // if (!this.state.friendProfiles) {
@@ -76,7 +85,7 @@ export class AddMemberToEventScreen extends Component {
       <Container>
         <MyHeader title="Add Members" right={() => <BackButton />} />
         <EventMembers members={this.state.eventMemberProfiles} />
-        <EventFriends />
+        <EventFriends friends={this.state.friendProfiles} />
       </Container>
     );
   }

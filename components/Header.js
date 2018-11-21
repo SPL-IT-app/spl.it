@@ -17,7 +17,6 @@ import { BackButton, DeleteButton } from './index';
 
 export class MyHeader extends Component {
   render() {
-    console.log('this.props.right ==> ', this.props.right);
     return (
       <Header>
         <Left>
