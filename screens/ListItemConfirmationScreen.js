@@ -148,6 +148,10 @@ export class ListItemConfirmationScreen extends React.Component {
     });
 
     this.props.setEvent(eventId);
+    const userRef = makeRef(`/users/${this.props.user.id}/events`)
+    userRef.update({
+      [eventId]: true
+    })
   };
 
   render() {
@@ -174,6 +178,7 @@ export class ListItemConfirmationScreen extends React.Component {
                   this.props.navigation.navigate('Confirmed', {
                     receiptRef: this.state.receiptRef,
                   });
+
                 }}
               />
             </Dialog.Container>
