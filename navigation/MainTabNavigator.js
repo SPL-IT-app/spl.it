@@ -22,11 +22,12 @@ import {
   ListItemConfirmationScreen,
   LineItemsConfirmedScreen,
   AddFriend,
+  AddMemberToEventScreen,
+  CameraView,
   SingleEvent,
-  AddMemberToEventScreen
 } from '../screens';
 
-import { MyHeader, CameraView } from '../components';
+import { MyHeader } from '../components';
 
 //import LoginScreen from '../screens/LoginScreen'
 
@@ -62,7 +63,7 @@ const HomeStack = createStackNavigator(
 const ProfileStack = createStackNavigator(
   {
     Profile: Profile,
-    AddFriend: AddFriend
+    AddFriend: AddFriend,
   },
   { headerMode: 'none' }
 );
