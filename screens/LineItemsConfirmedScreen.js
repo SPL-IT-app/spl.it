@@ -78,7 +78,6 @@ export class LineItemsConfirmedScreen extends React.Component {
 
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
-    console.log("RECEIPT REF ====>", this.receiptRef)
     let lineItems = {};
     this.receiptRefUrl.on('value', snapshot => {
       lineItems = snapshot.val();
@@ -118,7 +117,6 @@ export class LineItemsConfirmedScreen extends React.Component {
               </Col>
             </Row>
             {receipt.map((lineItem, idx) => {
-              console.log("LINE ITEM FROM MAP ====> ", lineItem)
               if (typeof lineItem[1] === 'object') {
                 return (
                   <LineItemsConfirmed

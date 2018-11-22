@@ -44,18 +44,30 @@ class SingleEvent extends React.Component {
   }
 
   componentDidMount() {
-    const { navigation } = this.props;
-
     this.eventRef = makeRef(`/events/${this.props.event}`);
     this.receiptsRef = makeRef(`/events/${this.props.event}/receipts`);
 
     this.receiptsRef.on('child_added', snapshot => {
-      console.log('SNAPSHOT ====>', snapshot.key);
+      console.log('SNAPSHOT ADDED====>', snapshot.key);
       this.setState({
         receiptIds: [...this.state.receiptIds, snapshot.key],
         receipts: [...this.state.receipts, snapshot.val()],
       });
     });
+
+    this.receiptsRef.on('child_removed', snapshot => {
+        console.log("SNAPSHOT REMOVED ====>", snapshot.key);
+        const newReceiptIds = this.state.receiptIds.filter(receiptId => {
+            return receiptId !== snapshot.key
+        })
+        const newReceipts = this.state.receipts.filter(receipt => {
+            return receipt !== snapshot.val()
+        })
+        this.setState({
+            receiptIds: newReceiptIds,
+            receipts: newReceipts
+        })
+    })
 
     this.eventRef.on('value', snapshot => {
       this.setState({
@@ -66,15 +78,11 @@ class SingleEvent extends React.Component {
 
   componentWillUnmount() {
     this.eventRef.off();
-    this.receiptsRef.off();
+    // this.receiptsRef.off();
   }
 
   handleSelectReceipt = receiptId => {
-    const { navigation } = this.props;
-    console.log('SELECTED RECEIPT', receiptId);
-
     const receiptRef = `/events/${this.props.event}/receipts/${receiptId}`
-    console.log("RECEIPT REF ====>", receiptRef)
     this.props.navigation.navigate('Confirmed', {
         receiptRef: receiptRef,
       });
@@ -83,8 +91,6 @@ class SingleEvent extends React.Component {
   render() {
     const { event, receipts } = this.state;
     if (!event.title) return <Container />;
-    console.log('RECEIPT IDs=====>', this.state.receiptIds);
-    console.log('RECEIPTS=====>', this.state.receipts);
     return (
       <Container styles={styles.container}>
         <Header />

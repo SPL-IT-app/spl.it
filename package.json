@@ -15,6 +15,7 @@
   "dependencies": {
     "@expo/samples": "2.1.1",
     "axios": "^0.18.0",
+    "dateformat": "^3.0.3",
     "expo": "^31.0.2",
     "firebase": "^5.5.8",
     "native-base": "^2.8.1",
@@ -25,6 +26,7 @@
     "react-native-checkbox-heaven": "^0.1.6",
     "react-native-dialog": "^5.4.0",
     "react-native-easy-grid": "^0.2.0",
+    "react-native-swipeable": "^0.6.0",
     "react-navigation": "^2.18.2",
     "react-redux": "^5.1.1",
     "redux": "^4.0.1",

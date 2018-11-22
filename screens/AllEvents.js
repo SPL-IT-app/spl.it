@@ -1,30 +1,35 @@
 import React from 'react';
-import { StyleSheet, Text, ScrollView } from 'react-native';
-import {
-  Button,
-  Icon,
-  Container,
-  Content,
-  List,
-  ListItem,
-  View,
-  Fab,
-} from 'native-base';
+import { StyleSheet, Text, ScrollView, TouchableHighlight } from 'react-native';
+import { Icon, Container, List, Body, Right, ListItem, Fab } from 'native-base';
 import { setEvent } from '../store';
 import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { withNavigation } from 'react-navigation';
+import Swipeable from 'react-native-swipeable';
+var dateFormat = require('dateformat');
 
 const styles = StyleSheet.create({
-  listItemTitle: {
+  deleteButton: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    // alignItems: 'center',
+    backgroundColor: '#FF7E79',
+    height: '100%',
   },
-  eventButton: {
-    marginTop: 20,
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '99%',
+  deleteText: {
+    paddingLeft: 15,
+    color: 'white',
+  },
+  eventText: {
+    fontWeight: '200',
+    letterSpacing: 2,
+  },
+  eventDateText: {
+    fontWeight: '200',
+    color: '#838383',
+    letterSpacing: 2,
+    paddingTop: 5,
+    fontSize: 10
   },
 });
 
@@ -51,16 +56,29 @@ class AllEvents extends React.Component {
         this.eventIds.push(eventSnapshot.key);
       });
     });
+
+    this.userEventsRef.on('child_removed', snapshot => {
+      console.log('CHILD REMOVED (EVENT) ====>, ', snapshot.key);
+      const eventsRef = makeRef(`/events/${snapshot.key}`);
+      eventsRef.once('value', eventSnapshot => {
+        const newEvents = this.state.events.filter(event => {
+          return event !== eventSnapshot.val();
+        });
+        this.setState({
+          events: newEvents,
+        });
+      });
+      eventsRef.remove();
+    });
   }
 
   componentWillUnmount() {
     this.userEventsRef.off();
+    this.eventsRef.off();
   }
 
   handleEventClick = async id => {
     const { navigation } = this.props;
-
-    console.log("EVENT ID FROM HANDLE CLICK =====>", id)
     await this.props.setEvent(id);
     navigation.navigate('SingleEvent', {
       id,
@@ -77,31 +95,43 @@ class AllEvents extends React.Component {
   render() {
     const { events } = this.state;
     if (events.length === 0) return <Container />;
+    const rightButtons = [
+      <TouchableHighlight style={styles.deleteButton} key={1}>
+        <Text style={styles.deleteText}>DELETE</Text>
+      </TouchableHighlight>,
+    ];
     return (
       <Container>
-        <List>
-          <ListItem style={styles.listItemTitle}>
-            <Text>Event Name</Text>
-            <Text>View</Text>
-          </ListItem>
-        </List>
         <ScrollView>
           <List>
             {events.map((event, idx) => {
               return event.status ? (
-                <Button
-                  block
-                  style={styles.eventButton}
-                  key={this.eventIds[idx]}
-                  onPress={() => this.handleEventClick(this.eventIds[idx])}
-                >
-                  <Text>
-                    {event.title === ''
-                      ? `Event ${idx + 1}`
-                      : event.title.toUpperCase()}
-                  </Text>
-                  <Icon type="MaterialCommunityIcons" name="arrow-right" />
-                </Button>
+                <Swipeable rightButtons={rightButtons}>
+                  <ListItem
+                    selected
+                    button
+                    onPress={() => this.handleEventClick(this.eventIds[idx])}
+                    key={idx}
+                  >
+                    <Body>
+                      <Text style={styles.eventText}>
+                        {event.title === ''
+                          ? `Event ${idx + 1}`.toUpperCase()
+                          : event.title.toUpperCase()}
+                      </Text>
+                      <Text note style={styles.eventDateText}>
+                        {dateFormat(event.date, 'mediumDate')}
+                      </Text>
+                    </Body>
+
+                    <Right>
+                      <Icon
+                        type="MaterialCommunityIcons"
+                        name="chevron-right"
+                      />
+                    </Right>
+                  </ListItem>
+                </Swipeable>
               ) : (
                 <Text />
               );
@@ -123,12 +153,12 @@ const mapState = state => {
 };
 
 const mapDispatch = dispatch => {
-    return {
-        setEvent: (eventId) => {
-            dispatch(setEvent(eventId))
-        }
-    }
-}
+  return {
+    setEvent: eventId => {
+      dispatch(setEvent(eventId));
+    },
+  };
+};
 
 export default withNavigation(
   connect(
