@@ -69,6 +69,7 @@ class AllEvents extends React.Component {
     render() {
         const { events } = this.state
         if (events.length === 0) return <Container />
+
         return (
             <Container >
                 <List>
@@ -88,7 +89,7 @@ class AllEvents extends React.Component {
                                             key={this.eventIds[idx]}
                                             onPress={() => this.handleEventClick(this.eventIds[idx])}
                                         >
-                                            <Text>{event.title === '' ? `Event ${idx + 1}` : event.title.toUpperCase()}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
+                                            <Text>{event.title === '' ? `Event ${idx + 1} idx: ${this.eventIds[idx]}` : event.title.toUpperCase()}</Text><Icon type="MaterialCommunityIcons" name="arrow-right" />
                                         </Button>
                                     ) : <Text />
                             })
