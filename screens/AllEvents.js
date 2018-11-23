@@ -61,15 +61,34 @@ class AllEvents extends React.Component {
       console.log('CHILD REMOVED (EVENT) ====>, ', snapshot.key);
       const eventsRef = makeRef(`/events/${snapshot.key}`);
       eventsRef.once('value', eventSnapshot => {
+        console.log("EVENT SNAPSHOT (REMOVED) ====>", eventSnapshot.val())
         const newEvents = this.state.events.filter(event => {
-          return event !== eventSnapshot.val();
+          console.log("EVENT INFO CHECK ====>", event.id!== snapshot.key)
+          return event.id !== snapshot.key;
         });
+        console.log('NEW EVENTS (REMOVED) ====>, ', newEvents);
         this.setState({
           events: newEvents,
         });
+      }).then(() => {
+        eventsRef.remove();
       });
-      eventsRef.remove();
     });
+  }
+
+
+  handleRemoveEvent = (eventId) => {
+    const eventMembersRef = makeRef(`events/${eventId}/members`)
+    eventMembersRef.once("value", snapshot => {
+      snapshot.forEach( childSnapshot => {
+        const userEventRef = makeRef(`users/${childSnapshot.key}/events/${eventId}`)
+         userEventRef.remove()
+      })
+    }).then(() => {
+      // const eventRef = makeRef(`events/${eventId}`)
+      // eventRef.remove()
+    })
+
   }
 
   componentWillUnmount() {
@@ -89,22 +108,7 @@ class AllEvents extends React.Component {
     });
   };
 
-  handleRemoveEvent = (eventId) => {
-    console.log("EVENT DELETE BUTTON PRESSED", eventId)
-    const eventMembersRef = makeRef(`events/${eventId}/members`)
-    eventMembersRef.once("value", snapshot => {
-      console.log("SNAPSHOT ====>", snapshot.key, snapshot.val())
-      snapshot.forEach( childSnapshot => {
-        console.log("CHILD SNAPSHOT ====>", childSnapshot.key, childSnapshot.val())
-        const userEventRef = makeRef(`users/${childSnapshot.key}/events/${eventId}`)
-         userEventRef.remove()
-      })
-    }).then(() => {
-      const eventRef = makeRef(`events/${eventId}`)
-      eventRef.remove()
-    })
 
-  }
 
   handleEventAdd = async () => {
     const { navigation } = this.props;
