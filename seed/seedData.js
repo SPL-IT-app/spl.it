@@ -34,88 +34,250 @@ const users = [
       events: {},
     },
   },
+  {
+    l5Ckru5l4EbNqsRNCohQXpgUNmj2: {
+      firstName: 'Julianne',
+      lastName: 'Crawford',
+      email: 'julianne@email.com',
+      phone: '111-111-1111',
+      friends: {},
+      groups: {},
+      events: {}
+    }
+  },
+  {
+    uJeuLwsE8XNcfWYtMt2zDtqCjZH2: {
+      firstName: 'Lotus',
+      lastName: 'Tan',
+      email: 'lotus@email.com',
+      phone: '222-222-2222',
+      friends: {},
+      groups: {},
+      events: {}
+    }
+  },
+  {
+    MFnAx1YAzneSfy9stSDhIWbWygg1: {
+      firstName: 'Mustafa',
+      lastName: 'Dane',
+      email: 'mustafa@email.com',
+      phone: '333-333-3333',
+      friends: {},
+      groups: {},
+      events: {}
+    }
+  },
+  {
+    dOQJVPAdwLXl8UbxtaSbDdbeGiQ2: {
+      firstName: 'Brittany',
+      lastName: 'Hill',
+      email: 'brittany@email.com',
+      phone: '444-444-4444',
+      friends: {},
+      groups: {},
+      events: {}
+    }
+  },
+  {
+    '5TL5kwr0m4coy9WpncZdiyknuLu1': {
+      firstName: 'Collin',
+      lastName: 'Miller',
+      email: 'collin@email.com',
+      phone: '555-555-5555',
+      friends: {},
+      groups: {},
+      events: {}
+    }
+  },
+  {
+    kWdrASnnEZWQ29MK7u0uO7FDvIP2: {
+      firstName: 'Ben',
+      lastName: 'Wilhelm',
+      email: 'ben@email.com',
+      phone: '666-666-6666',
+      friends: {},
+      groups: {},
+      events: {}
+    }
+  },
+  {
+    owZenwd8cGbPeW6scHFbfqfgpdD2: {
+      firstName: 'Finn',
+      lastName: 'Terdal',
+      email: 'finn@email.com',
+      phone: '777-777-7777',
+      friends: {},
+      groups: {},
+      events: {}
+    }
+  },
+  {
+    LYbFZlww7NhFABx1V492EjHCVJ42: {
+      firstName: 'Priti',
+      lastName: 'Patel',
+      email: 'priti@email.com',
+      phone: '888-888-8888',
+      friends: {},
+      groups: {},
+      events: {}
+    }
+  }
 ];
 
-const profiles = [
-  {
-    Ul5MOGufA2eYLCMq0CDD8Juojz92: {
-      username: 'codyPug',
-      imageUrl: 'https://bit.ly/2q1fzuM',
-      color: randomColor({
-        luminosity: 'light',
-        hue: 'random',
-      }).toString(),
-    },
-  },
-  {
-    QUYamusOQnMkQxJaxZVetUgY66D3: {
-      username: 'pugCody',
-      imageUrl: 'https://bit.ly/2A52oxA',
-      color: randomColor({
-        luminosity: 'light',
-        hue: 'random',
-      }).toString(),
-    },
-  },
-  {
-    v143uyYUOEPrIsOKLRN3gbSCtkw1: {
-      username: 'memememe',
-      imageUrl:
-        'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-      color: randomColor({
-        luminosity: 'light',
-        hue: 'random',
-      }).toString(),
-    },
-  },
-];
+const profilePictures = [
+  'https://bit.ly/2q1fzuM',
+  'https://bit.ly/2A52oxA',
+  'https://pbs.twimg.com/profile_images/1046968391389589507/_0r5bQLl.jpg',
+  'https://media.licdn.com/dms/image/C4E03AQFqv7CaH82t_A/profile-displayphoto-shrink_200_200/0?e=1548288000&v=beta&t=VFVVIhqTE53jfCGqx48ETHrTARJeA7kYw_Nk49GbhR0',
+  'https://media.licdn.com/dms/image/C4E03AQGzt7hdcVzcgQ/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=GAinuzrTk8NfdHwTREdOf9FYWKBV0o1-GtQAXofBSJY',
+  'https://media.licdn.com/dms/image/C4E03AQEvrycsOIYx-g/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=YsnANuxFrxVYj1gFCG35HXfsk0J84pJrqX4nXDc0IzM,',
+  'https://media.licdn.com/dms/image/C4E03AQET2S41uyB6HA/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=i_3aeTBTgkATA4UnUYi8L1KhRG7tD_YL7gL62CMgkao',
+  'https://cloud.fullstackacademy.com/colllin-miller-instructor.jpg?mtime=20180122152631',
+  'https://cloud.fullstackacademy.com/ben-wilhelm-instructor.jpg?mtime=20180122152630',
+  'https://cloud.fullstackacademy.com/finn-terdal-min.jpg?mtime=20180618121640',
+  'https://cloud.fullstackacademy.com/priti-patel-instructor.jpg?mtime=20180503134058'
+]
+
+const profiles = users.map((user, idx) => {
+  const uid = Object.keys(user)[0]
+  return {[uid]: {
+    username: `${user[uid].firstName}${user[uid].lastName}`,
+    imageUrl: profilePictures[idx],
+    color: randomColor({
+      luminosity: 'light',
+      hue: 'random',
+    }).toString()
+  }}
+})
 
 const groups = [
   {
-    name: '',
-    members: {},
+    name: 'Fullstack Instructors',
+    members: {
+      '5TL5kwr0m4coy9WpncZdiyknuLu1': true,
+      'kWdrASnnEZWQ29MK7u0uO7FDvIP2': true,
+      'owZenwd8cGbPeW6scHFbfqfgpdD2': true,
+      'LYbFZlww7NhFABx1V492EjHCVJ42': true
+    }
   },
+  {
+    name: 'Fullstack 1809',
+    members: {
+      'l5Ckru5l4EbNqsRNCohQXpgUNmj2': true,
+      'uJeuLwsE8XNcfWYtMt2zDtqCjZH2': true,
+      'MFnAx1YAzneSfy9stSDhIWbWygg1': true,
+      'dOQJVPAdwLXl8UbxtaSbDdbeGiQ2': true
+    }
+  }
 ];
 
 const events = [
   {
-    date: 'nov 15',
-    title: 'first date',
-    status: false,
+    date: new Date().toString(),
+    title: 'Night Out with the Guys',
+    status: true,
+    receipts: {},
+    members: {},
+  },
+  {
+    date: new Date().toString(),
+    title: "Trip to Portland",
+    status: true,
     receipts: {},
     members: {},
   },
 ];
 
-const receipts = [
+const portlandReceipts = [
   {
-    imageUrl: 'fakeURL',
+    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwis3ZHD-ereAhUic98KHZYRBpIQjRx6BAgBEAU&url=https%3A%2F%2Fwww.yelp.com%2Fbiz_photos%2Fbombay-san-diego%3Fselect%3DbMkFulsUorjN4NfUm8oAJA&psig=AOvVaw2d0vlhhB6OUXyOUiGnP9oN&ust=1543076406659873',
+    creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
+    tipPercent: 10,
+  },
+  {
+    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiy2L3K-ereAhViZN8KHcu2C7AQjRx6BAgBEAU&url=https%3A%2F%2Fwww.tripadvisor.com%2FLocationPhotoDirectLink-g147320-d2413182-i246316269-Boccado_s_Divino-San_Juan_Puerto_Rico.html&psig=AOvVaw2d0vlhhB6OUXyOUiGnP9oN&ust=1543076406659873',
+    creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
+    tipPercent: 25,
+  },
+  {
+    imageUrl: 'https://i.imgur.com/RrGITka.jpg',
+    creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
+    tipPercent: 15,
+  },
+  {
+    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjzpqT0-ereAhVhT98KHbSGAHwQjRx6BAgBEAU&url=https%3A%2F%2Fwww.reddit.com%2Fr%2Fmildlyinteresting%2Fcomments%2F1e80op%2Fthe_subtotal_service_and_total_on_my_dinner%2F&psig=AOvVaw3IhAtDwwj2OKQEgvhFUhCn&ust=1543077516120456',
+    creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
+    tipPercent: 0
+  }
+];
+
+const nightOutReceipts = [
+  {
+    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiMg8_l9ereAhXsmuAKHW2LAA4QjRx6BAgBEAU&url=https%3A%2F%2Fwww.yelp.com%2Fbiz_photos%2Fbombay-san-diego%3Fselect%3DbMkFulsUorjN4NfUm8oAJA&psig=AOvVaw2d0vlhhB6OUXyOUiGnP9oN&ust=1543076406659873',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 10,
-    lineItems: {},
   },
   {
-    imageUrl: 'secondreceiptfakeurl',
+    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiR1Zf_9ereAhUmh-AKHXR9CrgQjRx6BAgBEAU&url=http%3A%2F%2Flfd08.blogspot.com%2F2008%2F10%2Fbest-receipt-ever.html&psig=AOvVaw2d0vlhhB6OUXyOUiGnP9oN&ust=1543076406659873',
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 25,
-    lineItems: {},
   },
-];
+]
 
 const lineItems = [
   {
     name: 'cheese pizza',
     price: 45,
-    users: {
-      Ul5MOGufA2eYLCMq0CDD8Juojz92: true,
-      QUYamusOQnMkQxJaxZVetUgY66D3: true,
-    },
+    // users: {
+    //   Ul5MOGufA2eYLCMq0CDD8Juojz92: true,
+    //   QUYamusOQnMkQxJaxZVetUgY66D3: true,
+    // },
   },
   {
     name: 'creamed spinach',
     price: 5,
-    users: { QUYamusOQnMkQxJaxZVetUgY66D3: true },
+    // users: { QUYamusOQnMkQxJaxZVetUgY66D3: true },
   },
+  {
+    name: 'Cheese Curds',
+    price: 7,
+    users: {}
+  },
+  {
+    name: 'Pepperoni Pizza with Olives, Spinach, and Onions',
+    price: 15.0,
+    users: {}
+  },
+  {
+    name: 'Pad Thai with Tofu',
+    price: 18.0,
+    users: {}
+  },
+  {
+    name: 'Red Curry with Rice',
+    price: 20.0,
+    users: {}
+  },
+  {
+    name: 'French Fries',
+    price: 4.50,
+    users: {}
+  },
+  {
+    name: 'Burger',
+    price: 14,
+    users: {}
+  },
+  {
+    name: 'Thanksgiving Cranberries',
+    price: 12,
+    users: {}
+  },
+  {
+    name: 'Burrito with black beans and rice',
+    price: 17,
+    users: {}
+  }
 ];
 
 module.exports = {
@@ -124,5 +286,6 @@ module.exports = {
   users,
   events,
   lineItems,
-  receipts,
+  nightOutReceipts,
+  portlandReceipts,
 };

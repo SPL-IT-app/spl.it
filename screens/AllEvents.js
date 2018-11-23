@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     color: '#838383',
     letterSpacing: 2,
     paddingTop: 5,
-    fontSize: 10
+    fontSize: 10,
   },
 });
 
@@ -51,7 +51,7 @@ class AllEvents extends React.Component {
       const eventsRef = makeRef(`/events/${snapshot.key}`);
       eventsRef.once('value', eventSnapshot => {
         this.setState({
-          events: [...this.state.events, eventSnapshot.val()],
+          events: [...this.state.events, {id: snapshot.key, info: eventSnapshot.val()}],
         });
         this.eventIds.push(eventSnapshot.key);
       });
@@ -73,8 +73,12 @@ class AllEvents extends React.Component {
   }
 
   componentWillUnmount() {
-    this.userEventsRef.off();
-    this.eventsRef.off();
+    if(this.userEventsRef) {
+      this.userEventsRef.off();
+    }
+    if(this.eventsRef){
+      this.eventsRef.off();
+    }
   }
 
   handleEventClick = async id => {
@@ -85,42 +89,65 @@ class AllEvents extends React.Component {
     });
   };
 
+  handleRemoveEvent = (eventId) => {
+    console.log("EVENT DELETE BUTTON PRESSED", eventId)
+    const eventMembersRef = makeRef(`events/${eventId}/members`)
+    eventMembersRef.once("value", snapshot => {
+      console.log("SNAPSHOT ====>", snapshot.key, snapshot.val())
+      snapshot.forEach( childSnapshot => {
+        console.log("CHILD SNAPSHOT ====>", childSnapshot.key, childSnapshot.val())
+        const userEventRef = makeRef(`users/${childSnapshot.key}/events/${eventId}`)
+         userEventRef.remove()
+      })
+    }).then(() => {
+      const eventRef = makeRef(`events/${eventId}`)
+      eventRef.remove()
+    })
+
+  }
+
   handleEventAdd = async () => {
     const { navigation } = this.props;
 
-    await setEvent('');
+    await this.props.setEvent('');
     navigation.navigate('Camera');
   };
 
   render() {
     const { events } = this.state;
     if (events.length === 0) return <Container />;
-    const rightButtons = [
-      <TouchableHighlight style={styles.deleteButton} key={1}>
-        <Text style={styles.deleteText}>DELETE</Text>
-      </TouchableHighlight>,
-    ];
+    console.log("EVENTS ====>", events)
     return (
       <Container>
         <ScrollView>
           <List>
             {events.map((event, idx) => {
-              return event.status ? (
+              console.log("EVENT IN MAP", event)
+              const rightButtons = [
+                <TouchableHighlight
+                  style={styles.deleteButton}
+                  key={event.id}
+                  onPress={() => {this.handleRemoveEvent(event.id)}}
+                >
+                  <Text style={styles.deleteText}>DELETE</Text>
+                </TouchableHighlight>,
+              ];
+              return event.info.status ? (
                 <Swipeable rightButtons={rightButtons}>
                   <ListItem
                     selected
                     button
                     onPress={() => this.handleEventClick(this.eventIds[idx])}
-                    key={idx}
+                    key={event.id}
                   >
                     <Body>
                       <Text style={styles.eventText}>
-                        {event.title === ''
+                        {event.info.title === ''
                           ? `Event ${idx + 1}`.toUpperCase()
-                          : event.title.toUpperCase()}
+                          : event.info.title.toUpperCase()}
                       </Text>
                       <Text note style={styles.eventDateText}>
-                        {dateFormat(event.date, 'mediumDate')}
+                        {dateFormat(event.info.date, 'mediumDate')}
                       </Text>
                     </Body>
 
