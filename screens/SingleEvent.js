@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import {
   Button,
-  Icon,
   Container,
   Content,
   List,
@@ -10,11 +9,16 @@ import {
   ListItem,
   Card,
   CardItem,
+  Icon,
+  Left,
+  Body,
+  Right,
+  Thumbnail,
 } from 'native-base';
 import { setReceipt } from '../store';
 import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
-import Header from '../components/Header';
+import { BackButton, MyHeader } from '../components';
 
 const styles = StyleSheet.create({
   container: {
@@ -48,7 +52,7 @@ class SingleEvent extends React.Component {
 
     // ON EVENT CHANGE
     this.eventRef.once('value', snapshot => {
-      console.log("EVENT ===> ", snapshot.val())
+      console.log('EVENT ===> ', snapshot.val());
       this.setState({
         event: snapshot.val(),
       });
@@ -56,35 +60,41 @@ class SingleEvent extends React.Component {
 
     // ON EVENT RECEIPT ADDED
     this.receiptsRef.on('child_added', async snapshot => {
-      console.log('SNAPSHOT ADDED====>', "KEY", snapshot.key, "VALUE", snapshot.val());
+      console.log(
+        'SNAPSHOT ADDED====>',
+        'KEY',
+        snapshot.key,
+        'VALUE',
+        snapshot.val()
+      );
       await this.setState({
         receiptIds: [...this.state.receiptIds, snapshot.key],
         receipts: [...this.state.receipts, snapshot.val()],
       });
-      console.log("STATE RECEIPTS===> ", this.state.receipts)
+      console.log('STATE RECEIPTS===> ', this.state.receipts);
     });
 
     // ON EVENT RECEIPT REMOVED
     this.receiptsRef.on('child_removed', snapshot => {
-        console.log("SNAPSHOT REMOVED ====>", snapshot.key);
-        const newReceiptIds = this.state.receiptIds.filter(receiptId => {
-            return receiptId !== snapshot.key
-        })
-        const newReceipts = this.state.receipts.filter(receipt => {
-            return receipt !== snapshot.val()
-        })
-        this.setState({
-            receiptIds: newReceiptIds,
-            receipts: newReceipts
-        })
-    })
+      console.log('SNAPSHOT REMOVED ====>', snapshot.key);
+      const newReceiptIds = this.state.receiptIds.filter(receiptId => {
+        return receiptId !== snapshot.key;
+      });
+      const newReceipts = this.state.receipts.filter(receipt => {
+        return receipt !== snapshot.val();
+      });
+      this.setState({
+        receiptIds: newReceiptIds,
+        receipts: newReceipts,
+      });
+    });
   }
 
   handleSelectReceipt = receiptId => {
-    const receiptRef = `/events/${this.props.event}/receipts/${receiptId}`
+    const receiptRef = `/events/${this.props.event}/receipts/${receiptId}`;
     this.props.navigation.navigate('Confirmed', {
-        receiptRef: receiptRef,
-      });
+      receiptRef: receiptRef,
+    });
   };
 
   componentWillUnmount() {
@@ -94,49 +104,74 @@ class SingleEvent extends React.Component {
 
   render() {
     const { event, receipts } = this.state;
-    console.log("RECEIPTS ARRAY FROM RENDER ====>", receipts)
+    console.log('RECEIPTS ARRAY FROM RENDER ====>', receipts);
     if (!event.title) return <Container />;
     return (
       <Container styles={styles.container}>
-        <Header />
-        <List>
-          <ListItem style={styles.eventTitle}>
-            <TouchableOpacity>
-              <Icon
-                type="MaterialCommunityIcons"
-                name="arrow-left"
-                onPress={() => this.props.navigation.goBack()}
-              />
-            </TouchableOpacity>
-            <Text>{event.title.toUpperCase()}</Text>
-            <Text />
-          </ListItem>
-        </List>
-
-        <Content>
+        <MyHeader title={event.title} right={() => <BackButton />} />
+        {/* <Content>
           {receipts.length > 0 ? (
             receipts.map((receipt, idx) => {
               console.log('RECEIPT FROM MAP =====>', receipt);
               return (
                 <Card key={this.state.receiptIds[idx]}>
-                    <CardItem
-                        button
-                        onPress={() => this.handleSelectReceipt(this.state.receiptIds[idx])}
-                    >
-                      <Image
-                        source={{ uri: receipt.imageUrl }}
-                        style={{ height: 100, width: null, flex: 1 }}
-                      />
-                    </CardItem>
-                    <CardItem>
-                      <Text>Receipt {idx + 1}</Text>
-                    </CardItem>
+                  <CardItem
+                    button
+                    onPress={() =>
+                      this.handleSelectReceipt(this.state.receiptIds[idx])
+                    }
+                  >
+                    <Image
+                      source={{ uri: receipt.imageUrl }}
+                      style={{ height: 100, width: null, flex: 1 }}
+                    />
+                  </CardItem>
+                  <CardItem>
+                    <Text>Receipt {idx + 1}</Text>
+                  </CardItem>
                 </Card>
               );
             })
           ) : (
             <Text>No receipts</Text>
           )}
+        </Content> */}
+
+        <Content>
+          <List>
+            {receipts.length > 0 ? (
+              receipts.map((receipt, idx) => {
+                return (
+                  <ListItem
+                    thumbnail
+                    button
+                    onPress={() =>
+                      this.handleSelectReceipt(this.state.receiptIds[idx])
+                    }
+                    key={idx}
+                  >
+                    <Left>
+                      <Thumbnail square source={{ uri: receipt.imageUrl }} />
+                    </Left>
+                    <Body>
+                      <Text>Receipt {idx + 1}</Text>
+                      <Text note numberOfLines={1}>
+                        Its time to build a difference . .
+                      </Text>
+                    </Body>
+                    <Right>
+                      <Icon
+                        type="MaterialCommunityIcons"
+                        name="chevron-right"
+                      />
+                    </Right>
+                  </ListItem>
+                );
+              })
+            ) : (
+              <Text>No Receipts</Text>
+            )}
+          </List>
         </Content>
 
         <Button block onPress={() => this.props.navigation.navigate('Camera')}>
@@ -151,10 +186,10 @@ class SingleEvent extends React.Component {
 }
 
 const mapState = state => {
-    return {
-        event: state.event.eventId
-    }
-}
+  return {
+    event: state.event.eventId,
+  };
+};
 
 export default connect(
   mapState,

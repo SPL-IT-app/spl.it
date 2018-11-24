@@ -8,6 +8,7 @@ import {
   MyHeader,
   DeleteButton,
   EventMembers,
+  BackButton
 } from '../components';
 const { makeRef } = require('../server/firebaseconfig');
 
@@ -60,8 +61,8 @@ const styles = StyleSheet.create({
   },
   avatarFooter: {
     borderColor: 'transparent',
-    height: 'auto'
-  }
+    height: 'auto',
+  },
 });
 
 export class LineItemsConfirmedScreen extends React.Component {
@@ -91,10 +92,10 @@ export class LineItemsConfirmedScreen extends React.Component {
 
   render() {
     const receipt = this.state.receiptLineItems;
-    console.log('RECEIPT FROM CONFIRMED SCREEN ====>', receipt)
+    console.log('RECEIPT FROM CONFIRMED SCREEN ====>', receipt);
     return (
       <Container>
-        <MyHeader
+        {/* <MyHeader
           title="Receipt"
           right={() => (
             <DeleteButton
@@ -102,7 +103,9 @@ export class LineItemsConfirmedScreen extends React.Component {
               navigation={this.props.navigation}
             />
           )}
-        />
+        /> */}
+        <MyHeader title="Add Members" right={() => <BackButton />} />
+
         <Content style={styles.content}>
           <Grid>
             <Row style={styles.tableHeader}>
@@ -158,7 +161,9 @@ export class LineItemsConfirmedScreen extends React.Component {
             success
             block
             style={styles.button}
-            onPress={() => {this.props.navigation.navigate('Home')}}
+            onPress={() => {
+              this.props.navigation.navigate('Home');
+            }}
           >
             <Text style={styles.buttonText}> SAVE RECEIPT </Text>
           </Button>

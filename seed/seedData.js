@@ -190,22 +190,22 @@ const events = [
 
 const portlandReceipts = [
   {
-    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwis3ZHD-ereAhUic98KHZYRBpIQjRx6BAgBEAU&url=https%3A%2F%2Fwww.yelp.com%2Fbiz_photos%2Fbombay-san-diego%3Fselect%3DbMkFulsUorjN4NfUm8oAJA&psig=AOvVaw2d0vlhhB6OUXyOUiGnP9oN&ust=1543076406659873',
+    imageUrl: 'https://s.aolcdn.com/hss/storage/midas/9aec80daba3fd25da5a71151d6808a6e/205038461/display.jpg',
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 10,
   },
   {
-    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiy2L3K-ereAhViZN8KHcu2C7AQjRx6BAgBEAU&url=https%3A%2F%2Fwww.tripadvisor.com%2FLocationPhotoDirectLink-g147320-d2413182-i246316269-Boccado_s_Divino-San_Juan_Puerto_Rico.html&psig=AOvVaw2d0vlhhB6OUXyOUiGnP9oN&ust=1543076406659873',
+    imageUrl: 'https://d85ecz8votkqa.cloudfront.net/support/help_center/Print_Payment_Receipt.JPG',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 25,
   },
   {
-    imageUrl: 'https://i.imgur.com/RrGITka.jpg',
+    imageUrl: 'http://farm4.static.flickr.com/3071/2939575317_912c3a179f.jpg',
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 15,
   },
   {
-    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjzpqT0-ereAhVhT98KHbSGAHwQjRx6BAgBEAU&url=https%3A%2F%2Fwww.reddit.com%2Fr%2Fmildlyinteresting%2Fcomments%2F1e80op%2Fthe_subtotal_service_and_total_on_my_dinner%2F&psig=AOvVaw3IhAtDwwj2OKQEgvhFUhCn&ust=1543077516120456',
+    imageUrl: 'https://i0.wp.com/johanjohansen.dk/wp-content/uploads/2017/03/noma-dinner-bill.jpg?resize=1020%2C1020',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 0
   }
@@ -213,12 +213,12 @@ const portlandReceipts = [
 
 const nightOutReceipts = [
   {
-    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiMg8_l9ereAhXsmuAKHW2LAA4QjRx6BAgBEAU&url=https%3A%2F%2Fwww.yelp.com%2Fbiz_photos%2Fbombay-san-diego%3Fselect%3DbMkFulsUorjN4NfUm8oAJA&psig=AOvVaw2d0vlhhB6OUXyOUiGnP9oN&ust=1543076406659873',
+    imageUrl: 'https://farm5.static.flickr.com/4231/34950943814_a9d4c0e337_b.jpg',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 10,
   },
   {
-    imageUrl: 'https://www.google.com/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiR1Zf_9ereAhUmh-AKHXR9CrgQjRx6BAgBEAU&url=http%3A%2F%2Flfd08.blogspot.com%2F2008%2F10%2Fbest-receipt-ever.html&psig=AOvVaw2d0vlhhB6OUXyOUiGnP9oN&ust=1543076406659873',
+    imageUrl: 'https://media-cdn.tripadvisor.com/media/photo-s/04/d0/50/1d/del-frisco-s.jpg',
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 25,
   },
