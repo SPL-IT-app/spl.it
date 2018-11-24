@@ -128,7 +128,7 @@ const profilePictures = [
   'https://bit.ly/2q1fzuM',
   'https://bit.ly/2A52oxA',
   'https://pbs.twimg.com/profile_images/1046968391389589507/_0r5bQLl.jpg',
-  'https://media.licdn.com/dms/image/C4E03AQFqv7CaH82t_A/profile-displayphoto-shrink_200_200/0?e=1548288000&v=beta&t=VFVVIhqTE53jfCGqx48ETHrTARJeA7kYw_Nk49GbhR0',
+  'https://media.licdn.com/dms/image/C5603AQGfbDyRLQO6jQ/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=oKuOflIcONQDaO2Usf-_uvMzOlo_QUnNv38nZ9pjnEk',
   'https://media.licdn.com/dms/image/C4E03AQGzt7hdcVzcgQ/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=GAinuzrTk8NfdHwTREdOf9FYWKBV0o1-GtQAXofBSJY',
   'https://media.licdn.com/dms/image/C4E03AQEvrycsOIYx-g/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=YsnANuxFrxVYj1gFCG35HXfsk0J84pJrqX4nXDc0IzM,',
   'https://media.licdn.com/dms/image/C4E03AQET2S41uyB6HA/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=i_3aeTBTgkATA4UnUYi8L1KhRG7tD_YL7gL62CMgkao',

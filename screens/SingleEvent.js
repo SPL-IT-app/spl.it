@@ -11,7 +11,6 @@ import {
   Card,
   CardItem,
 } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
 import { setReceipt } from '../store';
 import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
@@ -47,14 +46,25 @@ class SingleEvent extends React.Component {
     this.eventRef = makeRef(`/events/${this.props.event}`);
     this.receiptsRef = makeRef(`/events/${this.props.event}/receipts`);
 
-    this.receiptsRef.on('child_added', snapshot => {
-      console.log('SNAPSHOT ADDED====>', snapshot.key);
+    // ON EVENT CHANGE
+    this.eventRef.once('value', snapshot => {
+      console.log("EVENT ===> ", snapshot.val())
       this.setState({
-        receiptIds: [...this.state.receiptIds, snapshot.key],
-        receipts: [...this.state.receipts, snapshot.val()],
+        event: snapshot.val(),
       });
     });
 
+    // ON EVENT RECEIPT ADDED
+    this.receiptsRef.on('child_added', async snapshot => {
+      console.log('SNAPSHOT ADDED====>', "KEY", snapshot.key, "VALUE", snapshot.val());
+      await this.setState({
+        receiptIds: [...this.state.receiptIds, snapshot.key],
+        receipts: [...this.state.receipts, snapshot.val()],
+      });
+      console.log("STATE RECEIPTS===> ", this.state.receipts)
+    });
+
+    // ON EVENT RECEIPT REMOVED
     this.receiptsRef.on('child_removed', snapshot => {
         console.log("SNAPSHOT REMOVED ====>", snapshot.key);
         const newReceiptIds = this.state.receiptIds.filter(receiptId => {
@@ -68,17 +78,6 @@ class SingleEvent extends React.Component {
             receipts: newReceipts
         })
     })
-
-    this.eventRef.on('value', snapshot => {
-      this.setState({
-        event: snapshot.val(),
-      });
-    });
-  }
-
-  componentWillUnmount() {
-    this.eventRef.off();
-    // this.receiptsRef.off();
   }
 
   handleSelectReceipt = receiptId => {
@@ -88,8 +87,14 @@ class SingleEvent extends React.Component {
       });
   };
 
+  componentWillUnmount() {
+    this.eventRef.off();
+    this.receiptsRef.off();
+  }
+
   render() {
     const { event, receipts } = this.state;
+    console.log("RECEIPTS ARRAY FROM RENDER ====>", receipts)
     if (!event.title) return <Container />;
     return (
       <Container styles={styles.container}>
@@ -113,7 +118,7 @@ class SingleEvent extends React.Component {
             receipts.map((receipt, idx) => {
               console.log('RECEIPT FROM MAP =====>', receipt);
               return (
-                <Card key={parseInt(idx, 2)}>
+                <Card key={this.state.receiptIds[idx]}>
                     <CardItem
                         button
                         onPress={() => this.handleSelectReceipt(this.state.receiptIds[idx])}

@@ -22,7 +22,7 @@ const BackButton = props => {
       <Icon
         style={{ color: 'black' }}
         type="MaterialCommunityIcons"
-        name="arrow-left"
+        name="chevron-left"
       />
     </Button>
   );
