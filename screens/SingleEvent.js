@@ -7,13 +7,12 @@ import {
   List,
   Text,
   ListItem,
-  Card,
-  CardItem,
   Icon,
   Left,
   Body,
   Right,
   Thumbnail,
+  Footer
 } from 'native-base';
 import { setReceipt } from '../store';
 import { connect } from 'react-redux';
@@ -34,6 +33,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     margin: 'auto',
   },
+  buttonText: {
+    textAlign: 'center',
+    letterSpacing: 2,
+    color: 'white',
+  },
+  button: {
+    marginTop: 10,
+    width: '95%',
+    alignSelf: 'center',
+  },
+  footer: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    paddingBottom: 15,
+  },
+  icon: {
+    margin: 0,
+    padding: 0
+  }
 });
 
 class SingleEvent extends React.Component {
@@ -109,34 +127,6 @@ class SingleEvent extends React.Component {
     return (
       <Container styles={styles.container}>
         <MyHeader title={event.title} right={() => <BackButton />} />
-        {/* <Content>
-          {receipts.length > 0 ? (
-            receipts.map((receipt, idx) => {
-              console.log('RECEIPT FROM MAP =====>', receipt);
-              return (
-                <Card key={this.state.receiptIds[idx]}>
-                  <CardItem
-                    button
-                    onPress={() =>
-                      this.handleSelectReceipt(this.state.receiptIds[idx])
-                    }
-                  >
-                    <Image
-                      source={{ uri: receipt.imageUrl }}
-                      style={{ height: 100, width: null, flex: 1 }}
-                    />
-                  </CardItem>
-                  <CardItem>
-                    <Text>Receipt {idx + 1}</Text>
-                  </CardItem>
-                </Card>
-              );
-            })
-          ) : (
-            <Text>No receipts</Text>
-          )}
-        </Content> */}
-
         <Content>
           <List>
             {receipts.length > 0 ? (
@@ -174,12 +164,39 @@ class SingleEvent extends React.Component {
           </List>
         </Content>
 
-        <Button block onPress={() => this.props.navigation.navigate('Camera')}>
-          <Text>Add Receipt</Text>
-        </Button>
-        <Button block disabled={true}>
-          <Text>Checkout Event</Text>
-        </Button>
+        <Footer style={styles.footer}>
+          <Button
+            warning
+            block
+            style={styles.button}
+            onPress={() => this.props.navigation.navigate('Camera')}
+          >
+            <Icon
+              type="MaterialCommunityIcons"
+              name="camera"
+              style={styles.icon}
+            />
+            <Text style={styles.buttonText}> ADD RECEIPT </Text>
+          </Button>
+        </Footer>
+
+        <Footer style={styles.footer}>
+          <Button
+            success
+            block
+            style={styles.button}
+            onPress={() => {
+              this.props.navigation.navigate('Home');
+            }}
+          >
+          <Icon
+              type="MaterialCommunityIcons"
+              name="credit-card"
+              style={styles.icon}
+            />
+            <Text style={styles.buttonText}> CHECKOUT </Text>
+          </Button>
+        </Footer>
       </Container>
     );
   }
