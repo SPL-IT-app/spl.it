@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
   deleteButton: {
     display: 'flex',
     justifyContent: 'center',
-    // alignItems: 'center',
     backgroundColor: '#FF7E79',
     height: '100%',
   },

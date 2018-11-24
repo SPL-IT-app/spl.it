@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, TouchableHighlight } from 'react-native';
 import {
   Button,
   Container,
@@ -12,12 +12,13 @@ import {
   Body,
   Right,
   Thumbnail,
-  Footer
+  Footer,
 } from 'native-base';
 import { setReceipt } from '../store';
 import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
+import Swipeable from 'react-native-swipeable';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,6 +33,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     margin: 'auto',
+  },
+  deleteButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: '#FF7E79',
+    height: '100%',
+  },
+  receiptText: {
+    fontWeight: '200',
+    letterSpacing: 2,
+  },
+  deleteText: {
+    paddingLeft: 15,
+    color: 'white',
   },
   buttonText: {
     textAlign: 'center',
@@ -50,8 +65,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     margin: 0,
-    padding: 0
-  }
+    padding: 0,
+  },
 });
 
 class SingleEvent extends React.Component {
@@ -78,29 +93,21 @@ class SingleEvent extends React.Component {
 
     // ON EVENT RECEIPT ADDED
     this.receiptsRef.on('child_added', async snapshot => {
-      console.log(
-        'SNAPSHOT ADDED====>',
-        'KEY',
-        snapshot.key,
-        'VALUE',
-        snapshot.val()
-      );
       await this.setState({
         receiptIds: [...this.state.receiptIds, snapshot.key],
         receipts: [...this.state.receipts, snapshot.val()],
       });
-      console.log('STATE RECEIPTS===> ', this.state.receipts);
     });
 
     // ON EVENT RECEIPT REMOVED
     this.receiptsRef.on('child_removed', snapshot => {
-      console.log('SNAPSHOT REMOVED ====>', snapshot.key);
-      const newReceiptIds = this.state.receiptIds.filter(receiptId => {
-        return receiptId !== snapshot.key;
-      });
-      const newReceipts = this.state.receipts.filter(receipt => {
-        return receipt !== snapshot.val();
-      });
+      const removeReceiptIdx = this.state.receiptIds.indexOf(snapshot.key)
+
+      const newReceiptIds = this.state.receiptIds.slice()
+      newReceiptIds.splice(removeReceiptIdx, 1)
+
+      const newReceipts = this.state.receipts.slice()
+      newReceipts.splice(removeReceiptIdx, 1)
       this.setState({
         receiptIds: newReceiptIds,
         receipts: newReceipts,
@@ -131,31 +138,43 @@ class SingleEvent extends React.Component {
           <List>
             {receipts.length > 0 ? (
               receipts.map((receipt, idx) => {
-                return (
-                  <ListItem
-                    thumbnail
-                    button
-                    onPress={() =>
-                      this.handleSelectReceipt(this.state.receiptIds[idx])
-                    }
+                const rightButtons = [
+                  <TouchableHighlight
+                    style={styles.deleteButton}
                     key={idx}
+                    // onPress={() => {
+                    //   this.handleRemoveEvent(event.id);
+                    // }}
                   >
-                    <Left>
-                      <Thumbnail square source={{ uri: receipt.imageUrl }} />
-                    </Left>
-                    <Body>
-                      <Text>Receipt {idx + 1}</Text>
-                      <Text note numberOfLines={1}>
-                        Its time to build a difference . .
-                      </Text>
-                    </Body>
-                    <Right>
-                      <Icon
-                        type="MaterialCommunityIcons"
-                        name="chevron-right"
-                      />
-                    </Right>
-                  </ListItem>
+                    <Text style={styles.deleteText}>DELETE</Text>
+                  </TouchableHighlight>,
+                ];
+                return (
+                  <Swipeable key={idx} rightButtons={rightButtons}>
+                    <ListItem
+                      thumbnail
+                      button
+                      onPress={() =>
+                        this.handleSelectReceipt(this.state.receiptIds[idx])
+                      }
+                    >
+                      <Left>
+                        <Thumbnail square source={{ uri: receipt.imageUrl }} />
+                      </Left>
+                      <Body>
+                        <Text style={styles.receiptText}>{`Receipt ${idx + 1}`.toUpperCase()}</Text>
+                        <Text note numberOfLines={1}>
+                          Its time to build a difference . .
+                        </Text>
+                      </Body>
+                      <Right>
+                        <Icon
+                          type="MaterialCommunityIcons"
+                          name="chevron-right"
+                        />
+                      </Right>
+                    </ListItem>
+                  </Swipeable>
                 );
               })
             ) : (
@@ -183,13 +202,14 @@ class SingleEvent extends React.Component {
         <Footer style={styles.footer}>
           <Button
             success
+            disabled
             block
             style={styles.button}
             onPress={() => {
               this.props.navigation.navigate('Home');
             }}
           >
-          <Icon
+            <Icon
               type="MaterialCommunityIcons"
               name="credit-card"
               style={styles.icon}
