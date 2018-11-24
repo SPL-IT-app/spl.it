@@ -101,13 +101,13 @@ class SingleEvent extends React.Component {
 
     // ON EVENT RECEIPT REMOVED
     this.receiptsRef.on('child_removed', snapshot => {
-      const removeReceiptIdx = this.state.receiptIds.indexOf(snapshot.key)
+      const removeReceiptIdx = this.state.receiptIds.indexOf(snapshot.key);
 
-      const newReceiptIds = this.state.receiptIds.slice()
-      newReceiptIds.splice(removeReceiptIdx, 1)
+      const newReceiptIds = this.state.receiptIds.slice();
+      newReceiptIds.splice(removeReceiptIdx, 1);
 
-      const newReceipts = this.state.receipts.slice()
-      newReceipts.splice(removeReceiptIdx, 1)
+      const newReceipts = this.state.receipts.slice();
+      newReceipts.splice(removeReceiptIdx, 1);
       this.setState({
         receiptIds: newReceiptIds,
         receipts: newReceipts,
@@ -121,6 +121,11 @@ class SingleEvent extends React.Component {
       receiptRef: receiptRef,
     });
   };
+
+  handleRemoveReceipt = (receiptId) => {
+    const receiptRef = makeRef(`events/${this.props.event}/receipts/${receiptId}`)
+    receiptRef.remove()
+  }
 
   componentWillUnmount() {
     this.eventRef.off();
@@ -142,9 +147,9 @@ class SingleEvent extends React.Component {
                   <TouchableHighlight
                     style={styles.deleteButton}
                     key={idx}
-                    // onPress={() => {
-                    //   this.handleRemoveEvent(event.id);
-                    // }}
+                    onPress={() => {
+                      this.handleRemoveReceipt(this.state.receiptIds[idx]);
+                    }}
                   >
                     <Text style={styles.deleteText}>DELETE</Text>
                   </TouchableHighlight>,
@@ -162,7 +167,9 @@ class SingleEvent extends React.Component {
                         <Thumbnail square source={{ uri: receipt.imageUrl }} />
                       </Left>
                       <Body>
-                        <Text style={styles.receiptText}>{`Receipt ${idx + 1}`.toUpperCase()}</Text>
+                        <Text style={styles.receiptText}>
+                          {`Receipt ${idx + 1}`.toUpperCase()}
+                        </Text>
                         <Text note numberOfLines={1}>
                           Its time to build a difference . .
                         </Text>
