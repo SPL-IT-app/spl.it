@@ -38,6 +38,9 @@ import MyHeader from "../components/Header";
 import { connect } from "react-redux";
 import { makeRef } from "../server/firebaseconfig";
 import { Friends, Groups } from '../components'
+import Dialog from 'react-native-dialog'
+import { ImagePicker, FileSystem } from 'expo'
+import { storageRef } from '../server/firebaseconfig'
 
 class Profile extends React.Component {
   constructor() {
@@ -49,7 +52,8 @@ class Profile extends React.Component {
       value: "",
       value2: "",
       friends: [],
-      groups: []
+      dialogVisible: false,
+      image: null
     };
   }
   static navigationOptions = {
@@ -60,18 +64,30 @@ class Profile extends React.Component {
     this.userRef = makeRef(`/users/${this.props.user.id}`);
     this.profileRef = makeRef(`/profiles/${this.props.user.id}`);
     this.userRef.on("value", snapshot => {
-      user = snapshot.val();
-      this.setState({ user });
+      user = snapshot.val()
+      this.setState({ user })
     });
     this.profileRef.on("value", snapshot => {
-      profile = snapshot.val();
-      this.setState({ profile });
+      profile = snapshot.val()
+      this.setState({ profile })
     });
+    this.friendsRef = makeRef(`/users/${this.props.user.id}/friends`)
+    this.friendsRef.on('child_added', snapshot => {
+      makeRef(`/profiles/${snapshot.key}`).once('value', snapshot => {
+        this.setState({friends: [...this.state.friends, {...snapshot.val(), id: snapshot.key}]})
+      })
+    })
+    this.friendsRef.on('child_removed', snapshot => {
+       makeRef(`/profiles/${snapshot.key}`).once('value', snapshot => {
+         this.setState({friends: this.state.friends.filter(friend => friend.username !== snapshot.val().username)})
+       })
+    })
   }
 
   componentWillUnmount() {
-    this.userRef.off();
-    this.profileRef.off();
+    this.userRef.off()
+    this.profileRef.off()
+    this.friendsRef.off()
   }
 
   handleEditing = (editing, value, value2 = "") => {
@@ -102,9 +118,57 @@ class Profile extends React.Component {
     });
   };
 
+  handleNo = () => {
+    this.setState({dialogVisible: false})
+  }
+
+  handleYes = async () => {
+    // const Blob = RNFetchBlob.polyfill.Blob
+    // const fs = RNFetchBlob.fs
+    // window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+    // window.Blob = Blob
+    // this.setState({dialogVisible: false})
+    // let result = await ImagePicker.launchImageLibraryAsync({
+    //   allowsEditing: true,
+    //   aspect: [4, 3]
+    // })
+    // const data = await fs.readFile(result.uri, 'base64')
+    // const blob = await Blob.build(data, { type: `${mime};BASE64` })
+    // storageRef.child(this.props.user.id).put(blob, {contentType: mime })
+    // const url = storageRef.child(this.props.user.id).getDownloadURL()
+    // if(!result.cancelled){
+    //   this.setState({image: url})
+    // }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4,3]
+    })
+    if(!result.cancelled){
+      // const fs = new FileSystem
+      // let file = await FileSystem.readAsStringAsync(result.uri, {encoding: 'Base64'})
+      let file = await FileSystem.readAsStringAsync(result.uri)
+      // console.log(file)
+      // this.setState({image: file, dialogVisible: false})
+      // file = 'data:image/jpeg;base64,' + file
+      console.log(file)
+      await storageRef.child(this.props.user.id).putString(file, 'raw', {contentType:'image/jpeg'})
+      const url = await storageRef.child(this.props.user.id).getDownloadURL()
+      console.log(url)
+      // this.setState({image: url, dialogVisible: false})
+    }
+
+  }
+
   render() {
     return (
       <Container>
+        <Dialog.Container visible={this.state.dialogVisible}>
+                <Dialog.Title>Profile Photo</Dialog.Title>
+                <Dialog.Description>Do you want to change your profile photo?</Dialog.Description>
+                <Dialog.Button label='No' onPress={this.handleNo} />
+                <Dialog.Button label='Yes' onPress={this.handleYes} />
+        </Dialog.Container>
         <MyHeader title="Profile" />
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
           <ScrollView>
@@ -119,7 +183,7 @@ class Profile extends React.Component {
               >
                 <Card>
                   <CardItem header bordered>
-                    <Left />
+                    <Left><Text>{this.state.image}</Text></Left>
                     <Body flexGrow={2}>
                       {this.state.editing === "name" ? (
                         <Item rounded flex={4}>
@@ -163,7 +227,7 @@ class Profile extends React.Component {
                       )}
                     </Right>
                   </CardItem>
-                  <CardItem cardBody>
+                  <CardItem button cardBody onLongPress={()=>this.setState({dialogVisible:true})}>
                     <Image
                       source={{ uri: this.state.profile.imageUrl }}
                       style={{ height: 200, width: null, flex: 1 }}
@@ -300,7 +364,7 @@ class Profile extends React.Component {
                   </TabHeading>
                 }
               >
-                <Friends friends={this.state.user.friends} />
+                <Friends friends={this.state.friends} />
               </Tab>
             </Tabs>
 
