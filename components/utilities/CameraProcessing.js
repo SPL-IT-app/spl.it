@@ -22,7 +22,7 @@ export default class CameraProcessing extends Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Spinner />
+        <Spinner color='#159192'/>
         <Text>Loading...</Text>
       </Container>
     );
