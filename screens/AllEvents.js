@@ -18,6 +18,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         width: '99%'
     },
+    fab: {
+        color: 'blue',
+    }
 })
 
 class AllEvents extends React.Component {
@@ -37,9 +40,9 @@ class AllEvents extends React.Component {
         this.userEventsRef.on('child_added', snapshot => {
             const eventsRef = makeRef(`/events/${snapshot.key}`)
             eventsRef.once('value', eventSnapshot => {
-                this.setState({
-                    events: [...this.state.events, eventSnapshot.val()]
-                })
+                this.setState(prevState => ({
+                    events: [...prevState.events, eventSnapshot.val()]
+                }))
                 this.eventIds.push(eventSnapshot.key)
             })
         })

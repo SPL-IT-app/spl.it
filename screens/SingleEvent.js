@@ -41,10 +41,10 @@ class SingleEvent extends React.Component {
         this.receiptsRef = makeRef(`/events/${navigation.getParam('id')}/receipts`)
 
         this.receiptsRef.on('child_added', snapshot => {
-            this.setState({
-                receiptIds: [...this.state.receiptIds, Object.keys(snapshot.val())],
-                receipts: [...this.state.receipts, ...Object.values(snapshot.val())]
-            })
+            this.setState(prevState => ({
+                receiptIds: [...prevState.receiptIds, Object.keys(snapshot.val())],
+                receipts: [...prevState.receipts, ...Object.values(snapshot.val())],
+            }))
         })
 
         this.eventRef.on('value', snapshot => {
@@ -61,7 +61,9 @@ class SingleEvent extends React.Component {
 
     render() {
         const { event, receipts } = this.state
-        if (!event.title) return <Container />
+        const { navigation } = this.props
+        console.log('event --->', event, 'receipts --->', receipts)
+        if (!event.title) return <Header />
 
         return (
             <Container styles={styles.container}>
@@ -72,7 +74,7 @@ class SingleEvent extends React.Component {
                             <Icon
                                 type="MaterialCommunityIcons"
                                 name="arrow-left"
-                                onPress={() => this.props.navigation.goBack()}
+                                onPress={() => navigation.goBack()}
                             />
                         </TouchableOpacity>
                         <Text>{event.title.toUpperCase()}</Text>
@@ -80,7 +82,7 @@ class SingleEvent extends React.Component {
                     </ListItem>
                 </List>
 
-                <Content >
+                <Content>
                     {receipts.length > 0 ?
                         receipts.map((receipt, idx) => {
                             return (
@@ -100,7 +102,7 @@ class SingleEvent extends React.Component {
 
                 <Button
                     block
-                    onPress={() => this.props.navigation.navigate('Camera')}
+                    onPress={() => navigation.navigate('Camera')}
                 >
                     <Text>Add Receipt</Text>
                 </Button>
