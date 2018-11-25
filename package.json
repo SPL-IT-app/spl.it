@@ -25,6 +25,7 @@
     "react-native-checkbox-heaven": "^0.1.6",
     "react-native-dialog": "^5.4.0",
     "react-native-easy-grid": "^0.2.0",
+    "react-native-fetch-blob": "^0.10.8",
     "react-navigation": "^2.18.2",
     "react-redux": "^5.1.1",
     "redux": "^4.0.1",
