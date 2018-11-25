@@ -58,7 +58,7 @@ export class AddMemberToEventScreen extends Component {
     // }
     return (
       <Container>
-        <MyHeader title="Add Members" right={() => <BackButton />} />
+        <MyHeader title="Confirmed Receipt" right={() => <BackButton />} />
         <EventMembers />
         <EventFriends friends={this.state.friendProfiles} />
       </Container>

@@ -1,31 +1,52 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { Button, Icon, Container } from 'native-base';
-import MyHeader from '../components/Header';
+import { Button, Icon, Content, Container } from 'native-base';
+import { MyHeader, CameraProcessing } from '../components';
 import { connect } from 'react-redux';
 import AllEvents from './AllEvents';
 import { makeRef } from '../server/firebaseconfig';
-import { setEvent, setReceipt } from "../store/index";
+import { setEvent, setReceipt } from '../store/index';
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
   },
+
   icon: {
-    margin: 0,
-    padding: 0,
+    alignSelf: 'center',
+    // color: 'black'
+  },
+  cameraButton: {
+    alignSelf: 'center',
+    height: 60,
+    width: 60,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mainText: {
+    textAlign: 'center',
+    fontSize: 25,
+    fontWeight: '300',
+    letterSpacing: 4,
+  },
+  subText: {
+    padding: 20,
+    color: '#363731',
+    textAlign: 'center',
+    fontSize: 15,
+    fontWeight: '200',
+    letterSpacing: 3,
+  },
+  buttonText: {
+    textAlign: 'center',
+    letterSpacing: 2,
+    color: 'black',
   },
   button: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
     marginTop: 10,
-    width: '60%',
+    width: '95%',
     alignSelf: 'center',
   },
 });
@@ -34,9 +55,9 @@ export class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
-      user: {}
-    }
+      isLoading: true,
+      user: {},
+    };
   }
 
   componentDidMount() {
@@ -45,19 +66,19 @@ export class HomeScreen extends React.Component {
     this.userRef = makeRef(`/users/${user.id}`);
     this.userRef.on('value', snapshot => {
       let currentUser = snapshot.val();
-      this.setState({ user: currentUser });
-    })
+      this.setState({ user: currentUser, isLoading: false });
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { user } = this.props
+    const { user } = this.props;
 
     if (prevProps.user !== this.props.user) {
       this.userRef = makeRef(`/users/${user.id}`);
       this.userRef.on('value', snapshot => {
         let currentUser = snapshot.val();
-        this.setState({ user: currentUser });
-      })
+        this.setState({ user: currentUser, isLoading: false });
+      });
     }
   }
 
@@ -75,60 +96,30 @@ export class HomeScreen extends React.Component {
     return (
       <Container>
         <MyHeader title="Events" />
-        {events ? (
+        {this.state.isLoading ? (
+          <CameraProcessing />
+        ) : events ? (
           <AllEvents />
         ) : (
-            <Container style={styles.container}>
-              <Button
-                rounded
-                info
-                large
-                style={styles.button}
-                onPress={async () => {
-                  await this.props.setEvent('');
-                  this.props.navigation.navigate('Camera');
-                }}
-              >
-                <Text>Add Receipt</Text>
-                <Icon
-                  type="MaterialCommunityIcons"
-                  name="camera"
-                  style={styles.icon}
-                />
-              </Button>
-
-            {/* TEMPORARY BUTTON WITH HARD-CODED RECEIPT */}
+          <Content contentContainerStyle={styles.content}>
+            <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
+            <Text style={styles.subText}>Create a New Event...</Text>
             <Button
               rounded
-              warning
-              large
-              style={styles.button}
+              success
               onPress={async () => {
-                await this.props.setReceipt([
-                  { quantity: 1, name: 'Cheese Curds', price: 7.0 },
-                  { quantity: 1, name: 'Steak', price: 35.5 },
-                  {
-                    quantity: 1,
-                    name: 'Pepperoni Pizza with Olives, Spinach, and Onions',
-                    price: 15.0,
-                  },
-                  { quantity: 1, name: 'Pad Thai with Tofu', price: 18.0 },
-                  { quantity: 1, name: 'Red Curry with Rice', price: 20.0 },
-                  { quantity: 1, name: 'French Fries', price: 4.5 },
-                  { quantity: 1, name: 'Burger', price: 14 },
-                  { quantity: 1, name: 'Thanksgiving Cranberries', price: 12 },
-                  { quantity: 1, name: 'Burrito with black beans and rice', price: 17 },
-                  { quantity: 1, name: 'Last Item', price: 12 },
-                ]);
-                // await this.props.setEvent('-LRdZ9WLN-pidwhU5bQE')
                 await this.props.setEvent('');
-                this.props.navigation.navigate('ListConfirm');
+                this.props.navigation.navigate('Camera');
               }}
+              style={styles.cameraButton}
             >
-              <Text>HARD CODED RECEIPT</Text>
+              <Icon
+                type="MaterialCommunityIcons"
+                name="camera"
+                style={styles.icon}
+              />
             </Button>
-            {/* END OF TEMPORARY BUTTON WITH HARD-CODED RECEIPT */}
-          </Container>
+          </Content>
         )}
       </Container>
     );
