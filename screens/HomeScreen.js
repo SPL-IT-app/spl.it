@@ -1,12 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import {
-  Button,
-  Icon,
-  Content,
-  Container,
-} from 'native-base';
-import MyHeader from '../components/Header';
+import { Button, Icon, Content, Container } from 'native-base';
+import { MyHeader, CameraProcessing } from '../components';
 import { connect } from 'react-redux';
 import AllEvents from './AllEvents';
 import { makeRef } from '../server/firebaseconfig';
@@ -28,7 +23,7 @@ const styles = StyleSheet.create({
     width: 60,
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   mainText: {
     textAlign: 'center',
@@ -60,7 +55,7 @@ export class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: false,
+      isLoading: true,
       user: {},
     };
   }
@@ -71,7 +66,7 @@ export class HomeScreen extends React.Component {
     this.userRef = makeRef(`/users/${user.id}`);
     this.userRef.on('value', snapshot => {
       let currentUser = snapshot.val();
-      this.setState({ user: currentUser });
+      this.setState({ user: currentUser, isLoading: false });
     });
   }
 
@@ -82,7 +77,7 @@ export class HomeScreen extends React.Component {
       this.userRef = makeRef(`/users/${user.id}`);
       this.userRef.on('value', snapshot => {
         let currentUser = snapshot.val();
-        this.setState({ user: currentUser });
+        this.setState({ user: currentUser, isLoading: false });
       });
     }
   }
@@ -101,7 +96,9 @@ export class HomeScreen extends React.Component {
     return (
       <Container>
         <MyHeader title="Events" />
-        {events ? (
+        {this.state.isLoading ? (
+          <CameraProcessing />
+        ) : events ? (
           <AllEvents />
         ) : (
           <Content contentContainerStyle={styles.content}>

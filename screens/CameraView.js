@@ -176,7 +176,7 @@ export class CameraView extends React.Component {
     if (this.state.displayLoading) {
       return (
         <View style={styles.camera}>
-          <Spinner />
+          <Spinner color='#159192'/>
           <Text>Reading receipt...</Text>
         </View>
       );
