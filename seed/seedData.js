@@ -190,21 +190,25 @@ const events = [
 
 const portlandReceipts = [
   {
+    dateCreated: new Date('December 17, 2018').toString(),
     imageUrl: 'https://s.aolcdn.com/hss/storage/midas/9aec80daba3fd25da5a71151d6808a6e/205038461/display.jpg',
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 10,
   },
   {
+    dateCreated: new Date('December 17, 2018').toString(),
     imageUrl: 'https://d85ecz8votkqa.cloudfront.net/support/help_center/Print_Payment_Receipt.JPG',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 25,
   },
   {
+    dateCreated: new Date('December 18, 2018').toString(),
     imageUrl: 'http://farm4.static.flickr.com/3071/2939575317_912c3a179f.jpg',
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 15,
   },
   {
+    dateCreated: new Date('December 19, 2018').toString(),
     imageUrl: 'https://i0.wp.com/johanjohansen.dk/wp-content/uploads/2017/03/noma-dinner-bill.jpg?resize=1020%2C1020',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 0
@@ -213,11 +217,13 @@ const portlandReceipts = [
 
 const nightOutReceipts = [
   {
+    dateCreated: new Date('November 2, 2018').toString(),
     imageUrl: 'https://farm5.static.flickr.com/4231/34950943814_a9d4c0e337_b.jpg',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 10,
   },
   {
+    dateCreated: new Date('November 2, 2018').toString(),
     imageUrl: 'https://media-cdn.tripadvisor.com/media/photo-s/04/d0/50/1d/del-frisco-s.jpg',
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 25,

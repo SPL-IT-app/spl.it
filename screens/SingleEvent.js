@@ -19,6 +19,8 @@ import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
+const dateFormat = require('dateformat');
+
 
 const styles = StyleSheet.create({
   container: {
@@ -171,7 +173,7 @@ class SingleEvent extends React.Component {
                           {`Receipt ${idx + 1}`.toUpperCase()}
                         </Text>
                         <Text note numberOfLines={1}>
-                          Its time to build a difference . .
+                          {dateFormat(receipt.dateCreated, 'mediumDate')}
                         </Text>
                       </Body>
                       <Right>
