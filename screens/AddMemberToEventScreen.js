@@ -11,6 +11,14 @@ import {
   MyHeader,
 } from '../components';
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'yellow'
+  },
+})
+
 export class AddMemberToEventScreen extends Component {
   constructor() {
     super();
@@ -52,15 +60,16 @@ export class AddMemberToEventScreen extends Component {
   render() {
 
     console.log('state====> ', this.state);
-    // const { navigate } = this.props.navigation;
-    // if (!this.state.friendProfiles) {
-    //   return <Text>You don't have any friends!</Text>;
-    // }
+    if (!this.state.friendProfiles) {
+      return <Text>You don't have any friends!</Text>;
+    }
     return (
       <Container>
         <MyHeader title="Add Members" right={() => <BackButton />} />
+        <Container style={styles.container}>
         <EventMembers />
         <EventFriends friends={this.state.friendProfiles} />
+        </Container>
       </Container>
     );
   }
