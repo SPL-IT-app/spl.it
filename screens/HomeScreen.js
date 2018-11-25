@@ -1,19 +1,16 @@
 import React from 'react';
-import { StyleSheet, Text, Image, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import {
   Button,
   Icon,
   Content,
   Container,
-  Footer,
-  Thumbnail,
 } from 'native-base';
 import MyHeader from '../components/Header';
 import { connect } from 'react-redux';
 import AllEvents from './AllEvents';
 import { makeRef } from '../server/firebaseconfig';
 import { setEvent, setReceipt } from '../store/index';
-import { Grid, Col, Row } from 'react-native-easy-grid';
 
 const styles = StyleSheet.create({
   content: {
