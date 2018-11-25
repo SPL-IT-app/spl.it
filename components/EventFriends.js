@@ -33,8 +33,9 @@ export class EventMembers extends Component {
     this.eventRef = makeRef(`/events/${this.props.event}/members`);
     this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
     this.eventRef.on("value", snapshot => {
+      const friendIds = snapshot.val() ? snapshot.val() : {}
       this.setState({
-        addedFriends: Object.keys(snapshot.val())
+        addedFriends: Object.keys(friendIds)
       })
     })
 

@@ -1,20 +1,16 @@
-// const { makeRef } = require('../server/firebaseconfig');
-//import {makeRef} from '../server/firebaseconfig'
-
 const {
   users,
   profiles,
   groups,
   lineItems,
   events,
-  receipts,
+  nightOutReceipts,
+  portlandReceipts,
 } = require('./seedData');
-
 const firebase = require('firebase');
-// import * as firebase from 'firebase';
 require('../secrets');
 
-// Initialize Firebase
+// INITIALIZE FIREBASE
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: 'spl-it-91619.firebaseapp.com',
@@ -24,26 +20,55 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const makeRef = path => {
   return firebase.database().ref(path);
 };
 
+// SEED FUNCTION
 function seed() {
+  // RE-INITIALIZE DATABASE
   makeRef('/').set({});
 
-  // const profilesRef = makeRef('/profiles');
+  // RANDOMIZE SEED DATA FUNCTION
+  function shuffle(array) {
+    var m = array.length,
+      t,
+      i;
+    while (m) {
+      i = Math.floor(Math.random() * m--);
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+    return array;
+  }
+
+  // SEED USER DATA
+  users.forEach(user => {
+    const usersRefIndiv = makeRef(`/users/${Object.keys(user)[0]}`);
+    usersRefIndiv.set(user[Object.keys(user)[0]]);
+
+    const userFriendRef = makeRef(`users/${Object.keys(user)[0]}/friends`)
+    const randomFriends = shuffle(users.filter(friend => friend !== user)).slice(0, 5)
+    randomFriends.forEach(friend => {
+      const friendId = Object.keys(friend)[0]
+      userFriendRef.update({[friendId]: true})
+    })
+  });
+
+  // SEED PROFILE DATA
   profiles.forEach(profile => {
     const profRefIndiv = makeRef(`/profiles/${Object.keys(profile)[0]}`);
     profRefIndiv.set(profile[Object.keys(profile)[0]]);
   });
 
-  // const usersRef = makeRef('/users');
-  users.forEach(user => {
-    const usersRefIndiv = makeRef(`/users/${Object.keys(user)[0]}`);
-    usersRefIndiv.set(user[Object.keys(user)[0]]);
+  // SEED GROUP DATA
+  const groupsRef = makeRef('/groups');
+  groups.forEach(group => {
+    groupsRef.push().set(group);
   });
 
+  // SEED EVENT DATA
   const eventsRef = makeRef('/events');
   events.forEach(event => {
     const newEventRef = eventsRef.push();
@@ -52,32 +77,28 @@ function seed() {
 
     const update = { [eventId]: true };
 
-    users.forEach(user => {
-      if (Object.keys(user)[0] !== 'v143uyYUOEPrIsOKLRN3gbSCtkw1') {
-        const usersRefIndiv = makeRef(`/users/${Object.keys(user)[0]}`);
-        usersRefIndiv.child('events').update({ ...update });
-      }
+    users.slice(0, 2).forEach(user => {
+      const usersRefIndiv = makeRef(`/users/${Object.keys(user)[0]}`);
+      usersRefIndiv.child('events').update({ ...update });
+      const membersRef = makeRef(`/events/${eventId}/members`);
+      membersRef.update(user);
     });
 
     const receiptsRef = makeRef(`/events/${eventId}/receipts`);
+    const receipts = event.title === 'Trip to Portland' ? portlandReceipts : nightOutReceipts;
     receipts.forEach(receipt => {
       const newReceipt = receiptsRef.push();
       const receiptID = newReceipt.key;
       newReceipt.set(receipt);
 
-      const lineItemsRef = makeRef(
-        `/events/${eventId}/receipts/${receiptID}/lineItems/`
-      );
-      lineItems.forEach(item => {
+      const randomLineItems = shuffle(lineItems).slice(0, 5)
+      const lineItemsRef = makeRef(`/events/${eventId}/receipts/${receiptID}`);
+      randomLineItems.forEach(item => {
         lineItemsRef.push().set(item);
       });
     });
   });
 
-  const groupsRef = makeRef('/groups');
-  groups.forEach(group => {
-    groupsRef.push().set(group);
-  });
   console.log('Database seeded!');
 }
 seed();
