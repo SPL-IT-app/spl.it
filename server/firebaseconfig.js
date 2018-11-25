@@ -15,6 +15,10 @@ export const makeRef = path => {
   return firebase.database().ref(path);
 };
 
+
+
 export default (!firebase.apps.length
   ? firebase.initializeApp(firebaseConfig)
   : firebase.app());
+
+  export const storageRef = firebase.storage().ref()
