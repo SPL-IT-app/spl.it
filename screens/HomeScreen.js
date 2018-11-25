@@ -113,8 +113,9 @@ export class HomeScreen extends React.Component {
             <Button
               rounded
               success
-              onPress={() => {
-                console.log('PRESSED');
+              onPress={async () => {
+                await this.props.setEvent('');
+                this.props.navigation.navigate('Camera');
               }}
               style={styles.cameraButton}
             >
