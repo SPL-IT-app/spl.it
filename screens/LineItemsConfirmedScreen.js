@@ -88,7 +88,6 @@ export class LineItemsConfirmedScreen extends React.Component {
       lineItems = snapshot.val();
       tipPercent = snapshot.val().tipPercent
     });
-    console.log("TIP PERCENT ====> ", tipPercent)
     this.setState({ receiptLineItems: Object.entries(lineItems), tipPercent: tipPercent });
   };
 
