@@ -86,11 +86,9 @@ export class LineItemsConfirmedScreen extends React.Component {
     let tipPercent = null
     this.receiptRefUrl.on('value', snapshot => {
       lineItems = snapshot.val();
-      console.log("SNAPSHOT TIP PERCENT ===> ", snapshot.val().tipPercent)
       tipPercent = snapshot.val().tipPercent
       this.setState({tipPercent: tipPercent})
     });
-    console.log("TIP PERCENT FROM FIREBASE ====>", tipPercent)
     this.setState({ receiptLineItems: Object.entries(lineItems)});
   };
 
@@ -103,7 +101,6 @@ export class LineItemsConfirmedScreen extends React.Component {
   }
 
   handleSaveReceipt = async () => {
-    console.log("TIP PERCENT ====>", this.state.tipPercent)
     if (!this.state.tipPercent) {
       this.setState({ dialogVisible: true });
     } else {
