@@ -130,7 +130,7 @@ const profilePictures = [
   'https://pbs.twimg.com/profile_images/1046968391389589507/_0r5bQLl.jpg',
   'https://media.licdn.com/dms/image/C5603AQGfbDyRLQO6jQ/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=oKuOflIcONQDaO2Usf-_uvMzOlo_QUnNv38nZ9pjnEk',
   'https://media.licdn.com/dms/image/C4E03AQGzt7hdcVzcgQ/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=GAinuzrTk8NfdHwTREdOf9FYWKBV0o1-GtQAXofBSJY',
-  'https://media.licdn.com/dms/image/C4E03AQEvrycsOIYx-g/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=YsnANuxFrxVYj1gFCG35HXfsk0J84pJrqX4nXDc0IzM,',
+  'https://media.licdn.com/dms/image/C4E03AQEvrycsOIYx-g/profile-displayphoto-shrink_800_800/0?e=1548892800&v=beta&t=PLTvDpusV0sxk6ds605NrLlcuafikNuwDfAGzHHrOSU',
   'https://media.licdn.com/dms/image/C4E03AQET2S41uyB6HA/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=i_3aeTBTgkATA4UnUYi8L1KhRG7tD_YL7gL62CMgkao',
   'https://cloud.fullstackacademy.com/colllin-miller-instructor.jpg?mtime=20180122152631',
   'https://cloud.fullstackacademy.com/ben-wilhelm-instructor.jpg?mtime=20180122152630',
