@@ -124,12 +124,12 @@ class Profile extends React.Component {
   }
 
   handleYes = async () => {
+    this.setState({dialogVisible: false})
     await Permissions.askAsync(Permissions.CAMERA_ROLL)
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4,3]
     })
-    console.log(result)
     if(!result.cancelled){
       const file = {
         uri: result.uri,
@@ -140,15 +140,16 @@ class Profile extends React.Component {
         keyPrefix: "profiles/",
         bucket: "spl-it",
         region: "us-east-2",
-        accessKey: "AKIAIUBE3DGPY6COEWLA",
+        accessKey: process.env.S3_API_KEY,
         secretKey: process.env.S3_SECRET_KEY,
         successActionStatus: 201
       }
+
       const response = await RNS3.put(file, options)
+      console.log(response)
       if(response.status === 201){
         makeRef(`/profiles/${this.props.user.id}/imageUrl`).set(response.body.postResponse.location)
       }
-      this.setState({dialogVisible: false})
     }
   }
 
