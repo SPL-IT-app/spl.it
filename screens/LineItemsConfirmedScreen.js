@@ -87,8 +87,9 @@ export class LineItemsConfirmedScreen extends React.Component {
     this.receiptRefUrl.on('value', snapshot => {
       lineItems = snapshot.val();
       tipPercent = snapshot.val().tipPercent
+      this.setState({tipPercent: tipPercent})
     });
-    this.setState({ receiptLineItems: Object.entries(lineItems), tipPercent: tipPercent });
+    this.setState({ receiptLineItems: Object.entries(lineItems)});
   };
 
   componentWillUnmount = () => {
