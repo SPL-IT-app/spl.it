@@ -129,7 +129,7 @@ export class LineItemsConfirmedScreen extends React.Component {
             <Dialog.Container visible={this.state.dialogVisible}>
               <Dialog.Title>Tip Amount</Dialog.Title>
               <Dialog.Description>
-                Please enter a tip amount
+                Please enter a tip %
               </Dialog.Description>
               <Dialog.Input lable="test" onChangeText={this.handleTipChange} />
               <Dialog.Button label="Cancel" onPress={this.handleCancel} />
