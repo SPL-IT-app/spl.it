@@ -90,13 +90,6 @@ class SingleEvent extends React.Component {
             });
         });
 
-        /*   this.receiptsRef.on('child_added', snapshot => {
-              this.setState(prevState => ({
-                  receiptIds: [...prevState.receiptIds, Object.keys(snapshot.val())],
-                  receipts: [...prevState.receipts, ...Object.values(snapshot.val())],
-              }))
-          }) */
-
         // ON EVENT RECEIPT ADDED
         this.receiptsRef.on('child_added', async snapshot => {
             await this.setState(prevState => ({
