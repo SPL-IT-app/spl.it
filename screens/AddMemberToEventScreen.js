@@ -31,7 +31,7 @@ export class AddMemberToEventScreen extends Component {
     super();
     this.state = {
       eventMemberProfiles: [],
-      friendProfiles: [],
+      friendProfiles: []
     };
   }
 

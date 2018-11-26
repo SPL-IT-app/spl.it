@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { withNavigation } from 'react-navigation';
 import Swipeable from 'react-native-swipeable';
-var dateFormat = require('dateformat');
+const dateFormat = require('dateformat');
 
 const styles = StyleSheet.create({
   deleteButton: {
@@ -130,7 +130,6 @@ class AllEvents extends React.Component {
               return event.info.status ? (
                 <Swipeable rightButtons={rightButtons}>
                   <ListItem
-                    selected
                     button
                     onPress={() => this.handleEventClick(this.eventIds[idx])}
                     key={event.id}

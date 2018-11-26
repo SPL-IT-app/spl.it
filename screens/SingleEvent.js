@@ -19,6 +19,8 @@ import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
+const dateFormat = require('dateformat');
+
 
 const styles = StyleSheet.create({
   container: {
@@ -27,12 +29,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  eventTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    margin: 'auto',
   },
   deleteButton: {
     display: 'flex',
@@ -43,6 +39,13 @@ const styles = StyleSheet.create({
   receiptText: {
     fontWeight: '200',
     letterSpacing: 2,
+  },
+  receiptDateText: {
+    fontWeight: '200',
+    color: '#838383',
+    letterSpacing: 2,
+    paddingTop: 5,
+    fontSize: 10,
   },
   deleteText: {
     paddingLeft: 15,
@@ -170,8 +173,8 @@ class SingleEvent extends React.Component {
                         <Text style={styles.receiptText}>
                           {`Receipt ${idx + 1}`.toUpperCase()}
                         </Text>
-                        <Text note numberOfLines={1}>
-                          Its time to build a difference . .
+                        <Text note style={styles.receiptDateText}>
+                          {dateFormat(receipt.dateCreated, 'mediumDate')}
                         </Text>
                       </Body>
                       <Right>
