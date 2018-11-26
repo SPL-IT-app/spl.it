@@ -101,7 +101,7 @@ class SingleEvent extends React.Component {
         // ON EVENT RECEIPT REMOVED
         this.receiptsRef.on('child_removed', snapshot => {
             const { receiptIds, receipts } = this.state
-            const removeReceiptIdx = this.state.receiptIds.indexOf(snapshot.key);
+            const removeReceiptIdx = receiptIds.indexOf(snapshot.key);
             const newReceiptIds = receiptIds.slice();
             newReceiptIds.splice(removeReceiptIdx, 1);
 
@@ -132,7 +132,7 @@ class SingleEvent extends React.Component {
     }
 
     render() {
-        const { event, receipts } = this.state;
+        const { event, receipts, receiptIds } = this.state;
         if (!event.title) return <MyHeader title={event.title} right={() => <BackButton />} />
         return (
             <Container styles={styles.container}>
@@ -146,7 +146,7 @@ class SingleEvent extends React.Component {
                                         style={styles.deleteButton}
                                         key={parseInt(idx, 2)}
                                         onPress={() => {
-                                            this.handleRemoveReceipt(this.state.receiptIds[idx]);
+                                            this.handleRemoveReceipt(receiptIds[idx]);
                                         }}
                                     >
                                         <Text style={styles.deleteText}>DELETE</Text>
@@ -158,7 +158,7 @@ class SingleEvent extends React.Component {
                                             thumbnail
                                             button
                                             onPress={() =>
-                                                this.handleSelectReceipt(this.state.receiptIds[idx])
+                                                this.handleSelectReceipt(receiptIds[idx])
                                             }
                                         >
                                             <Left>

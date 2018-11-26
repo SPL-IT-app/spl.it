@@ -111,17 +111,18 @@ export class CameraView extends React.Component {
           },
         ],
       };
-      console.log('request ======>', reqBody);
       const resp = await axios.post(
         `https://vision.googleapis.com/v1/images:annotate?key=${
-          process.env.REACT_APP_GOOGLE_API_KEY
+        process.env.REACT_APP_GOOGLE_API_KEY
         }`,
         reqBody
       );
       if (!resp.data.responses[0].fullTextAnnotation) {
         this.props.navigation.navigate('Camera');
-        Alert.alert('Error', 'Try again!');
+        Alert.alert('Error', 'Try again!')
+        this.setState({ displayLoading: false })
       } else {
+        
         const receiptText = resp.data.responses[0].fullTextAnnotation.text;
         const receiptObj = parseReceipt(receiptText);
         this.props.setReceipt(receiptObj);
@@ -178,7 +179,7 @@ export class CameraView extends React.Component {
     if (this.state.displayLoading) {
       return (
         <View style={styles.camera}>
-          <Spinner color='#159192'/>
+          <Spinner color='#159192' />
           <Text>Reading receipt...</Text>
         </View>
       );
