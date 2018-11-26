@@ -121,7 +121,7 @@ export class LineItemsConfirmedScreen extends React.Component {
   }
 
   render() {
-    const receipt = this.state.receiptLineItems;
+    const receipt = this.state.receiptLineItems
     return (
       <Container>
         <MyHeader title="Add Members" right={() => <BackButton />} />
