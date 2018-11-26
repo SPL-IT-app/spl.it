@@ -130,7 +130,6 @@ class AllEvents extends React.Component {
               return event.info.status ? (
                 <Swipeable rightButtons={rightButtons}>
                   <ListItem
-                    selected
                     button
                     onPress={() => this.handleEventClick(this.eventIds[idx])}
                     key={event.id}

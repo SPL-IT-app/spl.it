@@ -30,12 +30,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  eventTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    margin: 'auto',
-  },
   deleteButton: {
     display: 'flex',
     justifyContent: 'center',
@@ -45,6 +39,13 @@ const styles = StyleSheet.create({
   receiptText: {
     fontWeight: '200',
     letterSpacing: 2,
+  },
+  receiptDateText: {
+    fontWeight: '200',
+    color: '#838383',
+    letterSpacing: 2,
+    paddingTop: 5,
+    fontSize: 10,
   },
   deleteText: {
     paddingLeft: 15,
@@ -172,7 +173,7 @@ class SingleEvent extends React.Component {
                         <Text style={styles.receiptText}>
                           {`Receipt ${idx + 1}`.toUpperCase()}
                         </Text>
-                        <Text note numberOfLines={1}>
+                        <Text note style={styles.receiptDateText}>
                           {dateFormat(receipt.dateCreated, 'mediumDate')}
                         </Text>
                       </Body>

@@ -173,14 +173,14 @@ const groups = [
 
 const events = [
   {
-    date: new Date().toString(),
+    date: new Date('November 2, 2018').toString(),
     title: 'Night Out with the Guys',
     status: true,
     receipts: {},
     members: {},
   },
   {
-    date: new Date().toString(),
+    date: new Date('December 17, 2018').toString(),
     title: "Trip to Portland",
     status: true,
     receipts: {},
