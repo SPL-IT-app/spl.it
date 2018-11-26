@@ -1,5 +1,6 @@
 // ACTION TYPE
 const GET_USER = 'GET_USER '
+const REMOVE_USER = 'REMOVE_USER'
 
 // INITIAL STATE
 const defaultState = {
@@ -9,11 +10,18 @@ const defaultState = {
 // ACTION CREATOR
 export const getUser = user => ({ type: GET_USER, user })
 
+export const removeUser = () => ({
+    type: REMOVE_USER
+})
+
 
 // HANDLERS
 const handler = {
     [GET_USER]: (state, action) => {
         return { ...state, currentUser: action.user }
+    },
+    [REMOVE_USER]: (state, action) => {
+        return {...state, currentUser: {}}
     }
 }
 
