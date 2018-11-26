@@ -108,7 +108,7 @@ export class ListItemConfirmationScreen extends React.Component {
     const newReceipt = {
       imageUrl: 'newReceiptUrl',
       creator: this.props.user.id,
-      tipPercent: 10,
+      tipPercent: null,
       lineItems: {},
     };
 

@@ -134,7 +134,6 @@ class SingleEvent extends React.Component {
 
   render() {
     const { event, receipts } = this.state;
-    console.log('RECEIPTS ARRAY FROM RENDER ====>', receipts);
     if (!event.title) return <Container />;
     return (
       <Container styles={styles.container}>
