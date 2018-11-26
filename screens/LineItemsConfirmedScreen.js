@@ -103,7 +103,6 @@ export class LineItemsConfirmedScreen extends React.Component {
     if (!this.state.tipPercent) {
       this.setState({ dialogVisible: true });
     } else {
-      console.log("RECEIPT TIP ALREADY ADDED")
       await this.handleSubmitTip();
       this.props.navigation.navigate('Home')
     }
