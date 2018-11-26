@@ -13,6 +13,7 @@ import {
   Right,
   Thumbnail,
   Footer,
+  Badge,
 } from 'native-base';
 import { setReceipt } from '../store';
 import { connect } from 'react-redux';
@@ -20,7 +21,6 @@ import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
 const dateFormat = require('dateformat');
-
 
 const styles = StyleSheet.create({
   container: {
@@ -79,6 +79,7 @@ class SingleEvent extends React.Component {
       event: {},
       receipts: [],
       receiptIds: [],
+      receiptCountUnassigned: [],
     };
   }
 
@@ -88,7 +89,6 @@ class SingleEvent extends React.Component {
 
     // ON EVENT CHANGE
     this.eventRef.once('value', snapshot => {
-      console.log('EVENT ===> ', snapshot.val());
       this.setState({
         event: snapshot.val(),
       });
@@ -96,9 +96,31 @@ class SingleEvent extends React.Component {
 
     // ON EVENT RECEIPT ADDED
     this.receiptsRef.on('child_added', async snapshot => {
+      const receiptData = snapshot.val();
+      let countUnassigned = 0;
+      await snapshot.forEach(child => {
+        if (child.hasChildren() && !child.hasChild('users')) countUnassigned++;
+      });
       await this.setState({
         receiptIds: [...this.state.receiptIds, snapshot.key],
-        receipts: [...this.state.receipts, snapshot.val()],
+        receipts: [...this.state.receipts, receiptData],
+        receiptCountUnassigned: [
+          ...this.state.receiptCountUnassigned,
+          countUnassigned,
+        ],
+      });
+    });
+
+    this.receiptsRef.on('child_changed', async snapshot => {
+      const receiptIdx = this.state.receiptIds.indexOf(snapshot.key);
+      let countUnassigned = 0;
+      await snapshot.forEach(child => {
+        if (child.hasChildren() && !child.hasChild('users')) countUnassigned++;
+      });
+      const newCounts = [...this.state.receiptCountUnassigned];
+      newCounts.splice(receiptIdx, 1, countUnassigned);
+      this.setState({
+        receiptCountUnassigned: newCounts,
       });
     });
 
@@ -111,9 +133,14 @@ class SingleEvent extends React.Component {
 
       const newReceipts = this.state.receipts.slice();
       newReceipts.splice(removeReceiptIdx, 1);
+
+      const newCounts = this.state.receiptCountUnassigned.slice();
+      newCounts.splice(removeReceiptIdx, 1);
+
       this.setState({
         receiptIds: newReceiptIds,
         receipts: newReceipts,
+        receiptCountUnassigned: newCounts,
       });
     });
   }
@@ -125,10 +152,12 @@ class SingleEvent extends React.Component {
     });
   };
 
-  handleRemoveReceipt = (receiptId) => {
-    const receiptRef = makeRef(`events/${this.props.event}/receipts/${receiptId}`)
-    receiptRef.remove()
-  }
+  handleRemoveReceipt = receiptId => {
+    const receiptRef = makeRef(
+      `events/${this.props.event}/receipts/${receiptId}`
+    );
+    receiptRef.remove();
+  };
 
   componentWillUnmount() {
     this.eventRef.off();
@@ -177,10 +206,18 @@ class SingleEvent extends React.Component {
                         </Text>
                       </Body>
                       <Right>
-                        <Icon
-                          type="MaterialCommunityIcons"
-                          name="chevron-right"
-                        />
+                        {this.state.receiptCountUnassigned[idx] ? (
+                          <Badge>
+                            <Text>
+                              {this.state.receiptCountUnassigned[idx]}
+                            </Text>
+                          </Badge>
+                        ) : (
+                          <Icon
+                            type="MaterialCommunityIcons"
+                            name="chevron-right"
+                          />
+                        )}
                       </Right>
                     </ListItem>
                   </Swipeable>
