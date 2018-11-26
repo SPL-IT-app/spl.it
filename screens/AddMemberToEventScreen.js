@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container } from 'native-base';
-import { Text } from 'react-native';
+import { Content, Container, List, ListItem } from 'native-base';
+import { Text, StyleSheet, ScrollView } from 'react-native';
 import { makeRef } from '../server/firebaseconfig';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -10,6 +10,21 @@ import {
   BackButton,
   MyHeader,
 } from '../components';
+
+const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  eventFriends: {
+    height: '50%',
+  },
+  friendText: {
+    fontSize: 15,
+    fontWeight: '200',
+    letterSpacing: 3,
+  }
+});
 
 export class AddMemberToEventScreen extends Component {
   constructor() {
@@ -28,7 +43,7 @@ export class AddMemberToEventScreen extends Component {
         this.setState({
           friendProfiles: [
             ...this.state.friendProfiles,
-            {profile: profileSnapshot.val(), id: snapshot.key},
+            { profile: profileSnapshot.val(), id: snapshot.key },
           ],
         })
       );
@@ -50,17 +65,26 @@ export class AddMemberToEventScreen extends Component {
   }
 
   render() {
-
     console.log('state====> ', this.state);
-    // const { navigate } = this.props.navigation;
-    // if (!this.state.friendProfiles) {
-    //   return <Text>You don't have any friends!</Text>;
-    // }
+    if (!this.state.friendProfiles) {
+      return <Text>You don't have any friends!</Text>;
+    }
     return (
       <Container>
-        <MyHeader title="Confirmed Receipt" right={() => <BackButton />} />
-        <EventMembers />
-        <EventFriends friends={this.state.friendProfiles} />
+        <MyHeader title="Add Members" right={() => <BackButton />} />
+        <Content contentContainerStyle={styles.content}>
+          <Container>
+            <EventMembers />
+          </Container>
+          <List>
+            <ListItem>
+              <Text style={styles.friendText}>FRIENDS</Text>
+            </ListItem>
+          </List>
+          <ScrollView style={styles.eventFriends}>
+            <EventFriends friends={this.state.friendProfiles} />
+          </ScrollView>
+        </Content>
       </Container>
     );
   }

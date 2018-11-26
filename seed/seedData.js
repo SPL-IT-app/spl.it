@@ -42,8 +42,8 @@ const users = [
       phone: '111-111-1111',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     uJeuLwsE8XNcfWYtMt2zDtqCjZH2: {
@@ -53,8 +53,8 @@ const users = [
       phone: '222-222-2222',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     MFnAx1YAzneSfy9stSDhIWbWygg1: {
@@ -64,8 +64,8 @@ const users = [
       phone: '333-333-3333',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     dOQJVPAdwLXl8UbxtaSbDdbeGiQ2: {
@@ -75,8 +75,8 @@ const users = [
       phone: '444-444-4444',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     '5TL5kwr0m4coy9WpncZdiyknuLu1': {
@@ -86,8 +86,8 @@ const users = [
       phone: '555-555-5555',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     kWdrASnnEZWQ29MK7u0uO7FDvIP2: {
@@ -97,8 +97,8 @@ const users = [
       phone: '666-666-6666',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     owZenwd8cGbPeW6scHFbfqfgpdD2: {
@@ -108,8 +108,8 @@ const users = [
       phone: '777-777-7777',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     LYbFZlww7NhFABx1V492EjHCVJ42: {
@@ -119,9 +119,9 @@ const users = [
       phone: '888-888-8888',
       friends: {},
       groups: {},
-      events: {}
-    }
-  }
+      events: {},
+    },
+  },
 ];
 
 const profilePictures = [
@@ -130,45 +130,47 @@ const profilePictures = [
   'https://pbs.twimg.com/profile_images/1046968391389589507/_0r5bQLl.jpg',
   'https://media.licdn.com/dms/image/C5603AQGfbDyRLQO6jQ/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=oKuOflIcONQDaO2Usf-_uvMzOlo_QUnNv38nZ9pjnEk',
   'https://media.licdn.com/dms/image/C4E03AQGzt7hdcVzcgQ/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=GAinuzrTk8NfdHwTREdOf9FYWKBV0o1-GtQAXofBSJY',
-  'https://media.licdn.com/dms/image/C4E03AQEvrycsOIYx-g/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=YsnANuxFrxVYj1gFCG35HXfsk0J84pJrqX4nXDc0IzM,',
+  'https://media.licdn.com/dms/image/C4E03AQEvrycsOIYx-g/profile-displayphoto-shrink_800_800/0?e=1548892800&v=beta&t=PLTvDpusV0sxk6ds605NrLlcuafikNuwDfAGzHHrOSU',
   'https://media.licdn.com/dms/image/C4E03AQET2S41uyB6HA/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=i_3aeTBTgkATA4UnUYi8L1KhRG7tD_YL7gL62CMgkao',
   'https://cloud.fullstackacademy.com/colllin-miller-instructor.jpg?mtime=20180122152631',
   'https://cloud.fullstackacademy.com/ben-wilhelm-instructor.jpg?mtime=20180122152630',
   'https://cloud.fullstackacademy.com/finn-terdal-min.jpg?mtime=20180618121640',
-  'https://cloud.fullstackacademy.com/priti-patel-instructor.jpg?mtime=20180503134058'
-]
+  'https://cloud.fullstackacademy.com/priti-patel-instructor.jpg?mtime=20180503134058',
+];
 
 const profiles = users.map((user, idx) => {
-  const uid = Object.keys(user)[0]
-  return {[uid]: {
-    username: `${user[uid].firstName}${user[uid].lastName}`,
-    imageUrl: profilePictures[idx],
-    color: randomColor({
-      luminosity: 'light',
-      hue: 'random',
-    }).toString()
-  }}
-})
+  const uid = Object.keys(user)[0];
+  return {
+    [uid]: {
+      username: `${user[uid].firstName}${user[uid].lastName}`,
+      imageUrl: profilePictures[idx],
+      color: randomColor({
+        luminosity: 'light',
+        hue: 'random',
+      }).toString(),
+    },
+  };
+});
 
 const groups = [
   {
     name: 'Fullstack Instructors',
     members: {
       '5TL5kwr0m4coy9WpncZdiyknuLu1': true,
-      'kWdrASnnEZWQ29MK7u0uO7FDvIP2': true,
-      'owZenwd8cGbPeW6scHFbfqfgpdD2': true,
-      'LYbFZlww7NhFABx1V492EjHCVJ42': true
-    }
+      kWdrASnnEZWQ29MK7u0uO7FDvIP2: true,
+      owZenwd8cGbPeW6scHFbfqfgpdD2: true,
+      LYbFZlww7NhFABx1V492EjHCVJ42: true,
+    },
   },
   {
     name: 'Fullstack 1809',
     members: {
-      'l5Ckru5l4EbNqsRNCohQXpgUNmj2': true,
-      'uJeuLwsE8XNcfWYtMt2zDtqCjZH2': true,
-      'MFnAx1YAzneSfy9stSDhIWbWygg1': true,
-      'dOQJVPAdwLXl8UbxtaSbDdbeGiQ2': true
-    }
-  }
+      l5Ckru5l4EbNqsRNCohQXpgUNmj2: true,
+      uJeuLwsE8XNcfWYtMt2zDtqCjZH2: true,
+      MFnAx1YAzneSfy9stSDhIWbWygg1: true,
+      dOQJVPAdwLXl8UbxtaSbDdbeGiQ2: true,
+    },
+  },
 ];
 
 const events = [
@@ -211,8 +213,8 @@ const portlandReceipts = [
     dateCreated: new Date('December 19, 2018').toString(),
     imageUrl: 'https://i0.wp.com/johanjohansen.dk/wp-content/uploads/2017/03/noma-dinner-bill.jpg?resize=1020%2C1020',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
-    tipPercent: 0
-  }
+    tipPercent: 0,
+  },
 ];
 
 const nightOutReceipts = [
@@ -228,7 +230,7 @@ const nightOutReceipts = [
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 25,
   },
-]
+];
 
 const lineItems = [
   {
@@ -247,43 +249,43 @@ const lineItems = [
   {
     name: 'Cheese Curds',
     price: 7,
-    users: {}
+    users: {},
   },
   {
     name: 'Pepperoni Pizza with Olives, Spinach, and Onions',
     price: 15.0,
-    users: {}
+    users: {},
   },
   {
     name: 'Pad Thai with Tofu',
     price: 18.0,
-    users: {}
+    users: {},
   },
   {
     name: 'Red Curry with Rice',
     price: 20.0,
-    users: {}
+    users: {},
   },
   {
     name: 'French Fries',
-    price: 4.50,
-    users: {}
+    price: 4.5,
+    users: {},
   },
   {
     name: 'Burger',
     price: 14,
-    users: {}
+    users: {},
   },
   {
     name: 'Thanksgiving Cranberries',
     price: 12,
-    users: {}
+    users: {},
   },
   {
     name: 'Burrito with black beans and rice',
     price: 17,
-    users: {}
-  }
+    users: {},
+  },
 ];
 
 module.exports = {

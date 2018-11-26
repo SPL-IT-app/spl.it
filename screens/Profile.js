@@ -39,8 +39,9 @@ import { connect } from "react-redux";
 import { makeRef } from "../server/firebaseconfig";
 import { Friends, Groups } from '../components'
 import Dialog from 'react-native-dialog'
-import { ImagePicker, FileSystem } from 'expo'
-import { storageRef } from '../server/firebaseconfig'
+import { ImagePicker, FileSystem, Permissions } from 'expo'
+import { RNS3 } from 'react-native-aws3'
+require('../secrets');
 
 class Profile extends React.Component {
   constructor() {
@@ -123,41 +124,33 @@ class Profile extends React.Component {
   }
 
   handleYes = async () => {
-    // const Blob = RNFetchBlob.polyfill.Blob
-    // const fs = RNFetchBlob.fs
-    // window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
-    // window.Blob = Blob
-    // this.setState({dialogVisible: false})
-    // let result = await ImagePicker.launchImageLibraryAsync({
-    //   allowsEditing: true,
-    //   aspect: [4, 3]
-    // })
-    // const data = await fs.readFile(result.uri, 'base64')
-    // const blob = await Blob.build(data, { type: `${mime};BASE64` })
-    // storageRef.child(this.props.user.id).put(blob, {contentType: mime })
-    // const url = storageRef.child(this.props.user.id).getDownloadURL()
-    // if(!result.cancelled){
-    //   this.setState({image: url})
-    // }
-
+    this.setState({dialogVisible: false})
+    await Permissions.askAsync(Permissions.CAMERA_ROLL)
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4,3]
     })
     if(!result.cancelled){
-      // const fs = new FileSystem
-      // let file = await FileSystem.readAsStringAsync(result.uri, {encoding: 'Base64'})
-      let file = await FileSystem.readAsStringAsync(result.uri)
-      // console.log(file)
-      // this.setState({image: file, dialogVisible: false})
-      // file = 'data:image/jpeg;base64,' + file
-      console.log(file)
-      await storageRef.child(this.props.user.id).putString(file, 'raw', {contentType:'image/jpeg'})
-      const url = await storageRef.child(this.props.user.id).getDownloadURL()
-      console.log(url)
-      // this.setState({image: url, dialogVisible: false})
-    }
+      const date = new Date()
+      const file = {
+        uri: result.uri,
+        name: this.props.user.id + date,
+        type: "image/jpg"
+      }
+      const options = {
+        keyPrefix: "profiles/",
+        bucket: "spl-it",
+        region: "us-east-2",
+        accessKey: process.env.S3_API_KEY,
+        secretKey: process.env.S3_SECRET_KEY,
+        successActionStatus: 201
+      }
 
+      const response = await RNS3.put(file, options)
+      if(response.status === 201){
+        makeRef(`/profiles/${this.props.user.id}/imageUrl`).set(response.body.postResponse.location)
+      }
+    }
   }
 
   render() {
