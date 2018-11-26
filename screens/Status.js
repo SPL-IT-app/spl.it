@@ -9,7 +9,7 @@ class Status extends Component {
         super()
         this.state = {
             receipts: [],
-            members: [],
+            members: {},
             event: {}
         }
     }
@@ -19,10 +19,24 @@ class Status extends Component {
         this.eventRef.on('value', snapshot => {
             this.setState({event: snapshot.val()})
         })
+        this.membersRef = makeRef(`events/${this.props.navigation.getParam('eventId')}/members`)
+        this.membersRef.on('child_added', snapshot => {
+            makeRef(`profiles/${snapshot.key}`).once('value', snapshot => {
+                this.setState({members: {...this.state.members, [snapshot.key]: snapshot.val()}})
+            })
+        })
+        this.membersRef.on('child_removed', snapshot => {
+            makeRef(`profiles/${snapshot.key}`).once('value', snapshot => {
+                let newMembers = {...this.state.members}
+                delete newMembers[snapshot.key]
+                this.setState({members: newMembers})
+            })
+        })
     }
 
     componentWillUnmount(){
         this.eventRef.off()
+        this.membersRef.off()
     }
 
     render() {
