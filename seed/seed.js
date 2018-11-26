@@ -49,7 +49,7 @@ function seed() {
     usersRefIndiv.set(user[Object.keys(user)[0]]);
 
     const userFriendRef = makeRef(`users/${Object.keys(user)[0]}/friends`)
-    const randomFriends = shuffle(users.filter(friend => friend !== user)).slice(0, 5)
+    const randomFriends = shuffle(users.filter(friend => friend !== user)).slice(0, 7)
     randomFriends.forEach(friend => {
       const friendId = Object.keys(friend)[0]
       userFriendRef.update({[friendId]: true})

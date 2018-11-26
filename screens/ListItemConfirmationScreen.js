@@ -106,9 +106,10 @@ export class ListItemConfirmationScreen extends React.Component {
     };
 
     const newReceipt = {
-      imageUrl: 'newReceiptUrl',
+      imageUrl: 'http://www.w3.org/wiki/images/a/a9/Munich-dinner-receipt.jpg',
       creator: this.props.user.id,
-      tipPercent: 10,
+      dateCreated: new Date().toString(),
+      tipPercent: null,
       lineItems: {},
     };
 

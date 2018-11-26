@@ -92,10 +92,9 @@ class LineItemsConfirmed extends React.Component {
     newArr.forEach((col, idx) => {
       newArr.splice(idx, 0, 'transparent');
     });
-    console.log('newArr ===>', newArr);
     return (
       <LinearGradient
-        colors={this.state.colors}
+        colors={this.state.colors < 2 ? [...this.state.colors, ...this.state.colors, 'transparent', 'transparent'] : this.state.colors}
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 1 }}
       >
@@ -117,7 +116,6 @@ class LineItemsConfirmed extends React.Component {
               style={styles.input}
               onPress={() => {
                 this.handlePress();
-                console.log('pressed?');
               }}
             >
               <Text style={styles.text}>{this.state.lineItem.name}</Text>

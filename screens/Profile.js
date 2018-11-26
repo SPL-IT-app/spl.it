@@ -39,7 +39,7 @@ import { connect } from "react-redux";
 import { makeRef } from "../server/firebaseconfig";
 import { Friends, Groups } from '../components'
 import Dialog from 'react-native-dialog'
-import { ImagePicker, FileSystem, Permissions } from 'expo'
+import { ImagePicker, Permissions } from 'expo'
 import { RNS3 } from 'react-native-aws3'
 require('../secrets');
 

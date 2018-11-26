@@ -19,54 +19,57 @@ import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
+const dateFormat = require('dateformat');
+
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    eventTitle: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        margin: 'auto',
-    },
-    deleteButton: {
-        display: 'flex',
-        justifyContent: 'center',
-        backgroundColor: '#FF7E79',
-        height: '100%',
-    },
-    receiptText: {
-        fontWeight: '200',
-        letterSpacing: 2,
-    },
-    deleteText: {
-        paddingLeft: 15,
-        color: 'white',
-    },
-    buttonText: {
-        textAlign: 'center',
-        letterSpacing: 2,
-        color: 'white',
-    },
-    button: {
-        marginTop: 10,
-        width: '95%',
-        alignSelf: 'center',
-    },
-    footer: {
-        backgroundColor: 'transparent',
-        borderColor: 'transparent',
-        paddingBottom: 15,
-    },
-    icon: {
-        margin: 0,
-        padding: 0,
-    },
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deleteButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: '#FF7E79',
+    height: '100%',
+  },
+  receiptText: {
+    fontWeight: '200',
+    letterSpacing: 2,
+  },
+  receiptDateText: {
+    fontWeight: '200',
+    color: '#838383',
+    letterSpacing: 2,
+    paddingTop: 5,
+    fontSize: 10,
+  },
+  deleteText: {
+    paddingLeft: 15,
+    color: 'white',
+  },
+  buttonText: {
+    textAlign: 'center',
+    letterSpacing: 2,
+    color: 'white',
+  },
+  button: {
+    marginTop: 10,
+    width: '95%',
+    alignSelf: 'center',
+  },
+  footer: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    paddingBottom: 15,
+  },
+  icon: {
+    margin: 0,
+    padding: 0,
+  },
 });
 
 class SingleEvent extends React.Component {

@@ -8,9 +8,10 @@ import {
   MyHeader,
   DeleteButton,
   EventMembers,
-  BackButton
+  BackButton,
 } from '../components';
 const { makeRef } = require('../server/firebaseconfig');
+import Dialog from 'react-native-dialog';
 
 const styles = StyleSheet.create({
   tableHeader: {
@@ -70,6 +71,8 @@ export class LineItemsConfirmedScreen extends React.Component {
     super(props);
     this.state = {
       receiptLineItems: [],
+      tipPercent: null,
+      dialogVisible: false
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -80,34 +83,65 @@ export class LineItemsConfirmedScreen extends React.Component {
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
     let lineItems = {};
+    let tipPercent = null
     this.receiptRefUrl.on('value', snapshot => {
       lineItems = snapshot.val();
+      tipPercent = snapshot.val().tipPercent
     });
-    this.setState({ receiptLineItems: Object.entries(lineItems) });
+    this.setState({ receiptLineItems: Object.entries(lineItems), tipPercent: tipPercent });
   };
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     this.receiptRefUrl.off();
   }
 
+  handleTipChange = (event) => {
+    this.setState({ tipPercent: event });
+  }
+
+  handleSaveReceipt = async () => {
+    if (!this.state.tipPercent) {
+      this.setState({ dialogVisible: true });
+    } else {
+      await this.handleSubmitTip();
+      this.props.navigation.navigate('Home')
+    }
+  }
+
+  handleSubmitTip = () => {
+    this.setState({ dialogVisible: false });
+    this.receiptRefUrl = makeRef(this.receiptRef);
+    this.receiptRefUrl.update({tipPercent: Number(this.state.tipPercent)})
+  }
+
+  handleCancel = () => {
+    this.setState({ dialogVisible: false });
+  }
+
   render() {
-    const receipt = this.state.receiptLineItems;
-    console.log('RECEIPT FROM CONFIRMED SCREEN ====>', receipt);
+    const receipt = this.state.receiptLineItems
     return (
       <Container>
-        {/* <MyHeader
-          title="Receipt"
-          right={() => (
-            <DeleteButton
-              url={this.receiptRef}
-              navigation={this.props.navigation}
-            />
-          )}
-        /> */}
         <MyHeader title="Add Members" right={() => <BackButton />} />
 
         <Content style={styles.content}>
           <Grid>
+            <Dialog.Container visible={this.state.dialogVisible}>
+              <Dialog.Title>Tip Percent</Dialog.Title>
+              <Dialog.Description>
+                Please enter a tip %
+              </Dialog.Description>
+              <Dialog.Input lable="test" onChangeText={this.handleTipChange} />
+              <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+              <Dialog.Button
+                label="Enter"
+                onPress={async () => {
+                  await this.handleSubmitTip();
+                  this.props.navigation.navigate('Home')
+                }}
+              />
+            </Dialog.Container>
+
             <Row style={styles.tableHeader}>
               <Col style={styles.quantity}>
                 <Text>QTY</Text>
@@ -162,7 +196,7 @@ export class LineItemsConfirmedScreen extends React.Component {
             block
             style={styles.button}
             onPress={() => {
-              this.props.navigation.navigate('Home');
+              this.handleSaveReceipt()
             }}
           >
             <Text style={styles.buttonText}> SAVE RECEIPT </Text>
