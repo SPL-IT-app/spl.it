@@ -16,12 +16,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  eventMembers: {
-    // height: '50%',
-  },
   eventFriends: {
     height: '50%',
   },
+  friendText: {
+    fontSize: 15,
+    fontWeight: '200',
+    letterSpacing: 3,
+  }
 });
 
 export class AddMemberToEventScreen extends Component {
@@ -71,12 +73,12 @@ export class AddMemberToEventScreen extends Component {
       <Container>
         <MyHeader title="Add Members" right={() => <BackButton />} />
         <Content contentContainerStyle={styles.content}>
-          <Container style={styles.eventMembers}>
+          <Container>
             <EventMembers />
           </Container>
           <List>
             <ListItem>
-              <Text>FRIENDS</Text>
+              <Text style={styles.friendText}>FRIENDS</Text>
             </ListItem>
           </List>
           <ScrollView style={styles.eventFriends}>
