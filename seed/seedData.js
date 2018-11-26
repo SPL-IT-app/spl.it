@@ -42,8 +42,8 @@ const users = [
       phone: '111-111-1111',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     uJeuLwsE8XNcfWYtMt2zDtqCjZH2: {
@@ -53,8 +53,8 @@ const users = [
       phone: '222-222-2222',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     MFnAx1YAzneSfy9stSDhIWbWygg1: {
@@ -64,8 +64,8 @@ const users = [
       phone: '333-333-3333',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     dOQJVPAdwLXl8UbxtaSbDdbeGiQ2: {
@@ -75,8 +75,8 @@ const users = [
       phone: '444-444-4444',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     '5TL5kwr0m4coy9WpncZdiyknuLu1': {
@@ -86,8 +86,8 @@ const users = [
       phone: '555-555-5555',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     kWdrASnnEZWQ29MK7u0uO7FDvIP2: {
@@ -97,8 +97,8 @@ const users = [
       phone: '666-666-6666',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     owZenwd8cGbPeW6scHFbfqfgpdD2: {
@@ -108,8 +108,8 @@ const users = [
       phone: '777-777-7777',
       friends: {},
       groups: {},
-      events: {}
-    }
+      events: {},
+    },
   },
   {
     LYbFZlww7NhFABx1V492EjHCVJ42: {
@@ -119,9 +119,9 @@ const users = [
       phone: '888-888-8888',
       friends: {},
       groups: {},
-      events: {}
-    }
-  }
+      events: {},
+    },
+  },
 ];
 
 const profilePictures = [
@@ -135,40 +135,42 @@ const profilePictures = [
   'https://cloud.fullstackacademy.com/colllin-miller-instructor.jpg?mtime=20180122152631',
   'https://cloud.fullstackacademy.com/ben-wilhelm-instructor.jpg?mtime=20180122152630',
   'https://cloud.fullstackacademy.com/finn-terdal-min.jpg?mtime=20180618121640',
-  'https://cloud.fullstackacademy.com/priti-patel-instructor.jpg?mtime=20180503134058'
-]
+  'https://cloud.fullstackacademy.com/priti-patel-instructor.jpg?mtime=20180503134058',
+];
 
 const profiles = users.map((user, idx) => {
-  const uid = Object.keys(user)[0]
-  return {[uid]: {
-    username: `${user[uid].firstName}${user[uid].lastName}`,
-    imageUrl: profilePictures[idx],
-    color: randomColor({
-      luminosity: 'light',
-      hue: 'random',
-    }).toString()
-  }}
-})
+  const uid = Object.keys(user)[0];
+  return {
+    [uid]: {
+      username: `${user[uid].firstName}${user[uid].lastName}`,
+      imageUrl: profilePictures[idx],
+      color: randomColor({
+        luminosity: 'light',
+        hue: 'random',
+      }).toString(),
+    },
+  };
+});
 
 const groups = [
   {
     name: 'Fullstack Instructors',
     members: {
       '5TL5kwr0m4coy9WpncZdiyknuLu1': true,
-      'kWdrASnnEZWQ29MK7u0uO7FDvIP2': true,
-      'owZenwd8cGbPeW6scHFbfqfgpdD2': true,
-      'LYbFZlww7NhFABx1V492EjHCVJ42': true
-    }
+      kWdrASnnEZWQ29MK7u0uO7FDvIP2: true,
+      owZenwd8cGbPeW6scHFbfqfgpdD2: true,
+      LYbFZlww7NhFABx1V492EjHCVJ42: true,
+    },
   },
   {
     name: 'Fullstack 1809',
     members: {
-      'l5Ckru5l4EbNqsRNCohQXpgUNmj2': true,
-      'uJeuLwsE8XNcfWYtMt2zDtqCjZH2': true,
-      'MFnAx1YAzneSfy9stSDhIWbWygg1': true,
-      'dOQJVPAdwLXl8UbxtaSbDdbeGiQ2': true
-    }
-  }
+      l5Ckru5l4EbNqsRNCohQXpgUNmj2: true,
+      uJeuLwsE8XNcfWYtMt2zDtqCjZH2: true,
+      MFnAx1YAzneSfy9stSDhIWbWygg1: true,
+      dOQJVPAdwLXl8UbxtaSbDdbeGiQ2: true,
+    },
+  },
 ];
 
 const events = [
@@ -181,7 +183,7 @@ const events = [
   },
   {
     date: new Date().toString(),
-    title: "Trip to Portland",
+    title: 'Trip to Portland',
     status: true,
     receipts: {},
     members: {},
@@ -190,12 +192,14 @@ const events = [
 
 const portlandReceipts = [
   {
-    imageUrl: 'https://s.aolcdn.com/hss/storage/midas/9aec80daba3fd25da5a71151d6808a6e/205038461/display.jpg',
+    imageUrl:
+      'https://s.aolcdn.com/hss/storage/midas/9aec80daba3fd25da5a71151d6808a6e/205038461/display.jpg',
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 10,
   },
   {
-    imageUrl: 'https://d85ecz8votkqa.cloudfront.net/support/help_center/Print_Payment_Receipt.JPG',
+    imageUrl:
+      'https://d85ecz8votkqa.cloudfront.net/support/help_center/Print_Payment_Receipt.JPG',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 25,
   },
@@ -205,24 +209,27 @@ const portlandReceipts = [
     tipPercent: 15,
   },
   {
-    imageUrl: 'https://i0.wp.com/johanjohansen.dk/wp-content/uploads/2017/03/noma-dinner-bill.jpg?resize=1020%2C1020',
+    imageUrl:
+      'https://i0.wp.com/johanjohansen.dk/wp-content/uploads/2017/03/noma-dinner-bill.jpg?resize=1020%2C1020',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
-    tipPercent: 0
-  }
+    tipPercent: 0,
+  },
 ];
 
 const nightOutReceipts = [
   {
-    imageUrl: 'https://farm5.static.flickr.com/4231/34950943814_a9d4c0e337_b.jpg',
+    imageUrl:
+      'https://farm5.static.flickr.com/4231/34950943814_a9d4c0e337_b.jpg',
     creator: 'Ul5MOGufA2eYLCMq0CDD8Juojz92',
     tipPercent: 10,
   },
   {
-    imageUrl: 'https://media-cdn.tripadvisor.com/media/photo-s/04/d0/50/1d/del-frisco-s.jpg',
+    imageUrl:
+      'https://media-cdn.tripadvisor.com/media/photo-s/04/d0/50/1d/del-frisco-s.jpg',
     creator: 'QUYamusOQnMkQxJaxZVetUgY66D3',
     tipPercent: 25,
   },
-]
+];
 
 const lineItems = [
   {
@@ -241,43 +248,43 @@ const lineItems = [
   {
     name: 'Cheese Curds',
     price: 7,
-    users: {}
+    users: {},
   },
   {
     name: 'Pepperoni Pizza with Olives, Spinach, and Onions',
     price: 15.0,
-    users: {}
+    users: {},
   },
   {
     name: 'Pad Thai with Tofu',
     price: 18.0,
-    users: {}
+    users: {},
   },
   {
     name: 'Red Curry with Rice',
     price: 20.0,
-    users: {}
+    users: {},
   },
   {
     name: 'French Fries',
-    price: 4.50,
-    users: {}
+    price: 4.5,
+    users: {},
   },
   {
     name: 'Burger',
     price: 14,
-    users: {}
+    users: {},
   },
   {
     name: 'Thanksgiving Cranberries',
     price: 12,
-    users: {}
+    users: {},
   },
   {
     name: 'Burrito with black beans and rice',
     price: 17,
-    users: {}
-  }
+    users: {},
+  },
 ];
 
 module.exports = {
