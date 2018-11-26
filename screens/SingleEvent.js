@@ -214,7 +214,7 @@ class SingleEvent extends React.Component {
             block
             style={styles.button}
             onPress={() => {
-              this.props.navigation.navigate('Status');
+              this.props.navigation.navigate('Status', {eventId: this.props.event});
             }}
           >
             <Icon
