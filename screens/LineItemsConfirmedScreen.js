@@ -111,7 +111,7 @@ export class LineItemsConfirmedScreen extends React.Component {
   handleSubmitTip = () => {
     this.setState({ dialogVisible: false });
     this.receiptRefUrl = makeRef(this.receiptRef);
-    this.receiptRefUrl.update({tipPercent: this.state.tipPercent})
+    this.receiptRefUrl.update({tipPercent: Number(this.state.tipPercent)})
   }
 
   handleCancel = () => {
