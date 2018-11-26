@@ -29,32 +29,53 @@ class Status extends Component {
         console.log(this.state)
 
         const moneyToSend = {}
-        const moneyToReceive = {}
+        const moneyToReceive = {unassigned: 0}
+
+        const calculatePrice = (price, count, tipPercent = 15) => {
+            return (price/count)*(1 + tipPercent/100 + 0.1025)
+        }
 
         for(let key in this.state.event.receipts){
             let receipt = this.state.event.receipts[key]
             const creator = receipt.creator
             const lineItems = Object.values(receipt).filter(value => typeof value === 'object')
+            const isCreator = creator === this.props.id
             for(let i = 0; i < lineItems.length; i++){
-                if (lineItems[i].users && lineItems[i].users.hasOwnProperty(this.props.id)){
+                if (!isCreator && lineItems[i].users && lineItems[i].users.hasOwnProperty(this.props.id)){
                     const countUsers = Object.keys(lineItems[i].users).length
                     if(moneyToSend.hasOwnProperty(creator)){
-                        moneyToSend[creator] += lineItems[i].price/countUsers*(1 + receipt.tipPercent/100)*(1.1025)
+                        moneyToSend[creator] += calculatePrice(lineItems[i].price, countUsers, receipt.tipPercent)
                     } else {
-                        moneyToSend[creator] = lineItems[i].price/countUsers*(1 + receipt.tipPercent/100)*(1.1025)
+                        moneyToSend[creator] = calculatePrice(lineItems[i].price, countUsers, receipt.tipPercent)
+                    }
+                }
+                if(isCreator){
+                    if(lineItems[i].users){
+                        const countUsers = Object.keys(lineItems[i].users).length
+                        for(let userKey in lineItems[i].users){
+                            if(userKey === this.props.id) continue
+                            if(moneyToReceive.hasOwnProperty(userKey)){
+                                moneyToReceive[userKey] += calculatePrice(lineItems[i].price, countUsers, receipt.tipPercent)
+                            } else {
+                                moneyToReceive[userKey] = calculatePrice(lineItems[i].price, countUsers, receipt.tipPercent)
+                            }
+                        }
+                    } else {
+                        moneyToReceive.unassigned += calculatePrice(lineItems[i].price, 1, receipt.tipPercent)
                     }
                 }
             }
 
         }
         console.log('moneyToSend', moneyToSend)
+        console.log('moneyToReceive', moneyToReceive)
 
         return (
             <Container>
                 <MyHeader title='Status' right={()=><BackButton />} />
                 <Content>
                     <Text>This is Status Page</Text>
-                    <Text>{this.props.navigation.getParam('eventId')}</Text>
+
                 </Content>
             </Container>
         )
