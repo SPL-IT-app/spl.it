@@ -127,7 +127,7 @@ export class LineItemsConfirmedScreen extends React.Component {
         <Content style={styles.content}>
           <Grid>
             <Dialog.Container visible={this.state.dialogVisible}>
-              <Dialog.Title>Tip Amount</Dialog.Title>
+              <Dialog.Title>Tip Percent</Dialog.Title>
               <Dialog.Description>
                 Please enter a tip %
               </Dialog.Description>
