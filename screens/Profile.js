@@ -131,9 +131,10 @@ class Profile extends React.Component {
       aspect: [4,3]
     })
     if(!result.cancelled){
+      const date = new Date()
       const file = {
         uri: result.uri,
-        name: this.props.user.id,
+        name: this.props.user.id + date,
         type: "image/jpg"
       }
       const options = {
@@ -146,7 +147,6 @@ class Profile extends React.Component {
       }
 
       const response = await RNS3.put(file, options)
-      console.log(response)
       if(response.status === 201){
         makeRef(`/profiles/${this.props.user.id}/imageUrl`).set(response.body.postResponse.location)
       }
