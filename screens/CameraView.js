@@ -80,6 +80,7 @@ export class CameraView extends React.Component {
         },
         displayCrop: true,
       });
+      return true
     },
     onPanResponderRelease: (evt, gestureState) => {
       console.log('crop on release ===>', this.state.crop);
@@ -87,6 +88,7 @@ export class CameraView extends React.Component {
       this.takePicture().then(() => {
         this.props.navigation.navigate('ListConfirm');
       });
+      return true
     },
   });
 
@@ -176,7 +178,7 @@ export class CameraView extends React.Component {
     if (this.state.displayLoading) {
       return (
         <View style={styles.camera}>
-          <Spinner />
+          <Spinner color='#159192'/>
           <Text>Reading receipt...</Text>
         </View>
       );
