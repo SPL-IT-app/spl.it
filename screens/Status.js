@@ -36,16 +36,12 @@ class Status extends Component {
   }
 
   componentDidMount() {
-    this.eventRef = makeRef(
-      `events/${this.props.navigation.getParam('eventId')}`
-    );
+    this.eventRef = makeRef(`events/${this.props.navigation.getParam('eventId')}`);
     this.eventRef.on('value', snapshot => {
       this.setState({ event: snapshot.val() });
     });
 
-    this.membersRef = makeRef(
-      `events/${this.props.navigation.getParam('eventId')}/members`
-    );
+    this.membersRef = makeRef(`events/${this.props.navigation.getParam('eventId')}/members`);
     this.membersRef.on('value', snapshot => {
       this.setState({ memberCount: Object.keys(snapshot.val()).length });
     });
@@ -315,6 +311,7 @@ const styles = StyleSheet.create({
 
 const mapState = state => ({
   id: state.user.currentUser.id,
+  event: state.event.eventId,
 });
 
 export default connect(mapState)(Status);

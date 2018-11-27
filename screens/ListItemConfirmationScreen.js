@@ -3,15 +3,11 @@ import { StyleSheet, Text } from 'react-native';
 import { Container, Content, Button, Icon, Footer } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
-import {
-  LoadingScreen,
-  LineItems,
-  MyHeader,
-  BackButton,
-} from '../components';
+import { LoadingScreen, LineItems, MyHeader, BackButton } from '../components';
 import { addLineItem, setEvent } from '../store';
 const { makeRef } = require('../server/firebaseconfig');
 import Dialog from 'react-native-dialog';
+import { Status } from '../screens';
 
 const styles = StyleSheet.create({
   tableHeader: {
@@ -58,8 +54,8 @@ const styles = StyleSheet.create({
   footer: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
-    paddingBottom: 15
-  }
+    paddingBottom: 15,
+  },
 });
 
 export class ListItemConfirmationScreen extends React.Component {
@@ -69,7 +65,19 @@ export class ListItemConfirmationScreen extends React.Component {
       dialogVisible: false,
       eventName: '',
       receiptRef: '',
+      eventStatus: true,
     };
+  }
+
+  componentDidMount() {
+    if (this.props.event.length) {
+      this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
+        'value',
+        snapshot => {
+          this.setState({ eventStatus: snapshot.val() });
+        }
+      );
+    }
   }
 
   static navigationOptions = {
@@ -160,7 +168,14 @@ export class ListItemConfirmationScreen extends React.Component {
     });
   };
 
+  checkStatus = () => {
+    if (!this.state.eventStatus) {
+      this.props.navigation.navigate('Status', { eventId: this.props.event });
+    }
+  };
+
   render() {
+    this.checkStatus();
     const { receipt } = this.props;
     return receipt.length ? (
       <Container>
