@@ -60,10 +60,6 @@ class LoginScreen extends React.Component {
     const { getUser } = this.props
 
     try {
-      if (this.state.password.length < 6) {
-        Alert.alert('Error', 'Please enter at least 6 characters');
-        return;
-      }
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
