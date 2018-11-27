@@ -4,7 +4,7 @@ import { Container, Content, Button, Icon, Footer } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import {
-  CameraProcessing,
+  LoadingScreen,
   LineItems,
   MyHeader,
   BackButton,
@@ -229,7 +229,7 @@ export class ListItemConfirmationScreen extends React.Component {
         </Footer>
       </Container>
     ) : (
-      <CameraProcessing />
+      <LoadingScreen />
     );
   }
 }
