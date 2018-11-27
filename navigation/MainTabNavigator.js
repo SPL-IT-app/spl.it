@@ -131,8 +131,8 @@ export default createBottomTabNavigator(
               active={props.navigation.state.index === 2}
               onPress={() => props.navigation.navigate('MoreStack')}
             >
-              <Icon type="MaterialCommunityIcons" name="more" />
-              <Text>More</Text>
+              <Icon type="MaterialCommunityIcons" name="history" />
+              <Text>History</Text>
             </Button>
           </FooterTab>
         </Footer>
