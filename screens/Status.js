@@ -145,7 +145,7 @@ class Status extends Component {
     const members = this.state.members;
     return (
       <Container>
-        <MyHeader title="Status" right={() => <BackButton />} />
+        <MyHeader title={this.props.navigation.getParam('history') ? 'History' : 'Status'} subtitle={this.state.event.title} right={() => <BackButton />} />
         <Content>
           <List>
             {Object.entries(this.moneyToSendOrReceive).map(entry => {
