@@ -16,9 +16,10 @@ require('../secrets');
 import { Icon, Button, Content, Spinner } from 'native-base';
 import { connect } from 'react-redux';
 import { setReceipt } from '../store';
-import { MyHeader, BackButton } from '../components/index';
+import { MyHeader, BackButton } from '../components';
 import platformStyle from '../native-base-theme/variables/platform.js';
-
+import { Status } from '../screens';
+import { makeRef } from '../server/firebaseconfig';
 const styles = StyleSheet.create({
   view: {
     flex: 1,
@@ -58,11 +59,18 @@ export class CameraView extends React.Component {
       //   height: 0,
       // },
       displayCrop: false,
+      eventStatus: true,
     };
   }
   async componentDidMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
+    this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
+      'value',
+      snapshot => {
+        this.setState({ eventStatus: snapshot.val() });
+      }
+    );
   }
 
   _panResponder: PanResponderInstance = PanResponder.create({
@@ -80,7 +88,7 @@ export class CameraView extends React.Component {
         },
         displayCrop: true,
       });
-      return true
+      return true;
     },
     onPanResponderRelease: (evt, gestureState) => {
       console.log('crop on release ===>', this.state.crop);
@@ -88,7 +96,7 @@ export class CameraView extends React.Component {
       this.takePicture().then(() => {
         this.props.navigation.navigate('ListConfirm');
       });
-      return true
+      return true;
     },
   });
 
@@ -111,7 +119,6 @@ export class CameraView extends React.Component {
           },
         ],
       };
-      console.log('request ======>', reqBody);
       const resp = await axios.post(
         `https://vision.googleapis.com/v1/images:annotate?key=${
           process.env.REACT_APP_GOOGLE_API_KEY
@@ -121,6 +128,7 @@ export class CameraView extends React.Component {
       if (!resp.data.responses[0].fullTextAnnotation) {
         this.props.navigation.navigate('Camera');
         Alert.alert('Error', 'Try again!');
+        this.setState({ displayLoading: false });
       } else {
         const receiptText = resp.data.responses[0].fullTextAnnotation.text;
         const receiptObj = parseReceipt(receiptText);
@@ -178,7 +186,7 @@ export class CameraView extends React.Component {
     if (this.state.displayLoading) {
       return (
         <View style={styles.camera}>
-          <Spinner color='#159192'/>
+          <Spinner color="#159192" />
           <Text>Reading receipt...</Text>
         </View>
       );
@@ -222,26 +230,27 @@ export class CameraView extends React.Component {
   };
 
   render() {
-    const { hasCameraPermission } = this.state;
-    if (hasCameraPermission === null) {
-      return <View />;
-    } else if (hasCameraPermission === false) {
-      return <Text>No access to camera!</Text>;
-    } else {
-      return (
-        <View style={styles.view}>
-          <MyHeader title="Take Photo" right={() => <BackButton />} />
-          <Camera
-            style={styles.view}
-            type={this.state.type}
-            ref={ref => {
-              this.camera = ref;
-            }}
-            {...this._panResponder.panHandlers}
-          >
-            {this._rectangleDisplay()}
-            {this._renderLoading()}
-            {/* <View style={styles.camera}>
+    if (this.state.eventStatus) {
+      const { hasCameraPermission } = this.state;
+      if (hasCameraPermission === null) {
+        return <View />;
+      } else if (hasCameraPermission === false) {
+        return <Text>No access to camera!</Text>;
+      } else {
+        return (
+          <View style={styles.view}>
+            <MyHeader title="Take Photo" right={() => <BackButton />} />
+            <Camera
+              style={styles.view}
+              type={this.state.type}
+              ref={ref => {
+                this.camera = ref;
+              }}
+              {...this._panResponder.panHandlers}
+            >
+              {this._rectangleDisplay()}
+              {this._renderLoading()}
+              {/* <View style={styles.camera}>
               <Button
                 style={styles.button}
                 onPress={() => this.props.navigation.navigate('Home')}
@@ -261,9 +270,12 @@ export class CameraView extends React.Component {
                 </Button>
               </TouchableOpacity>
             </View> */}
-          </Camera>
-        </View>
-      );
+            </Camera>
+          </View>
+        );
+      }
+    } else {
+      return <Status />;
     }
   }
 }
@@ -313,6 +325,12 @@ function parseReceipt(receiptText) {
   return parsedReceipt;
 }
 
+const mapState = state => {
+  return {
+    event: state.event.eventId,
+  };
+};
+
 const mapDispatch = dispatch => {
   return {
     setReceipt: receiptObj => {
@@ -322,6 +340,6 @@ const mapDispatch = dispatch => {
 };
 
 export default connect(
-  null,
+  mapState,
   mapDispatch
 )(CameraView);

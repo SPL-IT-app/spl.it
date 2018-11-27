@@ -7,6 +7,7 @@ import { makeRef } from '../server/firebaseconfig';
 import { withNavigation } from 'react-navigation';
 import Swipeable from 'react-native-swipeable';
 const dateFormat = require('dateformat');
+import { MyHeader, BackButton } from '../components';
 
 const styles = StyleSheet.create({
   deleteButton: {
@@ -40,42 +41,56 @@ class AllEvents extends React.Component {
     super(props);
     this.state = {
       events: [],
+      eventIds: [],
     };
   }
 
   componentDidMount() {
     const { user } = this.props;
-    this.eventIds = [];
 
     this.userEventsRef = makeRef(`/users/${user.id}/events`);
+    // this.eventRef = makeRef(`events`)
 
     // ON USER EVENT ADDED
     this.userEventsRef.on('child_added', snapshot => {
       const eventsRef = makeRef(`/events/${snapshot.key}`);
-      eventsRef.once('value', eventSnapshot => {
-        this.setState({
-          events: [
-            ...this.state.events,
-            { id: snapshot.key, info: eventSnapshot.val() },
-          ],
-        });
-        this.eventIds.push(eventSnapshot.key);
+      eventsRef.on('value', eventSnapshot => {
+        if (this.state.eventIds.includes(snapshot.key)) {
+          const { events } = this.state;
+          const newEvents = events.map(event => {
+            if (event.id === snapshot.key) {
+              return { id: snapshot.key, info: eventSnapshot.val() };
+            }
+            return event;
+          });
+          this.setState({ events: newEvents });
+        } else {
+          this.setState(prevState => ({
+            events: [
+              ...prevState.events,
+              { id: snapshot.key, info: eventSnapshot.val() },
+            ],
+            eventIds: [...prevState.eventIds, snapshot.key],
+          }));
+        }
       });
     });
 
     // ON USER EVENT REMOVED
     this.userEventsRef.on('child_removed', snapshot => {
       const eventsRef = makeRef(`/events/${snapshot.key}`);
-      eventsRef
-        .once('value', eventSnapshot => {
-          const newEvents = this.state.events.filter(event => {
-            return event.id !== snapshot.key;
-          });
-          this.setState({
-            events: newEvents,
-          });
-        })
-      })
+      eventsRef.once('value', eventSnapshot => {
+        const { events, eventIds } = this.state;
+        const newEvents = events.filter(event => {
+          return event.id !== snapshot.key;
+        });
+        const newEventIds = eventIds.filter(id => id !== snapshot.key);
+        this.setState({
+          events: newEvents,
+          eventIds: newEventIds,
+        });
+      });
+    });
   }
 
   handleRemoveEvent = eventId => {
@@ -91,11 +106,19 @@ class AllEvents extends React.Component {
   };
 
   handleEventClick = async id => {
-    const { navigation } = this.props;
-    await this.props.setEvent(id);
-    navigation.navigate('SingleEvent', {
-      id,
-    });
+    const { navigation, status } = this.props;
+
+    if (status) {
+      await this.props.setEvent(id);
+      navigation.navigate('SingleEvent', {
+        id,
+      });
+    } else {
+      navigation.navigate('Status', {
+        eventId: id,
+        history: true,
+      });
+    }
   };
 
   handleEventAdd = async () => {
@@ -116,63 +139,101 @@ class AllEvents extends React.Component {
 
   render() {
     const { events } = this.state;
+    const { status } = this.props;
+    const activeEvents = events.filter(event => event.info.status === true);
+    const inactiveEvents = events.filter(event => event.info.status === false);
+
     if (events.length === 0) return <Container />;
+
     return (
       <Container>
+        <MyHeader
+          title={status ? 'Events' : 'History'}
+          right={() => <BackButton />}
+        />
         <ScrollView>
           <List>
-            {events.map((event, idx) => {
-              const rightButtons = [
-                <TouchableHighlight
-                  style={styles.deleteButton}
-                  key={idx}
-                  onPress={() => {
-                    this.handleRemoveEvent(event.id);
-                  }}
-                >
-                  <Text style={styles.deleteText}>DELETE</Text>
-                </TouchableHighlight>,
-              ];
-              return event.info.status ? (
-                <Swipeable rightButtons={rightButtons} key={idx}>
-                  <ListItem
-                    button
-                    onPress={() => this.handleEventClick(this.eventIds[idx])}
-                    key={event.id}
-                  >
-                    <Body>
-                      <Text style={styles.eventText}>
-                        {event.info.title === ''
-                          ? `Event ${idx + 1}`.toUpperCase()
-                          : event.info.title.toUpperCase()}
-                      </Text>
-                      <Text note style={styles.eventDateText}>
-                        {dateFormat(event.info.date, 'mediumDate')}
-                      </Text>
-                    </Body>
-
-                    <Right>
-                      <Icon
-                        type="MaterialCommunityIcons"
-                        name="chevron-right"
-                      />
-                    </Right>
-                  </ListItem>
-                </Swipeable>
-              ) : (
-                <Text />
-              );
-            })}
+            {status
+              ? activeEvents.map((event, idx) => {
+                  const rightButtons = [
+                    <TouchableHighlight
+                      style={styles.deleteButton}
+                      key={parseInt(idx, 2)}
+                      onPress={() => {
+                        this.handleRemoveEvent(event.id);
+                      }}
+                    >
+                      <Text style={styles.deleteText}>DELETE</Text>
+                    </TouchableHighlight>,
+                  ];
+                  return (
+                    <Swipeable rightButtons={rightButtons} key={event.id}>
+                      <ListItem
+                        selected
+                        button
+                        onPress={() => this.handleEventClick(event.id)}
+                      >
+                        <Body>
+                          <Text style={styles.eventText}>
+                            {event.info.title === ''
+                              ? `Event ${idx + 1}`.toUpperCase()
+                              : event.info.title.toUpperCase()}
+                          </Text>
+                          <Text note style={styles.eventDateText}>
+                            {dateFormat(event.info.date, 'mediumDate')}
+                          </Text>
+                        </Body>
+                        <Right>
+                          <Icon
+                            type="MaterialCommunityIcons"
+                            name="chevron-right"
+                          />
+                        </Right>
+                      </ListItem>
+                    </Swipeable>
+                  );
+                })
+              : inactiveEvents.map((event, idx) => {
+                  return (
+                    <ListItem
+                      selected
+                      button
+                      onPress={() => this.handleEventClick(event.id)}
+                      key={event.id}
+                    >
+                      <Body>
+                        <Text style={styles.eventText}>
+                          {event.info.title === ''
+                            ? `Event ${idx + 1}`.toUpperCase()
+                            : event.info.title.toUpperCase()}
+                        </Text>
+                        <Text note style={styles.eventDateText}>
+                          {dateFormat(event.info.date, 'mediumDate')}
+                        </Text>
+                      </Body>
+                      <Right>
+                        <Icon
+                          type="MaterialCommunityIcons"
+                          name="chevron-right"
+                        />
+                      </Right>
+                    </ListItem>
+                  );
+                })}
           </List>
         </ScrollView>
         <Container>
-          <Fab
-            position="bottomRight"
-            style={styles.addEventFab}
-            onPress={() => this.handleEventAdd()}
-          >
-            <Icon type="MaterialCommunityIcons" name="plus" />
-          </Fab>
+          {status ? (
+            <Fab
+              position="bottomRight"
+              style={styles.addEventFab}
+              onPress={() => this.handleEventAdd()}
+            >
+              <Icon type="MaterialCommunityIcons" name="plus" />
+            </Fab>
+          ) : (
+            <Container />
+          )}
         </Container>
       </Container>
     );

@@ -25,6 +25,8 @@ import {
   AddMemberToEventScreen,
   CameraView,
   SingleEvent,
+  AllEvents,
+  MoreScreen,
   Status
 } from '../screens';
 
@@ -40,6 +42,7 @@ const HomeStack = createStackNavigator(
     Confirmed: LineItemsConfirmedScreen,
     SingleEvent: SingleEvent,
     AddMembers: AddMemberToEventScreen,
+    AllEvents: AllEvents,
     Status: Status
   },
   { headerMode: 'none', initialRouteName: 'Home' }
@@ -83,6 +86,8 @@ const ProfileStack = createStackNavigator(
 const MoreStack = createStackNavigator(
   {
     More: More,
+    AllEvents: AllEvents,
+    Status: Status,
   },
   { headerMode: 'none' }
 );
@@ -126,8 +131,8 @@ export default createBottomTabNavigator(
               active={props.navigation.state.index === 2}
               onPress={() => props.navigation.navigate('MoreStack')}
             >
-              <Icon type="MaterialCommunityIcons" name="more" />
-              <Text>More</Text>
+              <Icon type="MaterialCommunityIcons" name="history" />
+              <Text>History</Text>
             </Button>
           </FooterTab>
         </Footer>
