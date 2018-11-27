@@ -1,12 +1,17 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { Container, Content, Button, Icon, Footer } from 'native-base';
+import {
+  Container,
+  Content,
+  Footer,
+  Input,
+  Item
+} from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import {
   LineItemsConfirmed,
   MyHeader,
-  DeleteButton,
   EventMembers,
   BackButton,
 } from '../components';
@@ -41,6 +46,47 @@ const styles = StyleSheet.create({
   lastRow: {
     paddingBottom: 80,
   },
+  tiptax: {
+    borderBottomColor: '#ddd',
+    borderBottomWidth: 1,
+    height: 45,
+    justifyContent: 'center',
+  },
+  formInput: {
+    borderColor: 'transparent',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  inputText: {
+    width: '100%',
+    textAlign: 'center',
+  },
+  tipText: {
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '15%',
+    backgroundColor: '#eee',
+  },
+  blankCol: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    width: '60%',
+    backgroundColor: '#eee',
+  },
+  tipAmount: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    width: '25%',
+    backgroundColor: '#eee',
+  },
   buttonText: {
     textAlign: 'center',
     letterSpacing: 2,
@@ -60,6 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: 'transparent',
     paddingBottom: 15,
+    height: 'auto',
   },
   avatarFooter: {
     borderColor: 'transparent',
@@ -72,9 +119,10 @@ export class LineItemsConfirmedScreen extends React.Component {
     super(props);
     this.state = {
       receiptLineItems: [],
-      tipPercent: null,
+      tipPercent: 0,
       dialogVisible: false,
       eventStatus: true,
+      taxPercent: 0
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -124,8 +172,17 @@ export class LineItemsConfirmedScreen extends React.Component {
     this.receiptRefUrl.update({ tipPercent: Number(this.state.tipPercent) });
   };
 
-  handleCancel = () => {
-    this.setState({ dialogVisible: false });
+  handleChange = async () => {
+    await this.setState({
+      [type]: event,
+    });
+  }
+
+  handleChange = type => async event => {
+    console.log("TIP OR TAX CHANGED ====>", type, event)
+    await this.setState({
+      [type]: event,
+    });
   };
 
   render() {
@@ -181,13 +238,43 @@ export class LineItemsConfirmedScreen extends React.Component {
               <Row style={styles.lastRow} />
             </Grid>
           </Content>
+          <Footer style={styles.footer}>
+            <Grid>
+              <Row style={styles.tiptax}>
+                <Col style={styles.tipText}>
+                  <Text style={styles.inputText}>TIP</Text>
+                </Col>
+                <Col style={styles.blankCol} />
+                <Col style={styles.tipAmount}>
+                  <Text style={styles.inputText}>20%</Text>
+                </Col>
+              </Row>
+              <Row style={styles.tiptax}>
+                <Col style={styles.tipText}>
+                  <Text style={styles.inputText}>TAX</Text>
+                </Col>
+                <Col style={styles.blankCol} />
+                <Col style={styles.tipAmount}>
+                  <Item style={styles.formInput}>
+                    <Input
+                      style={styles.inputText}
+                      name="name"
+                      placeholder="0%"
+                      value={this.state.taxPercent}
+                      onChangeText={this.handleChange('tax')}
+                    />
+                  </Item>
+                </Col>
+              </Row>
+            </Grid>
+          </Footer>
           <Footer style={styles.avatarFooter}>
             <EventMembers
               members={this.state.eventMemberProfiles}
               display={true}
             />
           </Footer>
-          <Footer style={styles.footer}>
+          {/* <Footer style={styles.footer}>
             <Button
               success
               block
@@ -198,7 +285,7 @@ export class LineItemsConfirmedScreen extends React.Component {
             >
               <Text style={styles.buttonText}> SAVE RECEIPT </Text>
             </Button>
-          </Footer>
+          </Footer> */}
         </Container>
       );
     } else {
