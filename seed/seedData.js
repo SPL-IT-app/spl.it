@@ -38,7 +38,7 @@ const users = [
     },
   },
   {
-    l5Ckru5l4EbNqsRNCohQXpgUNmj2: {
+    '2qiLDJACacMAITAJ4BKjUaaDCZh1': {
       firstName: 'Julianne',
       lastName: 'Crawford',
       email: 'julianne@email.com',
@@ -62,12 +62,12 @@ const users = [
     },
   },
   {
-    MFnAx1YAzneSfy9stSDhIWbWygg1: {
+    u01TsZiVJbVFWdurzpz6ygZUbUm2: {
       firstName: 'Mustafa',
       lastName: 'Dane',
       email: 'mustafa@email.com',
       phone: '333-333-3333',
-      expoToken: "ExponentPushToken[v6g53lGNr1QFmkiIeOn1_J]",
+      expoToken: "ExponentPushToken[pQD87ENR5YddMgP_f1PRy8]",
       friends: {},
       groups: {},
       events: {},
