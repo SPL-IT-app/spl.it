@@ -57,16 +57,40 @@ export class HomeScreen extends React.Component {
     this.state = {
       isLoading: true,
       user: {},
+      activeEventCount: NaN,
     };
   }
 
   componentDidMount() {
+    let eventCount = 0;
     const { user } = this.props;
 
     this.userRef = makeRef(`/users/${user.id}`);
+
     this.userRef.on('value', snapshot => {
       let currentUser = snapshot.val();
-      this.setState({ user: currentUser, isLoading: false });
+      const eventsExist = snapshot.hasChild('events');
+      console.log('currentUser', currentUser);
+      console.log('eventsExist', eventsExist);
+      if (!eventsExist || !currentUser.events) {
+        eventCount = 0;
+      } else {
+        Object.keys(currentUser.events).forEach(eventId => {
+          makeRef(`/events/${eventId}/status`).on('value', statusSnap => {
+            console.log('status snap +++++++++', statusSnap.val());
+            if (statusSnap.val() === true)
+              this.setState({
+                activeEventCount: this.state.activeEventCount + 1,
+              });
+          });
+        });
+      }
+
+      this.setState({
+        user: currentUser,
+        isLoading: false,
+        activeEventCount: eventCount,
+      });
     });
   }
 
@@ -91,35 +115,34 @@ export class HomeScreen extends React.Component {
   };
 
   render() {
-    const { events } = this.state.user;
-
+    const { activeEventCount } = this.state;
     return (
       <Container>
         {this.state.isLoading ? (
           <LoadingScreen />
-        ) : events ? (
+        ) : activeEventCount ? (
           <AllEvents status={true} />
         ) : (
-              <Content contentContainerStyle={styles.content}>
-                <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
-                <Text style={styles.subText}>Create a New Event...</Text>
-                <Button
-                  rounded
-                  success
-                  onPress={async () => {
-                    await this.props.setEvent('');
-                    this.props.navigation.navigate('Camera');
-                  }}
-                  style={styles.cameraButton}
-                >
-                  <Icon
-                    type="MaterialCommunityIcons"
-                    name="camera"
-                    style={styles.icon}
-                  />
-                </Button>
-              </Content>
-            )}
+          <Content contentContainerStyle={styles.content}>
+            <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
+            <Text style={styles.subText}>Create a New Event...</Text>
+            <Button
+              rounded
+              success
+              onPress={async () => {
+                await this.props.setEvent('');
+                this.props.navigation.navigate('Camera');
+              }}
+              style={styles.cameraButton}
+            >
+              <Icon
+                type="MaterialCommunityIcons"
+                name="camera"
+                style={styles.icon}
+              />
+            </Button>
+          </Content>
+        )}
       </Container>
     );
   }

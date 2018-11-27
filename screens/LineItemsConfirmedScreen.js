@@ -136,12 +136,14 @@ export class LineItemsConfirmedScreen extends React.Component {
     });
     this.setState({ receiptLineItems: Object.entries(lineItems) });
 
-    this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
-      'value',
-      snapshot => {
-        this.setState({ eventStatus: snapshot.val() });
-      }
-    );
+    if (this.props.event.length) {
+      this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
+        'value',
+        snapshot => {
+          this.setState({ eventStatus: snapshot.val() });
+        }
+      );
+    }
   };
 
   componentWillUnmount = () => {
@@ -156,8 +158,14 @@ export class LineItemsConfirmedScreen extends React.Component {
     this.receiptRefUrl.update({ tipPercent: Number(this.state.tipPercent) });
   };
 
+  checkStatus = () => {
+    if (!this.state.eventStatus) {
+      this.props.navigation.navigate('Status', { eventId: this.props.event });
+    }
+  };
+
   render() {
-    if (this.state.eventStatus) {
+      this.checkStatus()
       const receipt = this.state.receiptLineItems;
       return (
         <Container>
@@ -271,9 +279,6 @@ export class LineItemsConfirmedScreen extends React.Component {
           </Footer> */}
         </Container>
       );
-    } else {
-      return <Status />;
-    }
   }
 }
 

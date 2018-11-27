@@ -13,12 +13,14 @@ import {
   FooterTab,
   Button,
   Icon,
+  Toast
 } from 'native-base';
 import { StyleSheet } from 'react-native';
 import { MyHeader, BackButton, LoadingScreen } from '../components';
 import { makeRef } from '../server/firebaseconfig';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
+
 
 class Status extends Component {
   constructor() {
@@ -34,12 +36,12 @@ class Status extends Component {
   }
 
   componentDidMount() {
-    this.eventRef = makeRef(`events/${this.props.event}`);
+    this.eventRef = makeRef(`events/${this.props.navigation.getParam('eventId')}`);
     this.eventRef.on('value', snapshot => {
       this.setState({ event: snapshot.val() });
     });
 
-    this.membersRef = makeRef(`events/${this.props.event}/members`);
+    this.membersRef = makeRef(`events/${this.props.navigation.getParam('eventId')}/members`);
     this.membersRef.on('value', snapshot => {
       this.setState({ memberCount: Object.keys(snapshot.val()).length });
     });
@@ -143,16 +145,31 @@ class Status extends Component {
   }
 
   closeEvent = () => {
-      this.eventRef.update({status: false})
+      this.eventRef.update({status: false}, (error) => {
+          if(!error){
+            Toast.show({
+                text: 'Event Closed!',
+                buttonText: 'UNDO',
+                type: 'success',
+                duration: 3000,
+                onClose: (reason) => {
+                    if(reason === 'user'){
+                        this.eventRef.update({status: true})}
+                    }
+            })
+          }
+      })
   }
 
   render() {
+
     this.calculateUserOwes();
     if (Object.keys(this.state.members).length < this.state.memberCount) {
       return <LoadingScreen />;
     }
     const members = this.state.members;
     return (
+
       <Container>
         <MyHeader title={this.props.navigation.getParam('history') ? 'History' : 'Status'} subtitle={this.state.event.title} right={() => <BackButton />} />
         <Content>
@@ -237,11 +254,11 @@ class Status extends Component {
 
         {!this.props.navigation.getParam('history')
                 &&
+          this.state.event.status &&
             <Footer style={styles.footer}>
                 <Button
-                    danger={this.isReadyToClose() && this.state.event.status}
+                    danger={this.isReadyToClose()}
                     disabled={!this.isReadyToClose()}
-                    success={!this.state.event.status}
                     block
                     style={styles.button}
                     onPress={this.closeEvent}
@@ -251,13 +268,7 @@ class Status extends Component {
                         name='close-circle'
                         style={styles.icon}
                     />
-                    {this.state.event.status
-                        ?
-                        <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
-                        :
-                        <Text style={styles.buttonText}>CLOSED</Text>
-                    }
-
+                    <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
                 </Button>
             </Footer>
         }

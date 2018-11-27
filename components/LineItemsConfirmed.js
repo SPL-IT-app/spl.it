@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo';
 import { StyleSheet, Text } from 'react-native';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
+import Swipeable from 'react-native-swipeable';
 
 const styles = StyleSheet.create({
   lineItemRow: {
@@ -94,7 +95,16 @@ class LineItemsConfirmed extends React.Component {
     });
     return (
       <LinearGradient
-        colors={this.state.colors < 2 ? [...this.state.colors, ...this.state.colors, 'transparent', 'transparent'] : this.state.colors}
+        colors={
+          this.state.colors < 2
+            ? [
+                ...this.state.colors,
+                ...this.state.colors,
+                'transparent',
+                'transparent',
+              ]
+            : this.state.colors
+        }
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 1 }}
       >
