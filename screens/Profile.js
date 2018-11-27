@@ -1,58 +1,57 @@
-import React from "react";
+import React from 'react';
 import {
   ScrollView,
   StyleSheet,
   Image,
-  StatusBar,
   KeyboardAvoidingView,
-  Keyboard,
-  Alert,
-  Stylesheet
-} from "react-native";
+  Stylesheet,
+} from 'react-native';
 import {
   Container,
   Text,
-  Title,
   Card,
   CardItem,
   Body,
-  Accordion,
   Left,
   Right,
-  ListItem,
   Icon,
   Button,
   Input,
   Item,
   H1,
-  ActionSheet,
-  Form,
-  View,
-  Thumbnail,
   Tabs,
   Tab,
   TabHeading,
-  Header,
-  List
-} from "native-base";
-import MyHeader from "../components/Header";
-import { connect } from "react-redux";
-import { makeRef } from "../server/firebaseconfig";
-import { Friends, Groups } from '../components'
-import Dialog from 'react-native-dialog'
-import { ImagePicker, Permissions } from 'expo'
-import { RNS3 } from 'react-native-aws3'
+} from 'native-base';
+import MyHeader from '../components/Header';
+import { connect } from 'react-redux';
+import firebase, { makeRef } from '../server/firebaseconfig';
+import { Friends, Groups } from '../components';
+import Dialog from 'react-native-dialog';
+import { ImagePicker, Permissions } from 'expo';
+import { RNS3 } from 'react-native-aws3';
 require('../secrets');
+import { removeUser } from '../store'
 
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center"
+    justifyContent: 'center',
   },
   card: {
-   borderColor: 'transparent',
-   shadowOpacity: 0
- }
+    borderColor: 'transparent',
+    shadowOpacity: 0,
+  },
+  buttonText: {
+    textAlign: 'center',
+    letterSpacing: 2,
+    color: 'white',
+  },
+  button: {
+    marginTop: 10,
+    width: '95%',
+    alignSelf: 'center',
+  },
 });
 
 class Profile extends React.Component {
@@ -61,119 +60,145 @@ class Profile extends React.Component {
     this.state = {
       user: {},
       profile: {},
-      editing: "",
-      value: "",
-      value2: "",
+      editing: '',
+      value: '',
+      value2: '',
       friends: [],
       dialogVisible: false,
-      image: null
+      image: null,
     };
   }
   static navigationOptions = {
-    title: "Links"
+    title: 'Links',
   };
-
 
   componentDidMount() {
     this.userRef = makeRef(`/users/${this.props.user.id}`);
     this.profileRef = makeRef(`/profiles/${this.props.user.id}`);
-    this.userRef.on("value", snapshot => {
-      user = snapshot.val()
-      this.setState({ user })
+    this.userRef.on('value', snapshot => {
+      user = snapshot.val();
+      this.setState({ user });
     });
-    this.profileRef.on("value", snapshot => {
-      profile = snapshot.val()
-      this.setState({ profile })
+    this.profileRef.on('value', snapshot => {
+      profile = snapshot.val();
+      this.setState({ profile });
     });
-    this.friendsRef = makeRef(`/users/${this.props.user.id}/friends`)
+    this.friendsRef = makeRef(`/users/${this.props.user.id}/friends`);
     this.friendsRef.on('child_added', snapshot => {
       makeRef(`/profiles/${snapshot.key}`).once('value', snapshot => {
-        this.setState({friends: [...this.state.friends, {...snapshot.val(), id: snapshot.key}]})
-      })
-    })
+        this.setState({
+          friends: [
+            ...this.state.friends,
+            { ...snapshot.val(), id: snapshot.key },
+          ],
+        });
+      });
+    });
     this.friendsRef.on('child_removed', snapshot => {
-       makeRef(`/profiles/${snapshot.key}`).once('value', snapshot => {
-         this.setState({friends: this.state.friends.filter(friend => friend.username !== snapshot.val().username)})
-       })
-    })
+      makeRef(`/profiles/${snapshot.key}`).once('value', snapshot => {
+        this.setState({
+          friends: this.state.friends.filter(
+            friend => friend.username !== snapshot.val().username
+          ),
+        });
+      });
+    });
   }
 
   componentWillUnmount() {
-    this.userRef.off()
-    this.profileRef.off()
-    this.friendsRef.off()
+    this.userRef.off();
+    this.profileRef.off();
+    this.friendsRef.off();
   }
 
-  handleEditing = (editing, value, value2 = "") => {
+  handleEditing = (editing, value, value2 = '') => {
     this.setState({
       editing,
       value,
-      value2
+      value2,
     });
   };
   handleSubmit = () => {
-    if (this.state.editing === "username") {
+    if (this.state.editing === 'username') {
       this.profileRef.update({
-        username: this.state.value
+        username: this.state.value,
       });
-    } else if (this.state.editing === "name") {
+    } else if (this.state.editing === 'name') {
       this.userRef.update({
         firstName: this.state.value,
-        lastName: this.state.value2
+        lastName: this.state.value2,
       });
     } else {
       this.userRef.update({
-        [this.state.editing]: this.state.value
+        [this.state.editing]: this.state.value,
       });
     }
     this.setState({
-      editing: "",
-      value: ""
+      editing: '',
+      value: '',
     });
   };
 
   handleNo = () => {
-    this.setState({dialogVisible: false})
-  }
+    this.setState({ dialogVisible: false });
+  };
 
   handleYes = async () => {
-    this.setState({dialogVisible: false})
-    await Permissions.askAsync(Permissions.CAMERA_ROLL)
+    this.setState({ dialogVisible: false });
+    await Permissions.askAsync(Permissions.CAMERA_ROLL);
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      aspect: [4,3]
-    })
-    if(!result.cancelled){
-      const date = new Date()
+      aspect: [4, 3],
+    });
+    if (!result.cancelled) {
+      const date = new Date();
       const file = {
         uri: result.uri,
         name: this.props.user.id + date,
-        type: "image/jpg"
-      }
+        type: 'image/jpg',
+      };
       const options = {
-        keyPrefix: "profiles/",
-        bucket: "spl-it",
-        region: "us-east-2",
+        keyPrefix: 'profiles/',
+        bucket: 'spl-it',
+        region: 'us-east-2',
         accessKey: process.env.S3_API_KEY,
         secretKey: process.env.S3_SECRET_KEY,
-        successActionStatus: 201
-      }
+        successActionStatus: 201,
+      };
 
-      const response = await RNS3.put(file, options)
-      if(response.status === 201){
-        makeRef(`/profiles/${this.props.user.id}/imageUrl`).set(response.body.postResponse.location)
+      const response = await RNS3.put(file, options);
+      if (response.status === 201) {
+        makeRef(`/profiles/${this.props.user.id}/imageUrl`).set(
+          response.body.postResponse.location
+        );
       }
     }
-  }
+  };
+
+  logout = () => {
+    try {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.props.removeUser();
+        })
+        .finally(() => this.props.navigation.navigate('Login'));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   render() {
     return (
       <Container>
         <Dialog.Container visible={this.state.dialogVisible}>
-                <Dialog.Title>Profile Photo</Dialog.Title>
-                <Dialog.Description>Do you want to change your profile photo?</Dialog.Description>
-                <Dialog.Button label='No' onPress={this.handleNo} />
-                <Dialog.Button label='Yes' onPress={this.handleYes} />
+          <Dialog.Title>Profile Photo</Dialog.Title>
+          <Dialog.Description>
+            Do you want to change your profile photo?
+          </Dialog.Description>
+          <Dialog.Button label="No" onPress={this.handleNo} />
+          <Dialog.Button label="Yes" onPress={this.handleYes} />
         </Dialog.Container>
         <MyHeader title="Profile" />
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
@@ -189,9 +214,11 @@ class Profile extends React.Component {
               >
                 <Card style={styles.card}>
                   <CardItem header bordered>
-                    <Left><Text>{this.state.image}</Text></Left>
+                    <Left>
+                      <Text>{this.state.image}</Text>
+                    </Left>
                     <Body flexGrow={2}>
-                      {this.state.editing === "name" ? (
+                      {this.state.editing === 'name' ? (
                         <Item rounded flex={4}>
                           <Input
                             value={this.state.value}
@@ -209,7 +236,7 @@ class Profile extends React.Component {
                       )}
                     </Body>
                     <Right>
-                      {this.state.editing === "name" ? (
+                      {this.state.editing === 'name' ? (
                         <Button icon transparent onPress={this.handleSubmit}>
                           <Icon
                             type="MaterialCommunityIcons"
@@ -222,7 +249,7 @@ class Profile extends React.Component {
                           transparent
                           onPress={() =>
                             this.handleEditing(
-                              "name",
+                              'name',
                               this.state.user.firstName,
                               this.state.user.lastName
                             )
@@ -233,7 +260,11 @@ class Profile extends React.Component {
                       )}
                     </Right>
                   </CardItem>
-                  <CardItem button cardBody onLongPress={()=>this.setState({dialogVisible:true})}>
+                  <CardItem
+                    button
+                    cardBody
+                    onLongPress={() => this.setState({ dialogVisible: true })}
+                  >
                     <Image
                       source={{ uri: this.state.profile.imageUrl }}
                       style={{ height: 200, width: null, flex: 1 }}
@@ -242,7 +273,7 @@ class Profile extends React.Component {
                   <CardItem bordered>
                     <Left flexGrow={5}>
                       <Text note>Username:</Text>
-                      {this.state.editing === "username" ? (
+                      {this.state.editing === 'username' ? (
                         <Item rounded>
                           <Input
                             value={this.state.value}
@@ -255,7 +286,7 @@ class Profile extends React.Component {
                     </Left>
                     <Body />
                     <Right>
-                      {this.state.editing === "username" ? (
+                      {this.state.editing === 'username' ? (
                         <Button icon transparent onPress={this.handleSubmit}>
                           <Icon
                             type="MaterialCommunityIcons"
@@ -268,7 +299,7 @@ class Profile extends React.Component {
                           transparent
                           onPress={() =>
                             this.handleEditing(
-                              "username",
+                              'username',
                               this.state.profile.username
                             )
                           }
@@ -281,7 +312,7 @@ class Profile extends React.Component {
                   <CardItem bordered>
                     <Left flexGrow={3.5}>
                       <Text note>Phone Number:</Text>
-                      {this.state.editing === "phone" ? (
+                      {this.state.editing === 'phone' ? (
                         <Item rounded>
                           <Input
                             value={this.state.value}
@@ -294,7 +325,7 @@ class Profile extends React.Component {
                     </Left>
                     <Body />
                     <Right>
-                      {this.state.editing === "phone" ? (
+                      {this.state.editing === 'phone' ? (
                         <Button icon transparent onPress={this.handleSubmit}>
                           <Icon
                             type="MaterialCommunityIcons"
@@ -306,7 +337,7 @@ class Profile extends React.Component {
                           icon
                           transparent
                           onPress={() =>
-                            this.handleEditing("phone", this.state.user.phone)
+                            this.handleEditing('phone', this.state.user.phone)
                           }
                         >
                           <Icon type="MaterialCommunityIcons" name="pencil" />
@@ -317,7 +348,7 @@ class Profile extends React.Component {
                   <CardItem bordered>
                     <Left flexGrow={7}>
                       <Text note>Email:</Text>
-                      {this.state.editing === "email" ? (
+                      {this.state.editing === 'email' ? (
                         <Item rounded>
                           <Input
                             value={this.state.value}
@@ -330,7 +361,7 @@ class Profile extends React.Component {
                     </Left>
                     <Body />
                     <Right>
-                      {this.state.editing === "email" ? (
+                      {this.state.editing === 'email' ? (
                         <Button icon transparent onPress={this.handleSubmit}>
                           <Icon
                             type="MaterialCommunityIcons"
@@ -342,7 +373,7 @@ class Profile extends React.Component {
                           icon
                           transparent
                           onPress={() =>
-                            this.handleEditing("email", this.state.user.email)
+                            this.handleEditing('email', this.state.user.email)
                           }
                         >
                           <Icon type="MaterialCommunityIcons" name="pencil" />
@@ -351,6 +382,20 @@ class Profile extends React.Component {
                     </Right>
                   </CardItem>
                 </Card>
+
+                <Button
+                  block
+                  danger
+                  onPress={this.logout}
+                  style={styles.button}
+                >
+                  <Text style={styles.buttonText}>LOGOUT</Text>
+                  <Icon
+                    style={styles.logoutIcon}
+                    type="MaterialCommunityIcons"
+                    name="logout"
+                  />
+                </Button>
               </Tab>
               <Tab
                 heading={
@@ -360,7 +405,7 @@ class Profile extends React.Component {
                   </TabHeading>
                 }
               >
-              <Groups groups={this.state.user.groups} />
+                <Groups groups={this.state.user.groups} />
               </Tab>
               <Tab
                 heading={
@@ -383,7 +428,11 @@ class Profile extends React.Component {
 }
 
 const mapState = state => ({
-  user: state.user.currentUser
+  user: state.user.currentUser,
 });
 
-export default connect(mapState)(Profile);
+const mapDispatch = dispatch => ({
+  removeUser: () => dispatch(removeUser())
+})
+
+export default connect(mapState, mapDispatch)(Profile);
