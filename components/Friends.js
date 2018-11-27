@@ -22,7 +22,7 @@ import { StyleSheet, ScrollView } from 'react-native';
 
 const styles = StyleSheet.create({
   button: {
-    marginTop: 10,
+    marginTop: 40,
     width: '95%',
     alignSelf: 'center',
   },
@@ -30,6 +30,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: 'transparent',
     paddingBottom: 15,
+  },
+  listItem: {
+    display: 'flex',
+    alignItems: 'flex-end',
   },
 });
 
@@ -84,7 +88,6 @@ export class Friends extends Component {
     }
     return (
       <Container>
-        <Content>
           <Dialog.Container visible={this.state.dialogVisible}>
             <Dialog.Title>Unfriend</Dialog.Title>
             <Dialog.Description>
@@ -98,6 +101,8 @@ export class Friends extends Component {
           <List>
             {this.props.friends.map(friend => (
               <ListItem
+                avatar
+                style={styles.listItem}
                 key={friend.username}
                 onLongPress={() => {
                   this.handleSelect(friend.id, friend.username);
@@ -106,16 +111,15 @@ export class Friends extends Component {
                   console.log('simpe press');
                 }}
               >
-                <Left flexGrow={12}>
+                <Left>
                   <Thumbnail source={{ uri: friend.imageUrl }} />
-                  <Text>{friend.username}</Text>
                 </Left>
-                <Body />
-                <Right />
+                <Body>
+                  <Text>{friend.username}</Text>
+                </Body>
               </ListItem>
             ))}
           </List>
-        </Content>
         <Footer style={styles.footer}>
           <Button
             success
