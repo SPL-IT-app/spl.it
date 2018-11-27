@@ -7,7 +7,7 @@ import { makeRef } from '../server/firebaseconfig';
 import { withNavigation } from 'react-navigation';
 import Swipeable from 'react-native-swipeable';
 const dateFormat = require('dateformat');
-import { MyHeader, BackButton } from '../components';
+import { MyHeader } from '../components';
 
 const styles = StyleSheet.create({
   deleteButton: {
@@ -148,58 +148,28 @@ class AllEvents extends React.Component {
     return (
       <Container>
         <MyHeader
-          title={status ? 'Events' : 'History'}
-          right={() => <BackButton />}
-        />
+          title={status ? 'Events' : 'History'} />
         <ScrollView>
           <List>
             {status
               ? activeEvents.map((event, idx) => {
-                  const rightButtons = [
-                    <TouchableHighlight
-                      style={styles.deleteButton}
-                      key={parseInt(idx, 2)}
-                      onPress={() => {
-                        this.handleRemoveEvent(event.id);
-                      }}
-                    >
-                      <Text style={styles.deleteText}>DELETE</Text>
-                    </TouchableHighlight>,
-                  ];
-                  return (
-                    <Swipeable rightButtons={rightButtons} key={event.id}>
-                      <ListItem
-                        selected
-                        button
-                        onPress={() => this.handleEventClick(event.id)}
-                      >
-                        <Body>
-                          <Text style={styles.eventText}>
-                            {event.info.title === ''
-                              ? `Event ${idx + 1}`.toUpperCase()
-                              : event.info.title.toUpperCase()}
-                          </Text>
-                          <Text note style={styles.eventDateText}>
-                            {dateFormat(event.info.date, 'mediumDate')}
-                          </Text>
-                        </Body>
-                        <Right>
-                          <Icon
-                            type="MaterialCommunityIcons"
-                            name="chevron-right"
-                          />
-                        </Right>
-                      </ListItem>
-                    </Swipeable>
-                  );
-                })
-              : inactiveEvents.map((event, idx) => {
-                  return (
+                const rightButtons = [
+                  <TouchableHighlight
+                    style={styles.deleteButton}
+                    key={parseInt(idx, 2)}
+                    onPress={() => {
+                      this.handleRemoveEvent(event.id);
+                    }}
+                  >
+                    <Text style={styles.deleteText}>DELETE</Text>
+                  </TouchableHighlight>,
+                ];
+                return (
+                  <Swipeable rightButtons={rightButtons} key={event.id}>
                     <ListItem
                       selected
                       button
                       onPress={() => this.handleEventClick(event.id)}
-                      key={event.id}
                     >
                       <Body>
                         <Text style={styles.eventText}>
@@ -218,8 +188,36 @@ class AllEvents extends React.Component {
                         />
                       </Right>
                     </ListItem>
-                  );
-                })}
+                  </Swipeable>
+                );
+              })
+              : inactiveEvents.map((event, idx) => {
+                return (
+                  <ListItem
+                    selected
+                    button
+                    onPress={() => this.handleEventClick(event.id)}
+                    key={event.id}
+                  >
+                    <Body>
+                      <Text style={styles.eventText}>
+                        {event.info.title === ''
+                          ? `Event ${idx + 1}`.toUpperCase()
+                          : event.info.title.toUpperCase()}
+                      </Text>
+                      <Text note style={styles.eventDateText}>
+                        {dateFormat(event.info.date, 'mediumDate')}
+                      </Text>
+                    </Body>
+                    <Right>
+                      <Icon
+                        type="MaterialCommunityIcons"
+                        name="chevron-right"
+                      />
+                    </Right>
+                  </ListItem>
+                );
+              })}
           </List>
         </ScrollView>
         <Container>
@@ -232,8 +230,8 @@ class AllEvents extends React.Component {
               <Icon type="MaterialCommunityIcons" name="plus" />
             </Fab>
           ) : (
-            <Container />
-          )}
+              <Container />
+            )}
         </Container>
       </Container>
     );
