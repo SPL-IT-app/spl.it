@@ -66,7 +66,8 @@ class SignUpScreen extends React.Component {
       phone: '',
       password: '',
       username: '',
-    };
+    }
+    this.inputs = {}
   }
 
   signUpUser = (email, password) => {
@@ -114,7 +115,11 @@ class SignUpScreen extends React.Component {
     } catch (err) {
       console.error(err);
     }
-  };
+  }
+
+  focusNextField(key) {
+    this.inputs[key].focus()
+  }
 
   render() {
     return (
@@ -133,41 +138,75 @@ class SignUpScreen extends React.Component {
             <Item floatingLabel>
               <Label>Username</Label>
               <Input
+                id="one"
+                blurOnSubmit={false}
                 autoCorrect={false}
                 autoCapitalize="none"
                 value={this.state.username}
                 onChangeText={username => this.setState({ username })}
+                ref={input => {
+                  this.inputs['one'] = input;
+                }}
+                onSubmitEditing={() => {
+                  this.focusNextField('two');
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>First Name</Label>
               <Input
+                id="two"
+                blurOnSubmit={false}
                 value={this.state.firstName}
                 autoCorrect={false}
                 onChangeText={firstName => this.setState({ firstName })}
+                ref={input => {
+                  this.inputs['two'] = input;
+                }}
+                onSubmitEditing={() => {
+                  this.focusNextField('three');
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>Last Name</Label>
               <Input
+                id="three"
+                blurOnSubmit={false}
                 value={this.state.lastName}
                 autoCorrect={false}
                 onChangeText={lastName => this.setState({ lastName })}
+                ref={input => {
+                  this.inputs['three'] = input;
+                }}
+                onSubmitEditing={() => {
+                  this.focusNextField('four');
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>Email</Label>
               <Input
+                id="four"
+                blurOnSubmit={false}
                 keyboardType="email-address"
                 value={this.state.email}
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={email => this.setState({ email })}
+                ref={input => {
+                  this.inputs['four'] = input;
+                }}
+                onSubmitEditing={() => {
+                  this.focusNextField('five');
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>Phone</Label>
               <Input
+                id="five"
+                blurOnSubmit={false}
                 returnKeyType="done"
                 keyboardType="phone-pad"
                 maxLength={11}
@@ -176,16 +215,27 @@ class SignUpScreen extends React.Component {
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={phone => this.setState({ phone })}
+                ref={input => {
+                  this.inputs['five'] = input;
+                }}
+                onSubmitEditing={() => {
+                  this.focusNextField('six');
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>Password</Label>
               <Input
+                id="six"
+                blurOnSubmit={false}
                 value={this.state.password}
                 secureTextEntry={true}
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={password => this.setState({ password })}
+                ref={input => {
+                  this.inputs['six'] = input;
+                }}
               />
             </Item>
             <Button

@@ -88,16 +88,10 @@ class AllEvents extends React.Component {
 
     handleEventClick = async id => {
         const { navigation, status } = this.props
-        if (status) {
-            await this.props.setEvent(id)
-            navigation.navigate('SingleEvent', {
-                id,
-            });
-
-        } else {
-            ///mustafa's component
-
-        }
+        await this.props.setEvent(id)
+        navigation.navigate('SingleEvent', {
+            id,
+        });
     };
 
     handleEventAdd = async () => {
@@ -126,54 +120,27 @@ class AllEvents extends React.Component {
 
         return (
             <Container>
-                <MyHeader title={status ? 'Events' : 'Order History'} right={() => <BackButton />} />
-                    <ScrollView>
-                        <List>
-                            {status ?
-                                activeEvents.map((event, idx) => {
-                                    const rightButtons = [
-                                        <TouchableHighlight
-                                            style={styles.deleteButton}
-                                            key={parseInt(idx, 2)}
-                                            onPress={() => { this.handleRemoveEvent(event.id) }}
-                                        >
-                                            <Text style={styles.deleteText}>DELETE</Text>
-                                        </TouchableHighlight>,
-                                    ];
-                                    return (
-                                        <Swipeable rightButtons={rightButtons} key={event.id}>
-                                            <ListItem
-                                                selected
-                                                button
-                                                onPress={() => this.handleEventClick(event.id)}
-
-                                            >
-                                                <Body>
-                                                    <Text style={styles.eventText}>
-                                                        {event.info.title === ''
-                                                            ? `Event ${idx + 1}`.toUpperCase()
-                                                            : event.info.title.toUpperCase()}
-                                                    </Text>
-                                                    <Text note style={styles.eventDateText}>
-                                                        {dateFormat(event.info.date, 'mediumDate')}
-                                                    </Text>
-                                                </Body>
-                                                <Right>
-                                                    <Icon
-                                                        type="MaterialCommunityIcons"
-                                                        name="chevron-right"
-                                                    />
-                                                </Right>
-                                            </ListItem>
-                                        </Swipeable>
-                                    )
-                                }) : inactiveEvents.map((event, idx) => {
-                                    return (
+                <MyHeader title={status ? 'Events' : 'History'} right={() => <BackButton />} />
+                <ScrollView>
+                    <List>
+                        {status ?
+                            activeEvents.map((event, idx) => {
+                                const rightButtons = [
+                                    <TouchableHighlight
+                                        style={styles.deleteButton}
+                                        key={parseInt(idx, 2)}
+                                        onPress={() => { this.handleRemoveEvent(event.id) }}
+                                    >
+                                        <Text style={styles.deleteText}>DELETE</Text>
+                                    </TouchableHighlight>,
+                                ];
+                                return (
+                                    <Swipeable rightButtons={rightButtons} key={event.id}>
                                         <ListItem
                                             selected
                                             button
                                             onPress={() => this.handleEventClick(event.id)}
-                                            key={event.id}
+
                                         >
                                             <Body>
                                                 <Text style={styles.eventText}>
@@ -192,36 +159,63 @@ class AllEvents extends React.Component {
                                                 />
                                             </Right>
                                         </ListItem>
-                                    )
-                                })
-                            }
-                        </List>
-                    </ScrollView>
-                    <Container>
-                        <Fab position="bottomRight" style={styles.addEventFab} onPress={() => this.handleEventAdd()}>
-                            <Icon type="MaterialCommunityIcons" name="plus" />
-                        </Fab>
-                    </Container>
+                                    </Swipeable>
+                                )
+                            }) : inactiveEvents.map((event, idx) => {
+                                return (
+                                    <ListItem
+                                        selected
+                                        button
+                                        onPress={() => this.handleEventClick(event.id)}
+                                        key={event.id}
+                                    >
+                                        <Body>
+                                            <Text style={styles.eventText}>
+                                                {event.info.title === ''
+                                                    ? `Event ${idx + 1}`.toUpperCase()
+                                                    : event.info.title.toUpperCase()}
+                                            </Text>
+                                            <Text note style={styles.eventDateText}>
+                                                {dateFormat(event.info.date, 'mediumDate')}
+                                            </Text>
+                                        </Body>
+                                        <Right>
+                                            <Icon
+                                                type="MaterialCommunityIcons"
+                                                name="chevron-right"
+                                            />
+                                        </Right>
+                                    </ListItem>
+                                )
+                            })
+                        }
+                    </List>
+                </ScrollView>
+                <Container>
+                    <Fab position="bottomRight" style={styles.addEventFab} onPress={() => this.handleEventAdd()}>
+                        <Icon type="MaterialCommunityIcons" name="plus" />
+                    </Fab>
+                </Container>
             </Container>
-            );
-        }
+        );
     }
-    
+}
+
 const mapState = state => {
-    return {user: state.user.currentUser };
-            };
-            
+    return { user: state.user.currentUser };
+};
+
 const mapDispatch = dispatch => {
     return {
-                    setEvent: eventId => {
-                    dispatch(setEvent(eventId));
-                },
-            };
-        };
-        
-        export default withNavigation(
-            connect(
-                mapState,
-                mapDispatch
-            )(AllEvents)
-        );
+        setEvent: eventId => {
+            dispatch(setEvent(eventId));
+        },
+    };
+};
+
+export default withNavigation(
+    connect(
+        mapState,
+        mapDispatch
+    )(AllEvents)
+);
