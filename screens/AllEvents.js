@@ -41,6 +41,7 @@ class AllEvents extends React.Component {
     super(props);
     this.state = {
       events: [],
+      eventIds: [],
     };
   }
 
@@ -48,36 +49,47 @@ class AllEvents extends React.Component {
     const { user } = this.props;
 
     this.userEventsRef = makeRef(`/users/${user.id}/events`);
+    // this.eventRef = makeRef(`events`)
 
     // ON USER EVENT ADDED
     this.userEventsRef.on('child_added', snapshot => {
       const eventsRef = makeRef(`/events/${snapshot.key}`);
-      eventsRef.once('value', eventSnapshot => {
-        this.setState(prevState => ({
-          events: [
-            ...prevState.events,
-            { id: snapshot.key, info: eventSnapshot.val() },
-          ],
-        }));
+      eventsRef.on('value', eventSnapshot => {
+        if (this.state.eventIds.includes(snapshot.key)) {
+          const { events } = this.state;
+          const newEvents = events.map(event => {
+            if (event.id === snapshot.key) {
+              return { id: snapshot.key, info: eventSnapshot.val() };
+            }
+            return event;
+          });
+          this.setState({ events: newEvents });
+        } else {
+          this.setState(prevState => ({
+            events: [
+              ...prevState.events,
+              { id: snapshot.key, info: eventSnapshot.val() },
+            ],
+            eventIds: [...prevState.eventIds, snapshot.key],
+          }));
+        }
       });
     });
 
     // ON USER EVENT REMOVED
     this.userEventsRef.on('child_removed', snapshot => {
       const eventsRef = makeRef(`/events/${snapshot.key}`);
-      eventsRef
-        .once('value', eventSnapshot => {
-          const { events } = this.state;
-          const newEvents = events.filter(event => {
-            return event.id !== snapshot.key;
-          });
-          this.setState({
-            events: newEvents,
-          });
-        })
-        .then(() => {
-          eventsRef.remove();
+      eventsRef.once('value', eventSnapshot => {
+        const { events, eventIds } = this.state;
+        const newEvents = events.filter(event => {
+          return event.id !== snapshot.key;
         });
+        const newEventIds = eventIds.filter(id => id !== snapshot.key);
+        this.setState({
+          events: newEvents,
+          eventIds: newEventIds,
+        });
+      });
     });
   }
 

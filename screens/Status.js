@@ -9,24 +9,16 @@ import {
   Body,
   Right,
   Thumbnail,
+  Footer,
+  FooterTab,
+  Button,
+  Icon,
 } from 'native-base';
 import { StyleSheet } from 'react-native';
 import { MyHeader, BackButton, LoadingScreen } from '../components';
 import { makeRef } from '../server/firebaseconfig';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
-
-const styles = StyleSheet.create({
-  lineItemRow: {
-    display: 'flex',
-    alignItems: 'flex-end',
-  },
-  price: {
-    // width: '25%',
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-});
 
 class Status extends Component {
   constructor() {
@@ -137,6 +129,27 @@ class Status extends Component {
     }
   }
 
+  calculateTotal = () => {
+      let copy = Object.assign(this.moneyToSendOrReceive, {unassigned: 0})
+      return Object.values(copy).reduce((a,b)=>a+b, 0)
+  }
+
+  isReadyToClose = () => {
+      for(let key in this.state.event.receipts){
+          let receipt = this.state.event.receipts[key]
+          let lineItems = Object.values(receipt).filter(value => typeof value === 'object')
+          for (let i = 0; i < lineItems.length; i++){
+              if(!lineItems[i].users) return false
+              else if(!Object.keys(lineItems[i].users)) return false
+          }
+      }
+      return true
+  }
+
+  closeEvent = () => {
+      this.eventRef.update({status: false})
+  }
+
   render() {
     this.calculateUserOwes();
     if (Object.keys(this.state.members).length < this.state.memberCount) {
@@ -145,7 +158,7 @@ class Status extends Component {
     const members = this.state.members;
     return (
       <Container>
-        <MyHeader title="Status" right={() => <BackButton />} />
+        <MyHeader title={this.props.navigation.getParam('history') ? 'History' : 'Status'} subtitle={this.state.event.title} right={() => <BackButton />} />
         <Content>
           <List>
             {Object.entries(this.moneyToSendOrReceive).map(entry => {
@@ -195,12 +208,99 @@ class Status extends Component {
                 );
               }
             })}
+            <ListItem itemDivider last>
+                <Text>Your Total:</Text>
+            </ListItem>
+            <ListItem avatar style={styles.lineItemRow} >
+                <Left>
+                    <Thumbnail
+                            source={{ uri: members[this.props.id].imageUrl }}
+                            style={{
+                            borderWidth: 4,
+                            borderColor: members[this.props.id].color
+                                ? members[this.props.id].color
+                                : randomColor({
+                                    luminosity: 'light',
+                                    hue: 'random',
+                                }).toString(),
+                            }}
+                    />
+                </Left>
+                <Body>
+                    <Text>{members[this.props.id].username}</Text>
+                </Body>
+                <Right style={styles.price}>
+                      <Text style={{ color: this.calculateTotal() > 0 ? 'red' : 'green' }}>
+                        {numeral(Math.abs(this.calculateTotal())).format('$0,0.00')}
+                      </Text>
+                </Right>
+
+            </ListItem>
           </List>
         </Content>
+
+        {!this.props.navigation.getParam('history')
+                &&
+            <Footer style={styles.footer}>
+                <Button
+                    danger={this.isReadyToClose() && this.state.event.status}
+                    disabled={!this.isReadyToClose()}
+                    success={!this.state.event.status}
+                    block
+                    style={styles.button}
+                    onPress={this.closeEvent}
+                >
+                    <Icon
+                        type='MaterialCommunityIcons'
+                        name='close-circle'
+                        style={styles.icon}
+                    />
+                    {this.state.event.status
+                        ?
+                        <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
+                        :
+                        <Text style={styles.buttonText}>CLOSED</Text>
+                    }
+
+                </Button>
+            </Footer>
+        }
       </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+    buttonText: {
+        textAlign: 'center',
+        letterSpacing: 2,
+        color: 'white',
+    },
+    button: {
+        marginTop: 10,
+        width: '95%',
+        alignSelf: 'center',
+    },
+    footer: {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        paddingBottom: 15,
+    },
+    icon: {
+        margin: 0,
+        padding: 0,
+    },
+    lineItemRow: {
+        display: 'flex',
+        alignItems: 'flex-end',
+    },
+    price: {
+        // width: '25%',
+        display: 'flex',
+        justifyContent: 'flex-end',
+    },
+});
+
 
 const mapState = state => ({
   id: state.user.currentUser.id,
