@@ -34,9 +34,9 @@ class Status extends Component {
     this.membersRef = makeRef(
       `events/${this.props.navigation.getParam("eventId")}/members`
     );
-    this.membersRef.once('value', snapshot => {
-        this.setState({memberCount: Object.keys(snapshot.val()).length})
-    })
+    this.membersRef.once("value", snapshot => {
+      this.setState({ memberCount: Object.keys(snapshot.val()).length });
+    });
     this.membersRef.on("child_added", snapshot => {
       makeRef(`profiles/${snapshot.key}`).once("value", snapshot => {
         this.setState({
@@ -59,10 +59,8 @@ class Status extends Component {
   }
 
   render() {
-    console.log(this.state);
 
-    const moneyToSend = {};
-    const moneyToReceive = { unassigned: 0 };
+    const moneyToSendOrReceive = { unassigned: 0 };
 
     const calculatePrice = (price, count, tipPercent = 15) => {
       return (price / count) * (1 + tipPercent / 100 + 0.1025);
@@ -82,41 +80,44 @@ class Status extends Component {
           lineItems[i].users.hasOwnProperty(this.props.id)
         ) {
           const countUsers = Object.keys(lineItems[i].users).length;
-          if (moneyToSend.hasOwnProperty(creator)) {
-            moneyToSend[creator] += calculatePrice(
+          if (moneyToSendOrReceive.hasOwnProperty(creator)) {
+            moneyToSendOrReceive[creator] += calculatePrice(
               lineItems[i].price,
               countUsers,
               receipt.tipPercent
             );
           } else {
-            moneyToSend[creator] = calculatePrice(
+            moneyToSendOrReceive[creator] = calculatePrice(
               lineItems[i].price,
               countUsers,
               receipt.tipPercent
             );
           }
         }
+
         if (isCreator) {
           if (lineItems[i].users) {
             const countUsers = Object.keys(lineItems[i].users).length;
             for (let userKey in lineItems[i].users) {
               if (userKey === this.props.id) continue;
-              if (moneyToReceive.hasOwnProperty(userKey)) {
-                moneyToReceive[userKey] += calculatePrice(
+              if (moneyToSendOrReceive.hasOwnProperty(userKey)) {
+                moneyToSendOrReceive[userKey] -= calculatePrice(
                   lineItems[i].price,
                   countUsers,
                   receipt.tipPercent
                 );
               } else {
-                moneyToReceive[userKey] = calculatePrice(
-                  lineItems[i].price,
-                  countUsers,
-                  receipt.tipPercent
-                );
+                moneyToSendOrReceive[userKey] =
+                  -1 *
+                  calculatePrice(
+                    lineItems[i].price,
+                    countUsers,
+                    receipt.tipPercent
+                  );
               }
             }
           } else {
-            moneyToReceive.unassigned += calculatePrice(
+            moneyToSendOrReceive.unassigned += calculatePrice(
               lineItems[i].price,
               1,
               receipt.tipPercent
@@ -125,84 +126,101 @@ class Status extends Component {
         }
       }
     }
-    console.log("moneyToSend", moneyToSend);
-    console.log("moneyToReceive", moneyToReceive);
+
     if (Object.keys(this.state.members).length < this.state.memberCount) {
       return <CameraProcessing />;
     }
-    const members = this.state.members
+    const members = this.state.members;
 
     return (
       <Container>
         <MyHeader title="Status" right={() => <BackButton />} />
         <Content>
           <List>
-            <ListItem>
-                <Text>TEST</Text>
-            </ListItem>
-            {Object.entries(moneyToSend).map(entry => (
-              <ListItem>
-                <Left>
-                  <Thumbnail
-                    source={{ uri: members[entry[0]].imageUrl }}
-                    style={{
-                      borderWidth: 4,
-                      borderColor: members[entry[0]].color
-                        ? members[entry[0]].color
-                        : randomColor({
-                            luminosity: "light",
-                            hue: "random"
-                          }).toString()
-                    }}
-                  />
-                </Left>
-                <Body>
-                    <Text>{members[entry[0]].username}</Text>
-                </Body>
-                <Right>
-                    <Text style={{color: 'yellow'}} >$ {entry[1]}</Text>
-                </Right>
-              </ListItem>
-            ))}
-            {Object.entries(moneyToReceive).map(entry => {
-                if(entry[0] === 'unassigned'){
-                    return (
-                        <ListItem>
-                            <Left>
-                                <Text>Unassigned Amount:</Text>
-                            </Left>
-                            <Body />
-                            <Right>
-                                <Text style={{color: 'red'}}>$ {entry[1]}</Text>
-                            </Right>
-                        </ListItem>
-                    )
-                }
-
+            {Object.entries(moneyToSendOrReceive).map(entry => {
+              if (entry[0] === "unassigned") {
+                if(!entry[1]) return
                 return (
-                    <ListItem>
-                        <Left>
-                            <Thumbnail
-                                source={{ uri: members[entry[0]].imageUrl }}
-                                style={{
-                                borderWidth: 4,
-                                borderColor: members[entry[0]].color
-                                    ? members[entry[0]].color
-                                    : randomColor({
-                                        luminosity: "light",
-                                        hue: "random"
-                                    }).toString()
-                                }}
-                            />
-                        </Left>
-                        <Body>
-                            <Text>{members[entry[0]].username}</Text>
-                        </Body>
-                        <Right>
-                            <Text style={{color:'green'}}>$ {entry[1]}</Text>
-                        </Right>
-                    </ListItem>
-                )
+                  <ListItem>
+                    <Left>
+                      <Text>Unassigned Amount:</Text>
+                    </Left>
+                    <Body />
+                    <Right>
+                      <Text style={{ color: "red" }}>$ {entry[1]}</Text>
+                    </Right>
+                  </ListItem>
+                );
+              } else {
+                return (
+                  <ListItem>
+                    <Left>
+                      <Thumbnail
+                        source={{ uri: members[entry[0]].imageUrl }}
+                        style={{
+                          borderWidth: 4,
+                          borderColor: members[entry[0]].color
+                            ? members[entry[0]].color
+                            : randomColor({
+                                luminosity: "light",
+                                hue: "random"
+                              }).toString()
+                        }}
+                      />
+                    </Left>
+                    <Body>
+                      <Text>{members[entry[0]].username}</Text>
+                    </Body>
+                    <Right>
+                      <Text
+                        style={{ color: entry[1] > 0 ? "orange" : "green" }}
+                      >
+                        $ {entry[1]}
+                      </Text>
+                    </Right>
+                  </ListItem>
+                );
+              }
+            })}
+            {false && Object.entries(moneyToReceive).map(entry => {
+              if (entry[0] === "unassigned") {
+                return (
+                  <ListItem>
+                    <Left>
+                      <Text>Unassigned Amount:</Text>
+                    </Left>
+                    <Body />
+                    <Right>
+                      <Text style={{ color: "red" }}>$ {entry[1]}</Text>
+                    </Right>
+                  </ListItem>
+                );
+              }
+
+              return (
+                <ListItem>
+                  <Left>
+                    <Thumbnail
+                      source={{ uri: members[entry[0]].imageUrl }}
+                      style={{
+                        borderWidth: 4,
+                        borderColor: members[entry[0]].color
+                          ? members[entry[0]].color
+                          : randomColor({
+                              luminosity: "light",
+                              hue: "random"
+                            }).toString()
+                      }}
+                    />
+                  </Left>
+                  <Body>
+                    <Text>{members[entry[0]].username}</Text>
+                  </Body>
+                  <Right>
+                    <Text style={{ color: "green" }}>$ {entry[1]}</Text>
+                  </Right>
+                </ListItem>
+              );
             })}
           </List>
         </Content>
