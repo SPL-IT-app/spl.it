@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Content, Thumbnail, Text, Button, Icon } from 'native-base';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Container, Content, Thumbnail, Text } from 'native-base';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { randomColor } from 'randomcolor';
@@ -52,7 +52,6 @@ export class EventMembers extends Component {
   }
 
   render() {
-    const navigation = this.props.navigation;
     return (
       <Container style={styles.view}>
         <ScrollView horizontal={true}>
@@ -77,13 +76,16 @@ export class EventMembers extends Component {
           })}
           {this.props.display && (
             <Content style={styles.item}>
-              <Thumbnail
-                source={{ uri: 'https://bit.ly/2P4LOmQ' }}
+              <TouchableOpacity
                 onPress={() => {
                   this.props.navigation.navigate('AddMembers');
                 }}
-                style={{ ...styles.avatar, borderColor: '#FFF' }}
-              />
+              >
+                <Thumbnail
+                  source={{ uri: 'https://bit.ly/2P4LOmQ' }}
+                  style={{ ...styles.avatar, borderColor: '#FFF' }}
+                />
+              </TouchableOpacity>
             </Content>
           )}
         </ScrollView>
