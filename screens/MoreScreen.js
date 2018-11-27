@@ -3,8 +3,23 @@ import { Container, Text, Footer, Button, Icon, Content, FooterTab } from 'nativ
 import { MyHeader } from '../components'
 import firebase from '../server/firebaseconfig'
 import { removeUser } from '../store'
+import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
-import AllEvents from './AllEvents';
+
+const styles = StyleSheet.create({
+  constainer: {
+
+  },
+  logoutButton: {
+    flexDirection: 'row',
+  },
+  logoutText: {
+    color: 'white',
+  },
+  logoutIcon: {
+    color: 'white',
+  },
+});
 
 class MoreScreen extends React.Component {
   static navigationOptions = {
@@ -12,14 +27,16 @@ class MoreScreen extends React.Component {
   };
 
   logout = () => {
-    firebase.auth().signOut()
-      .then(() => {
-        console.log('signed out')
-        this.props.removeUser()
-        this.props.navigation.navigate('Login')
-      }, (error) => {
-        console.log('error', error)
-      })
+    try {
+      firebase.auth().signOut()
+        .then(() => {
+          this.props.removeUser()
+        })
+        .finally(() =>
+          this.props.navigation.navigate('Login'))
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   render() {
@@ -45,9 +62,9 @@ class MoreScreen extends React.Component {
 
         <Footer>
           <FooterTab>
-            <Button danger onPress={this.logout}>
-              <Icon type='MaterialCommunityIcons' name='logout' />
-              <Text >LOGOUT</Text>
+            <Button danger onPress={this.logout} style={styles.logoutButton}>
+              <Text style={styles.logoutText}>LOGOUT</Text>
+              <Icon style={styles.logoutIcon} type='MaterialCommunityIcons' name='logout' />
             </Button>
           </FooterTab>
         </Footer>

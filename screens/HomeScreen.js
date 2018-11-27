@@ -95,7 +95,6 @@ export class HomeScreen extends React.Component {
 
     return (
       <Container>
-        <MyHeader title="Events" />
         {this.state.isLoading ? (
           <CameraProcessing />
         ) : events ? (

@@ -135,7 +135,7 @@ class SingleEvent extends React.Component {
 
     render() {
         const { event, receipts, receiptIds } = this.state;
-        if (!event.title) return <MyHeader title={event.title} right={() => <BackButton />} />
+        if (!event.title) return <MyHeader title="Add Event" right={() => <BackButton />} />
         return (
             <Container styles={styles.container}>
                 <MyHeader title={event.title} right={() => <BackButton />} />

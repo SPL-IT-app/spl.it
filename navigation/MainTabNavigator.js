@@ -25,7 +25,8 @@ import {
   AddMemberToEventScreen,
   CameraView,
   SingleEvent,
-  AllEvents
+  AllEvents,
+  MoreScreen
 } from '../screens';
 
 import { MyHeader } from '../components';
@@ -40,7 +41,7 @@ const HomeStack = createStackNavigator(
     Confirmed: LineItemsConfirmedScreen,
     SingleEvent: SingleEvent,
     AddMembers: AddMemberToEventScreen,
-    AllEvents: AllEvents
+    AllEvents: AllEvents,
   },
   { headerMode: 'none', initialRouteName: 'Home' }
 );
@@ -83,6 +84,7 @@ const ProfileStack = createStackNavigator(
 const MoreStack = createStackNavigator(
   {
     More: More,
+    AllEvents: AllEvents,
   },
   { headerMode: 'none' }
 );
