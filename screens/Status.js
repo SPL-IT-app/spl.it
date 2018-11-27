@@ -21,16 +21,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'flex-end',
   },
-  text: {
-    width: '100%',
-    textAlign: 'left',
-  },
-  left: {
-    width: '15%',
-  },
-  body: {
-    width: '60%',
-  },
   price: {
     // width: '25%',
     display: 'flex',
@@ -130,7 +120,7 @@ class Status extends Component {
               ); // each user's owes
               this.moneyToSendOrReceive.hasOwnProperty(userKey)
                 ? (this.moneyToSendOrReceive[userKey] -= userLineItemTotal) // discount what they already owe
-                : (this.moneyToSendOrReceive[userKey] = userLineItemTotal); // open a tab for them
+                : (this.moneyToSendOrReceive[userKey] = -userLineItemTotal); // open a tab for them
             }
           } else {
             // if no one has taken responsibility
@@ -163,13 +153,15 @@ class Status extends Component {
                 return (
                   <ListItem style={styles.lineItemRow} avatar key={entry[0]}>
                     <Left>
-                      <Thumbnail source={{ uri: 'https://bit.ly/2PWwduR'}}/>
+                      <Thumbnail source={{ uri: 'https://bit.ly/2PWwduR' }} />
                     </Left>
                     <Body>
                       <Text>Unassigned</Text>
                     </Body>
                     <Right style={styles.price}>
-                      <Text style={{ color: 'orange' }}>{numeral(entry[1]).format('$0,0.00')}</Text>
+                      <Text style={{ color: 'orange' }}>
+                        {numeral(entry[1]).format('$0,0.00')}
+                      </Text>
                     </Right>
                   </ListItem>
                 );
