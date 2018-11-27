@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   addEventFab: {
     backgroundColor: '#1A98FC',
-  }
+  },
 });
 
 class AllEvents extends React.Component {
@@ -54,7 +54,10 @@ class AllEvents extends React.Component {
       const eventsRef = makeRef(`/events/${snapshot.key}`);
       eventsRef.once('value', eventSnapshot => {
         this.setState({
-          events: [...this.state.events, {id: snapshot.key, info: eventSnapshot.val()}],
+          events: [
+            ...this.state.events,
+            { id: snapshot.key, info: eventSnapshot.val() },
+          ],
         });
         this.eventIds.push(eventSnapshot.key);
       });
@@ -63,26 +66,32 @@ class AllEvents extends React.Component {
     // ON USER EVENT REMOVED
     this.userEventsRef.on('child_removed', snapshot => {
       const eventsRef = makeRef(`/events/${snapshot.key}`);
-      eventsRef.once('value', eventSnapshot => {
-        const newEvents = this.state.events.filter(event => {
-          return event.id !== snapshot.key;
-        });
-        this.setState({
-          events: newEvents,
+      eventsRef
+        .once('value', eventSnapshot => {
+          const newEvents = this.state.events.filter(event => {
+            return event.id !== snapshot.key;
+          });
+          this.setState({
+            events: newEvents,
+          });
+        })
+        .then(() => {
+          eventsRef.remove();
         });
       })
-    });
   }
 
-  handleRemoveEvent = (eventId) => {
-    const eventMembersRef = makeRef(`events/${eventId}/members`)
-    eventMembersRef.once("value", snapshot => {
-      snapshot.forEach( childSnapshot => {
-        const userEventRef = makeRef(`users/${childSnapshot.key}/events/${eventId}`)
-         userEventRef.remove()
-      })
-    })
-  }
+  handleRemoveEvent = eventId => {
+    const eventMembersRef = makeRef(`events/${eventId}/members`);
+    eventMembersRef.once('value', snapshot => {
+      snapshot.forEach(childSnapshot => {
+        const userEventRef = makeRef(
+          `users/${childSnapshot.key}/events/${eventId}`
+        );
+        userEventRef.remove();
+      });
+    });
+  };
 
   handleEventClick = async id => {
     const { navigation } = this.props;
@@ -100,10 +109,10 @@ class AllEvents extends React.Component {
   };
 
   componentWillUnmount() {
-    if(this.userEventsRef) {
+    if (this.userEventsRef) {
       this.userEventsRef.off();
     }
-    if(this.eventsRef){
+    if (this.eventsRef) {
       this.eventsRef.off();
     }
   }
@@ -120,13 +129,15 @@ class AllEvents extends React.Component {
                 <TouchableHighlight
                   style={styles.deleteButton}
                   key={idx}
-                  onPress={() => {this.handleRemoveEvent(event.id)}}
+                  onPress={() => {
+                    this.handleRemoveEvent(event.id);
+                  }}
                 >
                   <Text style={styles.deleteText}>DELETE</Text>
                 </TouchableHighlight>,
               ];
               return event.info.status ? (
-                <Swipeable rightButtons={rightButtons}>
+                <Swipeable rightButtons={rightButtons} key={idx}>
                   <ListItem
                     button
                     onPress={() => this.handleEventClick(this.eventIds[idx])}
@@ -158,7 +169,11 @@ class AllEvents extends React.Component {
           </List>
         </ScrollView>
         <Container>
-          <Fab position="bottomRight" style={styles.addEventFab} onPress={() => this.handleEventAdd()}>
+          <Fab
+            position="bottomRight"
+            style={styles.addEventFab}
+            onPress={() => this.handleEventAdd()}
+          >
             <Icon type="MaterialCommunityIcons" name="plus" />
           </Fab>
         </Container>
