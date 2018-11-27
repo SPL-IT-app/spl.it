@@ -11,6 +11,7 @@ import {
   MyHeader,
 } from '../components';
 
+
 const styles = StyleSheet.create({
   content: {
     flex: 1,
@@ -105,3 +106,5 @@ export default connect(
   mapState,
   mapDispatch
 )(AddMemberToEventScreen);
+
+

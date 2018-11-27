@@ -75,10 +75,7 @@ class AllEvents extends React.Component {
             events: newEvents,
           });
         })
-        .then(() => {
-          eventsRef.remove();
-        });
-    });
+      })
   }
 
   handleRemoveEvent = eventId => {
