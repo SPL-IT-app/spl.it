@@ -169,7 +169,7 @@ class Status extends Component {
                       <Text>Unassigned</Text>
                     </Body>
                     <Right style={styles.price}>
-                      <Text style={{ color: 'orange' }}>$ {numeral(entry[1]).format('$0,0.00')}</Text>
+                      <Text style={{ color: 'orange' }}>{numeral(entry[1]).format('$0,0.00')}</Text>
                     </Right>
                   </ListItem>
                 );
