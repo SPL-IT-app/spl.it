@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Container, Content, Thumbnail, Text } from 'native-base';
+import { Container, Content, Thumbnail, Text, Button, Icon } from 'native-base';
 import { ScrollView, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { randomColor } from 'randomcolor';
+import { withNavigation } from 'react-navigation';
 
 const styles = StyleSheet.create({
   view: {
@@ -51,6 +52,7 @@ export class EventMembers extends Component {
   }
 
   render() {
+    const navigation = this.props.navigation;
     return (
       <Container style={styles.view}>
         <ScrollView horizontal={true}>
@@ -73,6 +75,17 @@ export class EventMembers extends Component {
               </Content>
             );
           })}
+          {this.props.display && (
+            <Content style={styles.item}>
+              <Thumbnail
+                source={{ uri: 'https://bit.ly/2P4LOmQ' }}
+                onPress={() => {
+                  this.props.navigation.navigate('AddMembers');
+                }}
+                style={{ ...styles.avatar, borderColor: '#FFF' }}
+              />
+            </Content>
+          )}
         </ScrollView>
       </Container>
     );
@@ -89,7 +102,9 @@ const mapDispatch = dispatch => {
   return {};
 };
 
-export default connect(
-  mapState,
-  mapDispatch
-)(EventMembers);
+export default withNavigation(
+  connect(
+    mapState,
+    mapDispatch
+  )(EventMembers)
+);

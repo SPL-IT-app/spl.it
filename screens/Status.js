@@ -36,7 +36,7 @@ class Status extends Component {
       event: {},
       memberCount: Infinity,
     };
-    this.moneyToSendOrReceive = { unassigned: 0 };
+
     this.calculatePrice = this.calculatePrice.bind(this);
     this.calculateUserOwes = this.calculateUserOwes.bind(this);
   }
@@ -52,7 +52,7 @@ class Status extends Component {
     this.membersRef = makeRef(
       `events/${this.props.navigation.getParam('eventId')}/members`
     );
-    this.membersRef.once('value', snapshot => {
+    this.membersRef.on('value', snapshot => {
       this.setState({ memberCount: Object.keys(snapshot.val()).length });
     });
     this.membersRef.on('child_added', snapshot => {
@@ -81,6 +81,7 @@ class Status extends Component {
   }
 
   calculateUserOwes() {
+    this.moneyToSendOrReceive = { unassigned: 0 };
     for (let key in this.state.event.receipts) {
       let receipt = this.state.event.receipts[key];
       const creator = receipt.creator;
@@ -187,7 +188,7 @@ class Status extends Component {
                     </Body>
                     <Right style={styles.price}>
                       <Text style={{ color: entry[1] > 0 ? 'red' : 'green' }}>
-                        {numeral(entry[1]).format('$0,0.00')}
+                        {numeral(Math.abs(entry[1])).format('$0,0.00')}
                       </Text>
                     </Right>
                   </ListItem>
