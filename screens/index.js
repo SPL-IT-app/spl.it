@@ -13,5 +13,4 @@ export { default as AddFriend } from './AddFriend'
 export { default as SingleEvent } from './SingleEvent'
 export { default as AddMemberToEventScreen } from './AddMemberToEventScreen'
 export { default as CameraView } from './CameraView';
-
-
+export { default as AllEvents } from './AllEvents';

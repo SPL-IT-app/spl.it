@@ -4,6 +4,7 @@ import { MyHeader } from '../components'
 import firebase from '../server/firebaseconfig'
 import { removeUser } from '../store'
 import { connect } from 'react-redux'
+import AllEvents from './AllEvents';
 
 class MoreScreen extends React.Component {
   static navigationOptions = {
@@ -12,13 +13,13 @@ class MoreScreen extends React.Component {
 
   logout = () => {
     firebase.auth().signOut()
-    .then(()=>{
-      console.log('signed out')
-      this.props.removeUser()
-      this.props.navigation.navigate('Login')
-    }, (error) => {
-      console.log('error', error)
-    })
+      .then(() => {
+        console.log('signed out')
+        this.props.removeUser()
+        this.props.navigation.navigate('Login')
+      }, (error) => {
+        console.log('error', error)
+      })
   }
 
   render() {
@@ -26,12 +27,19 @@ class MoreScreen extends React.Component {
       <Container>
         <MyHeader title="More" />
         <Content>
+          <Button
+            onPress={() => this.props.navigation.navigate('AllEvents', {
+              status: false,
+            })}
+          >
+            <Text>Order History</Text>
+          </Button>
           <Text>More stuff here!</Text>
           <Text>this is to test logout:</Text>
           {this.props.id ?
-          <Text>{this.props.id}</Text>:
-          <Text>No ID</Text>
-        }
+            <Text>{this.props.id}</Text> :
+            <Text>No ID</Text>
+          }
 
         </Content>
 

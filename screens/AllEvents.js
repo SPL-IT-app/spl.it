@@ -112,25 +112,57 @@ class AllEvents extends React.Component {
     }
 
     render() {
-        const { events } = this.state;
+        const { events } = this.state
+        const { status } = this.props
+        const activeEvents = events.filter(event => event.info.status === true)
+        const inactiveEvents = events.filter(event => event.info.status === false)
+
         if (events.length === 0) return <Container />
 
         return (
             <Container>
                 <ScrollView>
                     <List>
-                        {events.map((event, idx) => {
-                            const rightButtons = [
-                                <TouchableHighlight
-                                    style={styles.deleteButton}
-                                    key={parseInt(idx, 2)}
-                                    onPress={() => { this.handleRemoveEvent(event.id) }}
-                                >
-                                    <Text style={styles.deleteText}>DELETE</Text>
-                                </TouchableHighlight>,
-                            ];
-                            return event.info.status ? (
-                                <Swipeable rightButtons={rightButtons}>
+                        {status ?
+                            activeEvents.map((event, idx) => {
+                                const rightButtons = [
+                                    <TouchableHighlight
+                                        style={styles.deleteButton}
+                                        key={parseInt(idx, 2)}
+                                        onPress={() => { this.handleRemoveEvent(event.id) }}
+                                    >
+                                        <Text style={styles.deleteText}>DELETE</Text>
+                                    </TouchableHighlight>,
+                                ];
+                                return (
+                                    <Swipeable rightButtons={rightButtons} key={event.id}>
+                                        <ListItem
+                                            selected
+                                            button
+                                            onPress={() => this.handleEventClick(this.eventIds[idx])}
+
+                                        >
+                                            <Body>
+                                                <Text style={styles.eventText}>
+                                                    {event.info.title === ''
+                                                        ? `Event ${idx + 1}`.toUpperCase()
+                                                        : event.info.title.toUpperCase()}
+                                                </Text>
+                                                <Text note style={styles.eventDateText}>
+                                                    {dateFormat(event.info.date, 'mediumDate')}
+                                                </Text>
+                                            </Body>
+                                            <Right>
+                                                <Icon
+                                                    type="MaterialCommunityIcons"
+                                                    name="chevron-right"
+                                                />
+                                            </Right>
+                                        </ListItem>
+                                    </Swipeable>
+                                )
+                            }) : inactiveEvents.map((event, idx) => {
+                                return (
                                     <ListItem
                                         selected
                                         button
@@ -147,7 +179,6 @@ class AllEvents extends React.Component {
                                                 {dateFormat(event.info.date, 'mediumDate')}
                                             </Text>
                                         </Body>
-
                                         <Right>
                                             <Icon
                                                 type="MaterialCommunityIcons"
@@ -155,11 +186,9 @@ class AllEvents extends React.Component {
                                             />
                                         </Right>
                                     </ListItem>
-                                </Swipeable>
-                            ) : (
-                                    <Text />
-                                );
-                        })}
+                                )
+                            })
+                        }
                     </List>
                 </ScrollView>
                 <Container>

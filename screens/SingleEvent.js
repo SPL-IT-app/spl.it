@@ -21,7 +21,6 @@ import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
 const dateFormat = require('dateformat');
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
