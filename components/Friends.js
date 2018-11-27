@@ -129,7 +129,7 @@ export class Friends extends Component {
               navigate('AddFriend', { friends: this.props.friends })
             }
           >
-            <Icon type="MaterialIcons" name="add-circle" style={styles.icon} />
+            <Icon type="MaterialCommunityIcons" name="account-plus" style={styles.icon} />
             <Text>Add Friend</Text>
           </Button>
         </Footer>

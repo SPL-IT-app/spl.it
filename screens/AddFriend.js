@@ -16,8 +16,18 @@ import {
 } from 'native-base';
 import { MyHeader } from '../components';
 import { makeRef } from '../server/firebaseconfig';
-import { Alert } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+
+const styles = StyleSheet.create({
+  icon: {
+    color: 'black'
+  },
+  searchUser: {
+    padding: 10
+  }
+});
+
 
 export class AddFriend extends Component {
   constructor() {
@@ -63,7 +73,7 @@ export class AddFriend extends Component {
       <Container>
         <MyHeader title="Profile" subtitle="Add Friends" />
         <Content>
-          <Item>
+          <Item style={styles.searchUser}>
             <Icon name="ios-search" />
             <Input
               autoCapitalize="none"
@@ -100,7 +110,7 @@ export class AddFriend extends Component {
                           style={{ color: '#159192' }}
                         />
                       ) : (
-                        <Icon name="person-add" />
+                        <Icon style={styles.icon} type="MaterialCommunityIcons" name="account-plus" />
                       )}
                     </Button>
                   </Right>
