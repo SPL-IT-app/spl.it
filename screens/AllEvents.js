@@ -7,7 +7,7 @@ import { makeRef } from '../server/firebaseconfig';
 import { withNavigation } from 'react-navigation';
 import Swipeable from 'react-native-swipeable';
 const dateFormat = require('dateformat');
-import { MyHeader, BackButton } from '../components';
+import { MyHeader } from '../components';
 
 const styles = StyleSheet.create({
   deleteButton: {

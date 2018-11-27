@@ -4,7 +4,6 @@ import firebase from '../server/firebaseconfig';
 import { getUser } from '../store/';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Alert } from 'react-native';
-import { makeRef } from '../server/firebaseconfig'
 
 const styles = StyleSheet.create({
   root: {

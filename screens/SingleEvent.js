@@ -20,7 +20,6 @@ import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
-const dateFormat = require('dateformat');
 import { Status } from '../screens';
 
 const styles = StyleSheet.create({
@@ -110,14 +109,14 @@ class SingleEvent extends React.Component {
       await snapshot.forEach(child => {
         if (child.hasChildren() && !child.hasChild('users')) countUnassigned++;
       });
-      await this.setState({
-        receiptIds: [...this.state.receiptIds, snapshot.key],
-        receipts: [...this.state.receipts, receiptData],
+      await this.setState(prevState => ({
+        receiptIds: [...prevState.receiptIds, snapshot.key],
+        receipts: [...prevState.receipts, receiptData],
         receiptCountUnassigned: [
-          ...this.state.receiptCountUnassigned,
+          ...prevState.receiptCountUnassigned,
           countUnassigned,
         ],
-      });
+      }))
     });
 
     this.receiptsRef.on('child_changed', async snapshot => {
@@ -231,19 +230,19 @@ class SingleEvent extends React.Component {
                               </Text>
                             </Badge>
                           ) : (
-                            <Icon
-                              type="MaterialCommunityIcons"
-                              name="chevron-right"
-                            />
-                          )}
+                              <Icon
+                                type="MaterialCommunityIcons"
+                                name="chevron-right"
+                              />
+                            )}
                         </Right>
                       </ListItem>
                     </Swipeable>
                   );
                 })
               ) : (
-                <Text>No Receipts</Text>
-              )}
+                  <Text>No Receipts</Text>
+                )}
             </List>
           </Content>
 
