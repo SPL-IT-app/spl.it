@@ -86,7 +86,8 @@ class SignUpScreen extends React.Component {
     }
 
     let token = await Notifications.getExpoPushTokenAsync();
-    firebase.database().ref('users').child(userId).update({ expoToken: token })
+    firebase.database().ref('users').child(userId)
+      .update({ expoToken: token })
   }
 
   signUpUser = (email, password) => {
