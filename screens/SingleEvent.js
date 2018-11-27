@@ -20,7 +20,6 @@ import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
-import { Status } from '../screens';
 const dateFormat = require('dateformat');
 
 const styles = StyleSheet.create({
@@ -219,8 +218,8 @@ class SingleEvent extends React.Component {
                         <Text style={styles.receiptText}>
                           {`Receipt ${idx + 1}`.toUpperCase()}
                         </Text>
-                        <Text note numberOfLines={1}>
-                          Its time to build a difference . .
+                        <Text note style={styles.receiptDateText}>
+                          {dateFormat(receipt.dateCreated, 'mediumDate')}
                         </Text>
                       </Body>
                       <Right>
@@ -234,30 +233,7 @@ class SingleEvent extends React.Component {
                           <Icon
                             type="MaterialCommunityIcons"
                             name="chevron-right"
-                          />
-
-                        </Left>
-                        <Body>
-                          <Text style={styles.receiptText}>
-                            {`Receipt ${idx + 1}`.toUpperCase()}
-                          </Text>
-                          <Text note style={styles.receiptDateText}>
-                            {dateFormat(receipt.dateCreated, 'mediumDate')}
-                          </Text>
-                        </Body>
-                        <Right>
-                          {this.state.receiptCountUnassigned[idx] ? (
-                            <Badge>
-                              <Text>
-                                {this.state.receiptCountUnassigned[idx]}
-                              </Text>
-                            </Badge>
-                          ) : (
-                              <Icon
-                                type="MaterialCommunityIcons"
-                                name="chevron-right"
-                              />
-                            )}
+                          />)}
                         </Right>
                       </ListItem>
                     </Swipeable>
