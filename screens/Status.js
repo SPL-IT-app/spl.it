@@ -239,9 +239,9 @@ class Status extends Component {
                 &&
             <Footer style={styles.footer}>
                 <Button
-                    // {this.isReadyToClose() ? danger : disabled}
-                    danger={this.isReadyToClose()}
+                    danger={this.isReadyToClose() && this.state.event.status}
                     disabled={!this.isReadyToClose()}
+                    success={!this.state.event.status}
                     block
                     style={styles.button}
                     onPress={()=>{}}
@@ -251,7 +251,13 @@ class Status extends Component {
                         name='close-circle'
                         style={styles.icon}
                     />
-                    <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
+                    {this.state.event.status
+                        ?
+                        <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
+                        :
+                        <Text style={styles.buttonText}>CLOSED</Text>
+                    }
+
                 </Button>
             </Footer>
         }
