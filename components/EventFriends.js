@@ -13,6 +13,8 @@ import {
 import { StyleSheet } from 'react-native';
 import CheckBox from 'react-native-checkbox-heaven';
 import { makeRef } from '../server/firebaseconfig';
+// import { Expo } from 'expo-server-sdk';
+
 
 const styles = StyleSheet.create({
   listItem: {
@@ -27,11 +29,19 @@ const styles = StyleSheet.create({
 
 export class EventMembers extends Component {
   state = {
+    eventName: '',
     addedFriends: []
   }
   componentDidMount() {
+    console.log("MOUNTED")
+    this.eventNameRef = makeRef(`/events/${this.props.event}/title`)
     this.eventRef = makeRef(`/events/${this.props.event}/members`);
     this.usersFriendsRef = makeRef(`/users/${this.props.user}/friends`);
+    this.eventNameRef.once("value", snapshot => {
+      this.setState({
+        eventName: snapshot.val()
+      })
+    })
     this.eventRef.on("value", snapshot => {
       const friendIds = snapshot.val() ? snapshot.val() : {}
       this.setState({
@@ -41,8 +51,24 @@ export class EventMembers extends Component {
 
   }
 
+  sendPushNotification(token, title, body){
+    console.log("IN PUSH FUNCTION ===>", "TOKEN", token, "TITLE", title, "BODY", body)
+    return fetch('https://exp.host/--/api/v2/push/send', {
+      body: JSON.stringify({
+        to: token,
+        title: title,
+        body: body,
+        data: {message: `${title} - ${body}`},
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST'
+    })
+  }
+
   handleSelect = (val, id) => {
-    this.eventRef = makeRef(`/events/${this.props.event}/members`);
+    console.log("IN HANDLE SELECT")
     this.eventMemberRef = makeRef(`/events/${this.props.event}/members/${id}`);
     this.userRef = makeRef(`/users/${id}/events`)
     this.userEventRef = makeRef(`/users/${id}/events/${this.props.event}`)
@@ -53,6 +79,18 @@ export class EventMembers extends Component {
       this.userRef.update({
         [this.props.event]: true,
       })
+
+      // SEND PUSH NOTIFICATION TO NEW MEMBER
+      let expoToken = ''
+      this.userExpoTokenRef = makeRef(`/users/${id}/expoToken`)
+      this.userExpoTokenRef.once("value", snapshot => {
+        console.log("EXPO TOKEN ====> ", snapshot.val())
+        expoToken = snapshot.val()
+        const title = `You've been invited to an event: `
+        const body = `${this.state.eventName}`
+        this.sendPushNotification(expoToken, title, body)
+      })
+
     } else if (val === false) {
       this.eventMemberRef.remove();
       this.userEventRef.remove();
@@ -107,3 +145,5 @@ export default connect(
   mapState,
   mapDispatch
 )(EventMembers);
+
+
