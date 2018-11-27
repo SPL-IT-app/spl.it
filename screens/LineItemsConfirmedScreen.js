@@ -12,6 +12,7 @@ import {
 } from '../components';
 const { makeRef } = require('../server/firebaseconfig');
 import Dialog from 'react-native-dialog';
+import { Status } from '../screens';
 
 const styles = StyleSheet.create({
   tableHeader: {
@@ -73,6 +74,7 @@ export class LineItemsConfirmedScreen extends React.Component {
       receiptLineItems: [],
       tipPercent: null,
       dialogVisible: false,
+      eventStatus: true,
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -90,6 +92,13 @@ export class LineItemsConfirmedScreen extends React.Component {
       this.setState({ tipPercent: tipPercent });
     });
     this.setState({ receiptLineItems: Object.entries(lineItems) });
+
+    this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
+      'value',
+      snapshot => {
+        this.setState({ eventStatus: snapshot.val() });
+      }
+    );
   };
 
   componentWillUnmount = () => {
@@ -120,74 +129,81 @@ export class LineItemsConfirmedScreen extends React.Component {
   };
 
   render() {
-    const receipt = this.state.receiptLineItems;
-    return (
-      <Container>
-        <MyHeader title="Assign Items" right={() => <BackButton />} />
+    if (this.state.eventStatus) {
+      const receipt = this.state.receiptLineItems;
+      return (
+        <Container>
+          <MyHeader title="Assign Items" right={() => <BackButton />} />
 
-        <Content style={styles.content}>
-          <Grid>
-            <Dialog.Container visible={this.state.dialogVisible}>
-              <Dialog.Title>Tip Percent</Dialog.Title>
-              <Dialog.Description>Please enter a tip %</Dialog.Description>
-              <Dialog.Input lable="test" onChangeText={this.handleTipChange} />
-              <Dialog.Button label="Cancel" onPress={this.handleCancel} />
-              <Dialog.Button
-                label="Enter"
-                onPress={async () => {
-                  await this.handleSubmitTip();
-                  this.props.navigation.navigate('Home');
-                }}
-              />
-            </Dialog.Container>
+          <Content style={styles.content}>
+            <Grid>
+              <Dialog.Container visible={this.state.dialogVisible}>
+                <Dialog.Title>Tip Percent</Dialog.Title>
+                <Dialog.Description>Please enter a tip %</Dialog.Description>
+                <Dialog.Input
+                  lable="test"
+                  onChangeText={this.handleTipChange}
+                />
+                <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+                <Dialog.Button
+                  label="Enter"
+                  onPress={async () => {
+                    await this.handleSubmitTip();
+                    this.props.navigation.navigate('Home');
+                  }}
+                />
+              </Dialog.Container>
 
-            <Row style={styles.tableHeader}>
-              <Col style={styles.quantity}>
-                <Text>QTY</Text>
-              </Col>
-              <Col style={styles.description}>
-                <Text>DESCRIPTION</Text>
-              </Col>
-              <Col style={styles.price}>
-                <Text>PRICE</Text>
-              </Col>
-            </Row>
-            {receipt.map((lineItem, idx) => {
-              if (typeof lineItem[1] === 'object') {
-                return (
-                  <LineItemsConfirmed
-                    key={idx}
-                    dataRef={this.receiptRef}
-                    id={lineItem[0]}
-                    lineItem={lineItem[1]}
-                    idx={idx}
-                  />
-                );
-              }
-            })}
-            <Row style={styles.lastRow} />
-          </Grid>
-        </Content>
-        <Footer style={styles.avatarFooter}>
-          <EventMembers
-            members={this.state.eventMemberProfiles}
-            display={true}
-          />
-        </Footer>
-        <Footer style={styles.footer}>
-          <Button
-            success
-            block
-            style={styles.button}
-            onPress={() => {
-              this.handleSaveReceipt();
-            }}
-          >
-            <Text style={styles.buttonText}> SAVE RECEIPT </Text>
-          </Button>
-        </Footer>
-      </Container>
-    );
+              <Row style={styles.tableHeader}>
+                <Col style={styles.quantity}>
+                  <Text>QTY</Text>
+                </Col>
+                <Col style={styles.description}>
+                  <Text>DESCRIPTION</Text>
+                </Col>
+                <Col style={styles.price}>
+                  <Text>PRICE</Text>
+                </Col>
+              </Row>
+              {receipt.map((lineItem, idx) => {
+                if (typeof lineItem[1] === 'object') {
+                  return (
+                    <LineItemsConfirmed
+                      key={idx}
+                      dataRef={this.receiptRef}
+                      id={lineItem[0]}
+                      lineItem={lineItem[1]}
+                      idx={idx}
+                    />
+                  );
+                }
+              })}
+              <Row style={styles.lastRow} />
+            </Grid>
+          </Content>
+          <Footer style={styles.avatarFooter}>
+            <EventMembers
+              members={this.state.eventMemberProfiles}
+              display={true}
+            />
+          </Footer>
+          <Footer style={styles.footer}>
+            <Button
+              success
+              block
+              style={styles.button}
+              onPress={() => {
+                this.handleSaveReceipt();
+              }}
+            >
+              <Text style={styles.buttonText}> SAVE RECEIPT </Text>
+            </Button>
+          </Footer>
+        </Container>
+      );
+    } else {
+      return <Status />;
+    }
   }
 }
 
