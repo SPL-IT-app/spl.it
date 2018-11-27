@@ -146,6 +146,10 @@ class Status extends Component {
       return true
   }
 
+  closeEvent = () => {
+      this.eventRef.update({status: false})
+  }
+
   render() {
     this.calculateUserOwes();
     if (Object.keys(this.state.members).length < this.state.memberCount) {
@@ -244,7 +248,7 @@ class Status extends Component {
                     success={!this.state.event.status}
                     block
                     style={styles.button}
-                    onPress={()=>{}}
+                    onPress={this.closeEvent}
                 >
                     <Icon
                         type='MaterialCommunityIcons'
