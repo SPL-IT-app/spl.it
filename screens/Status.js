@@ -13,12 +13,14 @@ import {
   FooterTab,
   Button,
   Icon,
+  Toast
 } from 'native-base';
 import { StyleSheet } from 'react-native';
 import { MyHeader, BackButton, LoadingScreen } from '../components';
 import { makeRef } from '../server/firebaseconfig';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
+
 
 class Status extends Component {
   constructor() {
@@ -147,16 +149,35 @@ class Status extends Component {
   }
 
   closeEvent = () => {
-      this.eventRef.update({status: false})
+      this.eventRef.update({status: false}, (error) => {
+          if(!error){
+            Toast.show({
+                text: 'Event Closed!',
+                buttonText: 'UNDO',
+                type: 'success',
+                duration: 3000,
+                onClose: (reason) => {
+                    if(reason === 'user'){
+                        this.eventRef.update({status: true})}
+                    }
+            })
+          }
+      })
   }
 
   render() {
+
+    if(!this.props.navigation.getParam('history') && !this.state.event.status){
+        this.props.navigation.goBack = this.props.navigation.navigate('Home')
+    }
+
     this.calculateUserOwes();
     if (Object.keys(this.state.members).length < this.state.memberCount) {
       return <LoadingScreen />;
     }
     const members = this.state.members;
     return (
+
       <Container>
         <MyHeader title={this.props.navigation.getParam('history') ? 'History' : 'Status'} subtitle={this.state.event.title} right={() => <BackButton />} />
         <Content>
