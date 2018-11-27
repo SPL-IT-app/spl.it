@@ -1,4 +1,4 @@
-export { default as CameraProcessing } from './utilities/CameraProcessing';
+export { default as LoadingScreen } from './utilities/LoadingScreen';
 export { default as MyHeader } from './Header';
 export { default as LineItems } from './LineItems';
 export { default as StyledText } from './StyledText';

@@ -248,19 +248,18 @@ class SingleEvent extends React.Component {
         <Footer style={styles.footer}>
           <Button
             success
-            disabled
             block
             style={styles.button}
             onPress={() => {
-              this.props.navigation.navigate('Home');
+              this.props.navigation.navigate('Status', {eventId: this.props.event});
             }}
           >
             <Icon
               type="MaterialCommunityIcons"
-              name="credit-card"
+              name="cash-multiple"
               style={styles.icon}
             />
-            <Text style={styles.buttonText}> CHECKOUT </Text>
+            <Text style={styles.buttonText}> STATUS </Text>
           </Button>
         </Footer>
       </Container>
