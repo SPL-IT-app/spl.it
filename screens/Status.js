@@ -134,6 +134,18 @@ class Status extends Component {
       return Object.values(copy).reduce((a,b)=>a+b, 0)
   }
 
+  isReadyToClose = () => {
+      for(let key in this.state.event.receipts){
+          let receipt = this.state.event.receipts[key]
+          let lineItems = Object.values(receipt).filter(value => typeof value === 'object')
+          for (let i = 0; i < lineItems.length; i++){
+              if(!lineItems[i].users) return false
+              else if(!Object.keys(lineItems[i].users)) return false
+          }
+      }
+      return true
+  }
+
   render() {
     this.calculateUserOwes();
     if (Object.keys(this.state.members).length < this.state.memberCount) {
@@ -227,7 +239,9 @@ class Status extends Component {
                 &&
             <Footer style={styles.footer}>
                 <Button
-                    danger
+                    // {this.isReadyToClose() ? danger : disabled}
+                    danger={this.isReadyToClose()}
+                    disabled={!this.isReadyToClose()}
                     block
                     style={styles.button}
                     onPress={()=>{}}
