@@ -71,8 +71,11 @@ class LoginScreen extends React.Component {
         .then(user => {
           getUser({ id: user.user.uid })
         })
-        .finally(() => {
+        .then(() => {
           this.props.navigation.navigate('Main')
+        })
+        .catch(err => {
+          Alert.alert('Error', err.message)
         })
     } catch (err) {
       console.error(err);
