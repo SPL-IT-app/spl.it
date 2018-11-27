@@ -1,12 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import {
-  Container,
-  Content,
-  Footer,
-  Input,
-  Item
-} from 'native-base';
+import { Container, Content, Footer, Input, Item } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import {
@@ -49,6 +43,8 @@ const styles = StyleSheet.create({
   tiptax: {
     borderBottomColor: '#ddd',
     borderBottomWidth: 1,
+    borderTopColor: '#ddd',
+    borderTopWidth: 1,
     height: 45,
     justifyContent: 'center',
   },
@@ -119,10 +115,9 @@ export class LineItemsConfirmedScreen extends React.Component {
     super(props);
     this.state = {
       receiptLineItems: [],
-      tipPercent: 0,
-      dialogVisible: false,
+      tipPercent: '0',
       eventStatus: true,
-      taxPercent: 0
+      taxPercent: '10.25',
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -133,11 +128,11 @@ export class LineItemsConfirmedScreen extends React.Component {
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
     let lineItems = {};
-    let tipPercent = null;
+    let tipPercent = 0
     this.receiptRefUrl.on('value', snapshot => {
+      tipPercent = snapshot.val().tipPercent
       lineItems = snapshot.val();
-      tipPercent = snapshot.val().tipPercent;
-      this.setState({ tipPercent: tipPercent });
+      this.setState({tipPercent: tipPercent.toString()})
     });
     this.setState({ receiptLineItems: Object.entries(lineItems) });
 
@@ -153,36 +148,12 @@ export class LineItemsConfirmedScreen extends React.Component {
     this.receiptRefUrl.off();
   };
 
-  handleTipChange = event => {
-    this.setState({ tipPercent: event });
-  };
-
-  handleSaveReceipt = async () => {
-    if (!this.state.tipPercent) {
-      this.setState({ dialogVisible: true });
-    } else {
-      await this.handleSubmitTip();
-      this.props.navigation.navigate('Home');
-    }
-  };
-
-  handleSubmitTip = () => {
-    this.setState({ dialogVisible: false });
-    this.receiptRefUrl = makeRef(this.receiptRef);
-    this.receiptRefUrl.update({ tipPercent: Number(this.state.tipPercent) });
-  };
-
-  handleChange = async () => {
-    await this.setState({
-      [type]: event,
-    });
-  }
-
   handleChange = type => async event => {
-    console.log("TIP OR TAX CHANGED ====>", type, event)
+    console.log('TIP OR TAX CHANGED ====>', type, event);
     await this.setState({
       [type]: event,
     });
+    this.receiptRefUrl.update({ tipPercent: Number(this.state.tipPercent) });
   };
 
   render() {
@@ -194,7 +165,7 @@ export class LineItemsConfirmedScreen extends React.Component {
 
           <Content style={styles.content}>
             <Grid>
-              <Dialog.Container visible={this.state.dialogVisible}>
+              {/* <Dialog.Container visible={this.state.dialogVisible}>
                 <Dialog.Title>Tip Percent</Dialog.Title>
                 <Dialog.Description>Please enter a tip %</Dialog.Description>
                 <Dialog.Input
@@ -209,7 +180,7 @@ export class LineItemsConfirmedScreen extends React.Component {
                     this.props.navigation.navigate('Home');
                   }}
                 />
-              </Dialog.Container>
+              </Dialog.Container> */}
 
               <Row style={styles.tableHeader}>
                 <Col style={styles.quantity}>
@@ -246,7 +217,17 @@ export class LineItemsConfirmedScreen extends React.Component {
                 </Col>
                 <Col style={styles.blankCol} />
                 <Col style={styles.tipAmount}>
-                  <Text style={styles.inputText}>20%</Text>
+                  <Item style={styles.formInput}>
+                    <Input
+                      style={styles.inputText}
+                      keyboardType="phone-pad"
+                      returnKeyType="done"
+                      name="name"
+                      placeholder="0%"
+                      value={this.state.tipPercent}
+                      onChangeText={this.handleChange('tipPercent')}
+                    />
+                  </Item>
                 </Col>
               </Row>
               <Row style={styles.tiptax}>
@@ -258,10 +239,12 @@ export class LineItemsConfirmedScreen extends React.Component {
                   <Item style={styles.formInput}>
                     <Input
                       style={styles.inputText}
+                      keyboardType="phone-pad"
+                      returnKeyType="done"
                       name="name"
                       placeholder="0%"
                       value={this.state.taxPercent}
-                      onChangeText={this.handleChange('tax')}
+                      onChangeText={this.handleChange('taxPercent')}
                     />
                   </Item>
                 </Col>
