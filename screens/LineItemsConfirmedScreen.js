@@ -173,23 +173,6 @@ export class LineItemsConfirmedScreen extends React.Component {
 
           <Content style={styles.content}>
             <Grid>
-              {/* <Dialog.Container visible={this.state.dialogVisible}>
-                <Dialog.Title>Tip Percent</Dialog.Title>
-                <Dialog.Description>Please enter a tip %</Dialog.Description>
-                <Dialog.Input
-                  lable="test"
-                  onChangeText={this.handleTipChange}
-                />
-                <Dialog.Button label="Cancel" onPress={this.handleCancel} />
-                <Dialog.Button
-                  label="Enter"
-                  onPress={async () => {
-                    await this.handleSubmitTip();
-                    this.props.navigation.navigate('Home');
-                  }}
-                />
-              </Dialog.Container> */}
-
               <Row style={styles.tableHeader}>
                 <Col style={styles.quantity}>
                   <Text>QTY</Text>
@@ -265,18 +248,6 @@ export class LineItemsConfirmedScreen extends React.Component {
               display={true}
             />
           </Footer>
-          {/* <Footer style={styles.footer}>
-            <Button
-              success
-              block
-              style={styles.button}
-              onPress={() => {
-                this.handleSaveReceipt();
-              }}
-            >
-              <Text style={styles.buttonText}> SAVE RECEIPT </Text>
-            </Button>
-          </Footer> */}
         </Container>
       );
   }
