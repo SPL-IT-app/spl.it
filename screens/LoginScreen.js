@@ -4,7 +4,6 @@ import firebase from '../server/firebaseconfig';
 import { getUser } from '../store/';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Alert } from 'react-native';
-import { makeRef } from '../server/firebaseconfig'
 
 const styles = StyleSheet.create({
   root: {
@@ -61,18 +60,17 @@ class LoginScreen extends React.Component {
     const { getUser } = this.props
 
     try {
-      if (this.state.password.length < 6) {
-        Alert.alert('Error', 'Please enter at least 6 characters');
-        return;
-      }
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(user => {
           getUser({ id: user.user.uid })
         })
-        .finally(() => {
+        .then(() => {
           this.props.navigation.navigate('Main')
+        })
+        .catch(err => {
+          Alert.alert('Error', err.message)
         })
     } catch (err) {
       console.error(err);
@@ -93,6 +91,11 @@ class LoginScreen extends React.Component {
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={email => this.setState({ email })}
+                blurOnSubmit={false}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  this.passwordRef._root.focus()
+                }}
               />
             </Item>
             <Item floatingLabel>
@@ -103,6 +106,8 @@ class LoginScreen extends React.Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={password => this.setState({ password })}
+                getRef={input => { this.passwordRef = input }}
+                returnKeyType="done"
               />
             </Item>
             <Button

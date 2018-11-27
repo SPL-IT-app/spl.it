@@ -20,8 +20,8 @@ import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
-const dateFormat = require('dateformat');
 import { Status } from '../screens';
+const dateFormat = require('dateformat');
 
 const styles = StyleSheet.create({
   container: {
@@ -112,14 +112,14 @@ class SingleEvent extends React.Component {
       await snapshot.forEach(child => {
         if (child.hasChildren() && !child.hasChild('users')) countUnassigned++;
       });
-      await this.setState({
-        receiptIds: [...this.state.receiptIds, snapshot.key],
-        receipts: [...this.state.receipts, receiptData],
+      await this.setState(prevState => ({
+        receiptIds: [...prevState.receiptIds, snapshot.key],
+        receipts: [...prevState.receipts, receiptData],
         receiptCountUnassigned: [
-          ...this.state.receiptCountUnassigned,
+          ...prevState.receiptCountUnassigned,
           countUnassigned,
         ],
-      });
+      }))
     });
 
     this.receiptsRef.on('child_changed', async snapshot => {
@@ -235,17 +235,40 @@ class SingleEvent extends React.Component {
                             type="MaterialCommunityIcons"
                             name="chevron-right"
                           />
-                        )}
-                      </Right>
-                    </ListItem>
-                  </Swipeable>
-                );
-              })
-            ) : (
-              <Text>No Receipts</Text>
-            )}
-          </List>
-        </Content>
+
+                        </Left>
+                        <Body>
+                          <Text style={styles.receiptText}>
+                            {`Receipt ${idx + 1}`.toUpperCase()}
+                          </Text>
+                          <Text note style={styles.receiptDateText}>
+                            {dateFormat(receipt.dateCreated, 'mediumDate')}
+                          </Text>
+                        </Body>
+                        <Right>
+                          {this.state.receiptCountUnassigned[idx] ? (
+                            <Badge>
+                              <Text>
+                                {this.state.receiptCountUnassigned[idx]}
+                              </Text>
+                            </Badge>
+                          ) : (
+                              <Icon
+                                type="MaterialCommunityIcons"
+                                name="chevron-right"
+                              />
+                            )}
+                        </Right>
+                      </ListItem>
+                    </Swipeable>
+                  );
+                })
+              ) : (
+                  <Text>No Receipts</Text>
+                )}
+            </List>
+          </Content>
+
 
         <Footer style={styles.footer}>
           <Button
