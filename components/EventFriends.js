@@ -93,11 +93,7 @@ export class EventMembers extends Component {
   componentWillUnmount() {
     this.eventNameRef.off();
     this.eventRef.off();
-<<<<<<< HEAD
     this.usersFriendsRef.off()
-=======
-    this.usersFriendsRef.off();
->>>>>>> 5fbf049a3b28e68b90b10acdcb3e68d571f23772
   }
 
   render() {
