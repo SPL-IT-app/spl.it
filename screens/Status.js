@@ -34,12 +34,12 @@ class Status extends Component {
   }
 
   componentDidMount() {
-    this.eventRef = makeRef(`events/${this.props.event}`);
+    this.eventRef = makeRef(`events/${this.props.navigation.getParam('eventId')}`);
     this.eventRef.on('value', snapshot => {
       this.setState({ event: snapshot.val() });
     });
 
-    this.membersRef = makeRef(`events/${this.props.event}/members`);
+    this.membersRef = makeRef(`events/${this.props.navigation.getParam('eventId')}/members`);
     this.membersRef.on('value', snapshot => {
       this.setState({ memberCount: Object.keys(snapshot.val()).length });
     });

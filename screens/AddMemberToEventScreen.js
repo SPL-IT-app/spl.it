@@ -58,12 +58,14 @@ export class AddMemberToEventScreen extends Component {
         this.setState({ friendProfiles: newArr });
       });
     });
-    this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
-      'value',
-      snapshot => {
-        this.setState({ eventStatus: snapshot.val() });
-      }
-    );
+    if (this.props.event.length) {
+      this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
+        'value',
+        snapshot => {
+          this.setState({ eventStatus: snapshot.val() });
+        }
+      );
+    }
   }
 
   componentWillUnmount() {
@@ -71,8 +73,15 @@ export class AddMemberToEventScreen extends Component {
     // this.eventMembersRef.off();
   }
 
+  checkStatus = () => {
+    if (!this.state.eventStatus) {
+      this.props.navigation.navigate('Status', { eventId: this.props.event });
+    }
+  };
+
   render() {
-    if (this.state.eventStatus) {
+    this.checkStatus();
+
       if (!this.state.friendProfiles) {
         return <Text>You don't have any friends!</Text>;
       }
@@ -94,9 +103,7 @@ export class AddMemberToEventScreen extends Component {
           </Content>
         </Container>
       );
-    } else {
-      return <Status />;
-    }
+
   }
 }
 

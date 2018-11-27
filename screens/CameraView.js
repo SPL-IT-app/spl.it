@@ -65,12 +65,14 @@ export class CameraView extends React.Component {
   async componentDidMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
-    this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
-      'value',
-      snapshot => {
-        this.setState({ eventStatus: snapshot.val() });
-      }
-    );
+    if (this.props.event.length) {
+      this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
+        'value',
+        snapshot => {
+          this.setState({ eventStatus: snapshot.val() });
+        }
+      );
+    }
   }
 
   _panResponder: PanResponderInstance = PanResponder.create({
@@ -229,28 +231,34 @@ export class CameraView extends React.Component {
     }
   };
 
+  checkStatus = () => {
+    if (!this.state.eventStatus) {
+      this.props.navigation.navigate('Status', { eventId: this.props.event });
+    }
+  };
+
   render() {
-    if (this.state.eventStatus) {
-      const { hasCameraPermission } = this.state;
-      if (hasCameraPermission === null) {
-        return <View />;
-      } else if (hasCameraPermission === false) {
-        return <Text>No access to camera!</Text>;
-      } else {
-        return (
-          <View style={styles.view}>
-            <MyHeader title="Take Photo" right={() => <BackButton />} />
-            <Camera
-              style={styles.view}
-              type={this.state.type}
-              ref={ref => {
-                this.camera = ref;
-              }}
-              {...this._panResponder.panHandlers}
-            >
-              {this._rectangleDisplay()}
-              {this._renderLoading()}
-              {/* <View style={styles.camera}>
+    this.checkStatus();
+    const { hasCameraPermission } = this.state;
+    if (hasCameraPermission === null) {
+      return <View />;
+    } else if (hasCameraPermission === false) {
+      return <Text>No access to camera!</Text>;
+    } else {
+      return (
+        <View style={styles.view}>
+          <MyHeader title="Take Photo" right={() => <BackButton />} />
+          <Camera
+            style={styles.view}
+            type={this.state.type}
+            ref={ref => {
+              this.camera = ref;
+            }}
+            {...this._panResponder.panHandlers}
+          >
+            {this._rectangleDisplay()}
+            {this._renderLoading()}
+            {/* <View style={styles.camera}>
               <Button
                 style={styles.button}
                 onPress={() => this.props.navigation.navigate('Home')}
@@ -270,12 +278,9 @@ export class CameraView extends React.Component {
                 </Button>
               </TouchableOpacity>
             </View> */}
-            </Camera>
-          </View>
-        );
-      }
-    } else {
-      return <Status />;
+          </Camera>
+        </View>
+      );
     }
   }
 }
