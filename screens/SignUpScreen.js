@@ -223,7 +223,7 @@ class SignUpScreen extends React.Component {
                 returnKeyType="done"
                 getRef={input => { this.phoneRef = input }}
                 onSubmitEditing={() => {
-                  this.passwordRef._root.focus();
+                  this.passwordRef._root.focus()
                 }}
               />
             </Item>

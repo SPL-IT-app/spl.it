@@ -93,6 +93,11 @@ class LoginScreen extends React.Component {
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={email => this.setState({ email })}
+                blurOnSubmit={false}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  this.passwordRef._root.focus()
+                }}
               />
             </Item>
             <Item floatingLabel>
@@ -103,6 +108,8 @@ class LoginScreen extends React.Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={password => this.setState({ password })}
+                getRef={input => { this.passwordRef = input }}
+                returnKeyType="done"
               />
             </Item>
             <Button
