@@ -26,7 +26,8 @@ import {
   CameraView,
   SingleEvent,
   AllEvents,
-  MoreScreen
+  MoreScreen,
+  Status
 } from '../screens';
 
 import { MyHeader } from '../components';
@@ -42,6 +43,7 @@ const HomeStack = createStackNavigator(
     SingleEvent: SingleEvent,
     AddMembers: AddMemberToEventScreen,
     AllEvents: AllEvents,
+    Status: Status
   },
   { headerMode: 'none', initialRouteName: 'Home' }
 );
@@ -85,6 +87,7 @@ const MoreStack = createStackNavigator(
   {
     More: More,
     AllEvents: AllEvents,
+    Status: Status,
   },
   { headerMode: 'none' }
 );

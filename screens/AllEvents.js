@@ -88,10 +88,18 @@ class AllEvents extends React.Component {
 
     handleEventClick = async id => {
         const { navigation, status } = this.props
-        await this.props.setEvent(id)
-        navigation.navigate('SingleEvent', {
-            id,
-        });
+
+        if (status) {
+            await this.props.setEvent(id)
+            navigation.navigate('SingleEvent', {
+                id,
+            });
+        } else {
+            navigation.navigate('Status', {
+                eventId: id,
+                history: true,
+            })
+        }
     };
 
     handleEventAdd = async () => {

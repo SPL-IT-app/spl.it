@@ -4,7 +4,7 @@ import { Container, Content, Button, Icon, Footer } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import {
-  CameraProcessing,
+  LoadingScreen,
   LineItems,
   MyHeader,
   BackButton,
@@ -109,7 +109,7 @@ export class ListItemConfirmationScreen extends React.Component {
       imageUrl: 'http://www.w3.org/wiki/images/a/a9/Munich-dinner-receipt.jpg',
       creator: this.props.user.id,
       dateCreated: new Date().toString(),
-      tipPercent: null,
+      tipPercent: 0,
       lineItems: {},
     };
 
@@ -229,7 +229,7 @@ export class ListItemConfirmationScreen extends React.Component {
         </Footer>
       </Container>
     ) : (
-      <CameraProcessing />
+      <LoadingScreen />
     );
   }
 }

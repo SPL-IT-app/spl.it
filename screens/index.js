@@ -15,3 +15,5 @@ export { default as AddMemberToEventScreen } from './AddMemberToEventScreen'
 export { default as CameraView } from './CameraView';
 export { default as AllEvents } from './AllEvents';
 export { default as MoreScreen } from './MoreScreen'
+export { default as Status } from './Status';
+

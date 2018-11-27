@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class CameraProcessing extends Component {
+export default class LoadingScreen extends Component {
   state = {};
 
   componentDidMount() {

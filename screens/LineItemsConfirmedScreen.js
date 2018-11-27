@@ -72,7 +72,7 @@ export class LineItemsConfirmedScreen extends React.Component {
     this.state = {
       receiptLineItems: [],
       tipPercent: null,
-      dialogVisible: false
+      dialogVisible: false,
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -83,62 +83,60 @@ export class LineItemsConfirmedScreen extends React.Component {
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
     let lineItems = {};
-    let tipPercent = null
+    let tipPercent = null;
     this.receiptRefUrl.on('value', snapshot => {
       lineItems = snapshot.val();
-      tipPercent = snapshot.val().tipPercent
-      this.setState({tipPercent: tipPercent})
+      tipPercent = snapshot.val().tipPercent;
+      this.setState({ tipPercent: tipPercent });
     });
-    this.setState({ receiptLineItems: Object.entries(lineItems)});
+    this.setState({ receiptLineItems: Object.entries(lineItems) });
   };
 
   componentWillUnmount = () => {
     this.receiptRefUrl.off();
-  }
+  };
 
-  handleTipChange = (event) => {
+  handleTipChange = event => {
     this.setState({ tipPercent: event });
-  }
+  };
 
   handleSaveReceipt = async () => {
     if (!this.state.tipPercent) {
       this.setState({ dialogVisible: true });
     } else {
       await this.handleSubmitTip();
-      this.props.navigation.navigate('Home')
+      this.props.navigation.navigate('Home');
     }
-  }
+  };
 
   handleSubmitTip = () => {
     this.setState({ dialogVisible: false });
     this.receiptRefUrl = makeRef(this.receiptRef);
-    this.receiptRefUrl.update({tipPercent: Number(this.state.tipPercent)})
-  }
+    this.receiptRefUrl.update({ tipPercent: Number(this.state.tipPercent) });
+  };
 
   handleCancel = () => {
     this.setState({ dialogVisible: false });
-  }
+  };
 
   render() {
-    const receipt = this.state.receiptLineItems
+    const receipt = this.state.receiptLineItems;
     return (
       <Container>
-        <MyHeader title="Add Members" right={() => <BackButton />} />
+        <MyHeader title="Assign Items" right={() => <BackButton />} />
 
         <Content style={styles.content}>
           <Grid>
             <Dialog.Container visible={this.state.dialogVisible}>
               <Dialog.Title>Tip Percent</Dialog.Title>
-              <Dialog.Description>
-                Please enter a tip %
-              </Dialog.Description>
+              <Dialog.Description>Please enter a tip %</Dialog.Description>
               <Dialog.Input lable="test" onChangeText={this.handleTipChange} />
               <Dialog.Button label="Cancel" onPress={this.handleCancel} />
               <Dialog.Button
                 label="Enter"
                 onPress={async () => {
                   await this.handleSubmitTip();
-                  this.props.navigation.navigate('Home')
+                  this.props.navigation.navigate('Home');
                 }}
               />
             </Dialog.Container>
@@ -171,33 +169,18 @@ export class LineItemsConfirmedScreen extends React.Component {
           </Grid>
         </Content>
         <Footer style={styles.avatarFooter}>
-          <EventMembers members={this.state.eventMemberProfiles} />
+          <EventMembers
+            members={this.state.eventMemberProfiles}
+            display={true}
+          />
         </Footer>
-        <Footer style={styles.footer}>
-          <Button
-            warning
-            block
-            style={styles.button}
-            onPress={() => {
-              this.props.navigation.navigate('AddMembers');
-            }}
-          >
-            <Icon
-              type="MaterialCommunityIcons"
-              name="account-multiple-plus"
-              style={styles.icon}
-            />
-            <Text style={styles.buttonText}> ADD MEMBERS </Text>
-          </Button>
-        </Footer>
-
         <Footer style={styles.footer}>
           <Button
             success
             block
             style={styles.button}
             onPress={() => {
-              this.handleSaveReceipt()
+              this.handleSaveReceipt();
             }}
           >
             <Text style={styles.buttonText}> SAVE RECEIPT </Text>

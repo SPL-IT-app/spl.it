@@ -10,6 +10,7 @@ import {
   Icon,
   Container,
 } from 'native-base';
+import { Permissions, Notifications } from 'expo'
 
 import { randomColor } from 'randomcolor';
 
@@ -67,7 +68,25 @@ class SignUpScreen extends React.Component {
       password: '',
       username: '',
     }
-    this.inputs = {}
+  }
+
+  registerForPushNotificationsAsync = async (userId) => {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== 'granted') {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+      return;
+    }
+
+    let token = await Notifications.getExpoPushTokenAsync();
+    firebase.database().ref('users').child(userId).update({expoToken: token})
   }
 
   signUpUser = (email, password) => {
@@ -93,6 +112,7 @@ class SignUpScreen extends React.Component {
                   email,
                 },
               });
+            this.registerForPushNotificationsAsync(user.user.uid)
             firebase
               .database()
               .ref('profiles')
@@ -115,10 +135,6 @@ class SignUpScreen extends React.Component {
     } catch (err) {
       console.error(err);
     }
-  }
-
-  focusNextField(key) {
-    this.inputs[key].focus()
   }
 
   render() {
@@ -144,12 +160,7 @@ class SignUpScreen extends React.Component {
                 autoCapitalize="none"
                 value={this.state.username}
                 onChangeText={username => this.setState({ username })}
-                ref={input => {
-                  this.inputs['one'] = input;
-                }}
-                onSubmitEditing={() => {
-                  this.focusNextField('two');
-                }}
+                
               />
             </Item>
             <Item floatingLabel>
@@ -160,12 +171,6 @@ class SignUpScreen extends React.Component {
                 value={this.state.firstName}
                 autoCorrect={false}
                 onChangeText={firstName => this.setState({ firstName })}
-                ref={input => {
-                  this.inputs['two'] = input;
-                }}
-                onSubmitEditing={() => {
-                  this.focusNextField('three');
-                }}
               />
             </Item>
             <Item floatingLabel>
@@ -176,12 +181,6 @@ class SignUpScreen extends React.Component {
                 value={this.state.lastName}
                 autoCorrect={false}
                 onChangeText={lastName => this.setState({ lastName })}
-                ref={input => {
-                  this.inputs['three'] = input;
-                }}
-                onSubmitEditing={() => {
-                  this.focusNextField('four');
-                }}
               />
             </Item>
             <Item floatingLabel>
@@ -194,12 +193,6 @@ class SignUpScreen extends React.Component {
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={email => this.setState({ email })}
-                ref={input => {
-                  this.inputs['four'] = input;
-                }}
-                onSubmitEditing={() => {
-                  this.focusNextField('five');
-                }}
               />
             </Item>
             <Item floatingLabel>
@@ -215,12 +208,6 @@ class SignUpScreen extends React.Component {
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={phone => this.setState({ phone })}
-                ref={input => {
-                  this.inputs['five'] = input;
-                }}
-                onSubmitEditing={() => {
-                  this.focusNextField('six');
-                }}
               />
             </Item>
             <Item floatingLabel>
@@ -233,9 +220,6 @@ class SignUpScreen extends React.Component {
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={password => this.setState({ password })}
-                ref={input => {
-                  this.inputs['six'] = input;
-                }}
               />
             </Item>
             <Button

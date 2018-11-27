@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Button, Icon, Content, Container } from 'native-base';
-import { MyHeader, CameraProcessing } from '../components';
+import { MyHeader, LoadingScreen } from '../components';
 import { connect } from 'react-redux';
 import AllEvents from './AllEvents';
 import { makeRef } from '../server/firebaseconfig';
@@ -96,7 +96,7 @@ export class HomeScreen extends React.Component {
     return (
       <Container>
         {this.state.isLoading ? (
-          <CameraProcessing />
+          <LoadingScreen />
         ) : events ? (
           <AllEvents status={true} />
         ) : (

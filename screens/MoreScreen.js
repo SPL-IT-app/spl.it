@@ -49,7 +49,7 @@ class MoreScreen extends React.Component {
               status: false,
             })}
           >
-            <Text>Order History</Text>
+            <Text>History</Text>
           </Button>
           <Text>More stuff here!</Text>
           <Text>this is to test logout:</Text>
