@@ -137,6 +137,11 @@ class Status extends Component {
     }
   }
 
+  calculateTotal = () => {
+      let copy = Object.assign(this.moneyToSendOrReceive, {unassigned: 0})
+      return Object.values(copy).reduce((a,b)=>a+b, 0)
+  }
+
   render() {
     this.calculateUserOwes();
     if (Object.keys(this.state.members).length < this.state.memberCount) {
@@ -195,6 +200,34 @@ class Status extends Component {
                 );
               }
             })}
+            <ListItem itemDivider last>
+                <Text>Your Total:</Text>
+            </ListItem>
+            <ListItem avatar style={styles.lineItemRow} >
+                <Left>
+                    <Thumbnail
+                            source={{ uri: members[this.props.id].imageUrl }}
+                            style={{
+                            borderWidth: 4,
+                            borderColor: members[this.props.id].color
+                                ? members[this.props.id].color
+                                : randomColor({
+                                    luminosity: 'light',
+                                    hue: 'random',
+                                }).toString(),
+                            }}
+                    />
+                </Left>
+                <Body>
+                    <Text>{members[this.props.id].username}</Text>
+                </Body>
+                <Right style={styles.price}>
+                      <Text style={{ color: this.calculateTotal() > 0 ? 'red' : 'green' }}>
+                        {numeral(Math.abs(this.calculateTotal())).format('$0,0.00')}
+                      </Text>
+                </Right>
+
+            </ListItem>
           </List>
         </Content>
       </Container>
