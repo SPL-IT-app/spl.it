@@ -1,39 +1,39 @@
-import React from "react";
-import { StyleSheet, Text, ScrollView, TouchableHighlight } from "react-native";
-import { Icon, Container, List, Body, Right, ListItem, Fab } from "native-base";
-import { setEvent } from "../store";
-import { connect } from "react-redux";
-import { makeRef } from "../server/firebaseconfig";
-import { withNavigation } from "react-navigation";
-import Swipeable from "react-native-swipeable";
-const dateFormat = require("dateformat");
-import { MyHeader, BackButton } from "../components";
+import React from 'react';
+import { StyleSheet, Text, ScrollView, TouchableHighlight } from 'react-native';
+import { Icon, Container, List, Body, Right, ListItem, Fab } from 'native-base';
+import { setEvent } from '../store';
+import { connect } from 'react-redux';
+import { makeRef } from '../server/firebaseconfig';
+import { withNavigation } from 'react-navigation';
+import Swipeable from 'react-native-swipeable';
+const dateFormat = require('dateformat');
+import { MyHeader, BackButton } from '../components';
 
 const styles = StyleSheet.create({
   deleteButton: {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "#FF7E79",
-    height: "100%"
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: '#FF7E79',
+    height: '100%',
   },
   deleteText: {
     paddingLeft: 15,
-    color: "white"
+    color: 'white',
   },
   eventText: {
-    fontWeight: "200",
-    letterSpacing: 2
+    fontWeight: '200',
+    letterSpacing: 2,
   },
   eventDateText: {
-    fontWeight: "200",
-    color: "#838383",
+    fontWeight: '200',
+    color: '#838383',
     letterSpacing: 2,
     paddingTop: 5,
-    fontSize: 10
+    fontSize: 10,
   },
   addEventFab: {
-    backgroundColor: "#1A98FC"
-  }
+    backgroundColor: '#1A98FC',
+  },
 });
 
 class AllEvents extends React.Component {
@@ -41,7 +41,7 @@ class AllEvents extends React.Component {
     super(props);
     this.state = {
       events: [],
-      eventIds: []
+      eventIds: [],
     };
   }
 
@@ -52,9 +52,9 @@ class AllEvents extends React.Component {
     // this.eventRef = makeRef(`events`)
 
     // ON USER EVENT ADDED
-    this.userEventsRef.on("child_added", snapshot => {
+    this.userEventsRef.on('child_added', snapshot => {
       const eventsRef = makeRef(`/events/${snapshot.key}`);
-      eventsRef.on("value", eventSnapshot => {
+      eventsRef.on('value', eventSnapshot => {
         if (this.state.eventIds.includes(snapshot.key)) {
           const { events } = this.state;
           const newEvents = events.map(event => {
@@ -63,33 +63,31 @@ class AllEvents extends React.Component {
             }
             return event;
           });
-          this.setState({events: newEvents})
-        }
-        else {
+          this.setState({ events: newEvents });
+        } else {
           this.setState(prevState => ({
             events: [
               ...prevState.events,
-              { id: snapshot.key, info: eventSnapshot.val() }
+              { id: snapshot.key, info: eventSnapshot.val() },
             ],
-            eventIds: [...prevState.eventIds, snapshot.key]
+            eventIds: [...prevState.eventIds, snapshot.key],
           }));
-
         }
       });
     });
 
     // ON USER EVENT REMOVED
-    this.userEventsRef.on("child_removed", snapshot => {
+    this.userEventsRef.on('child_removed', snapshot => {
       const eventsRef = makeRef(`/events/${snapshot.key}`);
-      eventsRef.once("value", eventSnapshot => {
+      eventsRef.once('value', eventSnapshot => {
         const { events, eventIds } = this.state;
         const newEvents = events.filter(event => {
           return event.id !== snapshot.key;
         });
-        const newEventIds = eventIds.filter(id => id !== snapshot.key)
+        const newEventIds = eventIds.filter(id => id !== snapshot.key);
         this.setState({
           events: newEvents,
-          eventIds: newEventIds
+          eventIds: newEventIds,
         });
       });
     });
@@ -97,7 +95,7 @@ class AllEvents extends React.Component {
 
   handleRemoveEvent = eventId => {
     const eventMembersRef = makeRef(`events/${eventId}/members`);
-    eventMembersRef.once("value", snapshot => {
+    eventMembersRef.once('value', snapshot => {
       snapshot.forEach(childSnapshot => {
         const userEventRef = makeRef(
           `users/${childSnapshot.key}/events/${eventId}`
@@ -112,13 +110,13 @@ class AllEvents extends React.Component {
 
     if (status) {
       await this.props.setEvent(id);
-      navigation.navigate("SingleEvent", {
-        id
+      navigation.navigate('SingleEvent', {
+        id,
       });
     } else {
-      navigation.navigate("Status", {
+      navigation.navigate('Status', {
         eventId: id,
-        history: true
+        history: true,
       });
     }
   };
@@ -126,8 +124,8 @@ class AllEvents extends React.Component {
   handleEventAdd = async () => {
     const { navigation } = this.props;
 
-    await this.props.setEvent("");
-    navigation.navigate("Camera");
+    await this.props.setEvent('');
+    navigation.navigate('Camera');
   };
 
   componentWillUnmount() {
@@ -150,7 +148,7 @@ class AllEvents extends React.Component {
     return (
       <Container>
         <MyHeader
-          title={status ? "Events" : "History"}
+          title={status ? 'Events' : 'History'}
           right={() => <BackButton />}
         />
         <ScrollView>
@@ -166,7 +164,7 @@ class AllEvents extends React.Component {
                       }}
                     >
                       <Text style={styles.deleteText}>DELETE</Text>
-                    </TouchableHighlight>
+                    </TouchableHighlight>,
                   ];
                   return (
                     <Swipeable rightButtons={rightButtons} key={event.id}>
@@ -177,12 +175,12 @@ class AllEvents extends React.Component {
                       >
                         <Body>
                           <Text style={styles.eventText}>
-                            {event.info.title === ""
+                            {event.info.title === ''
                               ? `Event ${idx + 1}`.toUpperCase()
                               : event.info.title.toUpperCase()}
                           </Text>
                           <Text note style={styles.eventDateText}>
-                            {dateFormat(event.info.date, "mediumDate")}
+                            {dateFormat(event.info.date, 'mediumDate')}
                           </Text>
                         </Body>
                         <Right>
@@ -205,12 +203,12 @@ class AllEvents extends React.Component {
                     >
                       <Body>
                         <Text style={styles.eventText}>
-                          {event.info.title === ""
+                          {event.info.title === ''
                             ? `Event ${idx + 1}`.toUpperCase()
                             : event.info.title.toUpperCase()}
                         </Text>
                         <Text note style={styles.eventDateText}>
-                          {dateFormat(event.info.date, "mediumDate")}
+                          {dateFormat(event.info.date, 'mediumDate')}
                         </Text>
                       </Body>
                       <Right>
@@ -225,13 +223,17 @@ class AllEvents extends React.Component {
           </List>
         </ScrollView>
         <Container>
-          <Fab
-            position="bottomRight"
-            style={styles.addEventFab}
-            onPress={() => this.handleEventAdd()}
-          >
-            <Icon type="MaterialCommunityIcons" name="plus" />
-          </Fab>
+          {status ? (
+            <Fab
+              position="bottomRight"
+              style={styles.addEventFab}
+              onPress={() => this.handleEventAdd()}
+            >
+              <Icon type="MaterialCommunityIcons" name="plus" />
+            </Fab>
+          ) : (
+            <Container />
+          )}
         </Container>
       </Container>
     );
@@ -246,7 +248,7 @@ const mapDispatch = dispatch => {
   return {
     setEvent: eventId => {
       dispatch(setEvent(eventId));
-    }
+    },
   };
 };
 
