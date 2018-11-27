@@ -6,7 +6,8 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Keyboard,
-  Alert
+  Alert,
+  Stylesheet
 } from "react-native";
 import {
   Container,
@@ -43,6 +44,17 @@ import { ImagePicker, Permissions } from 'expo'
 import { RNS3 } from 'react-native-aws3'
 require('../secrets');
 
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center"
+  },
+  card: {
+   borderColor: 'transparent',
+   shadowOpacity: 0
+ }
+});
+
 class Profile extends React.Component {
   constructor() {
     super();
@@ -60,6 +72,7 @@ class Profile extends React.Component {
   static navigationOptions = {
     title: "Links"
   };
+
 
   componentDidMount() {
     this.userRef = makeRef(`/users/${this.props.user.id}`);
@@ -174,7 +187,7 @@ class Profile extends React.Component {
                   </TabHeading>
                 }
               >
-                <Card>
+                <Card style={styles.card}>
                   <CardItem header bordered>
                     <Left><Text>{this.state.image}</Text></Left>
                     <Body flexGrow={2}>
@@ -368,15 +381,6 @@ class Profile extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // width: '95%',
-    // alignItems: 'center',
-    justifyContent: "center"
-  }
-});
 
 const mapState = state => ({
   user: state.user.currentUser
