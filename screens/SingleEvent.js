@@ -21,6 +21,7 @@ import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
 import { Status } from '../screens';
+const dateFormat = require('dateformat');
 
 const styles = StyleSheet.create({
   container: {
@@ -88,12 +89,14 @@ class SingleEvent extends React.Component {
     this.eventRef = makeRef(`/events/${this.props.event}`);
     this.receiptsRef = makeRef(`/events/${this.props.event}/receipts`);
 
-    this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
-      'value',
-      snapshot => {
-        this.setState({ eventStatus: snapshot.val() });
-      }
-    );
+    if (this.props.event.length) {
+      this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
+        'value',
+        snapshot => {
+          this.setState({ eventStatus: snapshot.val() });
+        }
+      );
+    }
 
     // ON EVENT CHANGE
     this.eventRef.once('value', snapshot => {
@@ -167,59 +170,79 @@ class SingleEvent extends React.Component {
     receiptRef.remove();
   };
 
+  checkStatus = () => {
+    if (!this.state.eventStatus) {
+      this.props.navigation.navigate('Status', { eventId: this.props.event });
+    }
+  };
+
   componentWillUnmount() {
     this.eventRef.off();
     this.receiptsRef.off();
   }
 
   render() {
-    if (this.state.eventStatus) {
-      const { event, receipts, receiptIds } = this.state;
-      if (!event.title) {
-        return <MyHeader title="Add Event" right={() => <BackButton />} />;
-      }
-      return (
-        <Container styles={styles.container}>
-          <MyHeader title={event.title} right={() => <BackButton />} />
-          <Content>
-            <List>
-              {receipts.length > 0 ? (
-                receipts.map((receipt, idx) => {
-                  const rightButtons = [
-                    <TouchableHighlight
-                      style={styles.deleteButton}
-                      key={parseInt(idx, 2)}
-                      onPress={() => {
-                        this.handleRemoveReceipt(receiptIds[idx]);
-                      }}
+    this.checkStatus();
+    const { event, receipts, receiptIds } = this.state;
+    if (!event.title) {
+      return <MyHeader title="Add Event" right={() => <BackButton />} />;
+    }
+    return (
+      <Container styles={styles.container}>
+        <MyHeader title={event.title} right={() => <BackButton />} />
+        <Content>
+          <List>
+            {receipts.length > 0 ? (
+              receipts.map((receipt, idx) => {
+                const rightButtons = [
+                  <TouchableHighlight
+                    style={styles.deleteButton}
+                    key={parseInt(idx, 2)}
+                    onPress={() => {
+                      this.handleRemoveReceipt(receiptIds[idx]);
+                    }}
+                  >
+                    <Text style={styles.deleteText}>DELETE</Text>
+                  </TouchableHighlight>,
+                ];
+                return (
+                  <Swipeable key={parseInt(idx, 2)} rightButtons={rightButtons}>
+                    <ListItem
+                      thumbnail
+                      button
+                      onPress={() => this.handleSelectReceipt(receiptIds[idx])}
                     >
-                      <Text style={styles.deleteText}>DELETE</Text>
-                    </TouchableHighlight>,
-                  ];
-                  return (
-                    <Swipeable
-                      key={parseInt(idx, 2)}
-                      rightButtons={rightButtons}
-                    >
-                      <ListItem
-                        thumbnail
-                        button
-                        onPress={() =>
-                          this.handleSelectReceipt(receiptIds[idx])
-                        }
-                      >
-                        <Left>
-                          <Thumbnail
-                            square
-                            source={{ uri: receipt.imageUrl }}
+                      <Left>
+                        <Thumbnail square source={{ uri: receipt.imageUrl }} />
+                      </Left>
+                      <Body>
+                        <Text style={styles.receiptText}>
+                          {`Receipt ${idx + 1}`.toUpperCase()}
+                        </Text>
+                        <Text note numberOfLines={1}>
+                          Its time to build a difference . .
+                        </Text>
+                      </Body>
+                      <Right>
+                        {this.state.receiptCountUnassigned[idx] ? (
+                          <Badge>
+                            <Text>
+                              {this.state.receiptCountUnassigned[idx]}
+                            </Text>
+                          </Badge>
+                        ) : (
+                          <Icon
+                            type="MaterialCommunityIcons"
+                            name="chevron-right"
                           />
+
                         </Left>
                         <Body>
                           <Text style={styles.receiptText}>
                             {`Receipt ${idx + 1}`.toUpperCase()}
                           </Text>
-                          <Text note numberOfLines={1}>
-                            Its time to build a difference . .
+                          <Text note style={styles.receiptDateText}>
+                            {dateFormat(receipt.dateCreated, 'mediumDate')}
                           </Text>
                         </Body>
                         <Right>
@@ -246,46 +269,44 @@ class SingleEvent extends React.Component {
             </List>
           </Content>
 
-          <Footer style={styles.footer}>
-            <Button
-              warning
-              block
-              style={styles.button}
-              onPress={() => this.props.navigation.navigate('Camera')}
-            >
-              <Icon
-                type="MaterialCommunityIcons"
-                name="camera"
-                style={styles.icon}
-              />
-              <Text style={styles.buttonText}> ADD RECEIPT </Text>
-            </Button>
-          </Footer>
 
-          <Footer style={styles.footer}>
-            <Button
-              success
-              block
-              style={styles.button}
-              onPress={() => {
-                this.props.navigation.navigate('Status', {
-                  eventId: this.props.event,
-                });
-              }}
-            >
-              <Icon
-                type="MaterialCommunityIcons"
-                name="cash-multiple"
-                style={styles.icon}
-              />
-              <Text style={styles.buttonText}> STATUS </Text>
-            </Button>
-          </Footer>
-        </Container>
-      );
-    } else {
-      return <Status />;
-    }
+        <Footer style={styles.footer}>
+          <Button
+            warning
+            block
+            style={styles.button}
+            onPress={() => this.props.navigation.navigate('Camera')}
+          >
+            <Icon
+              type="MaterialCommunityIcons"
+              name="camera"
+              style={styles.icon}
+            />
+            <Text style={styles.buttonText}> ADD RECEIPT </Text>
+          </Button>
+        </Footer>
+
+        <Footer style={styles.footer}>
+          <Button
+            success
+            block
+            style={styles.button}
+            onPress={() => {
+              this.props.navigation.navigate('Status', {
+                eventId: this.props.event,
+              });
+            }}
+          >
+            <Icon
+              type="MaterialCommunityIcons"
+              name="cash-multiple"
+              style={styles.icon}
+            />
+            <Text style={styles.buttonText}> STATUS </Text>
+          </Button>
+        </Footer>
+      </Container>
+    );
   }
 }
 
