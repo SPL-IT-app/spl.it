@@ -9,24 +9,16 @@ import {
   Body,
   Right,
   Thumbnail,
+  Footer,
+  FooterTab,
+  Button,
+  Icon,
 } from 'native-base';
 import { StyleSheet } from 'react-native';
 import { MyHeader, BackButton, LoadingScreen } from '../components';
 import { makeRef } from '../server/firebaseconfig';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
-
-const styles = StyleSheet.create({
-  lineItemRow: {
-    display: 'flex',
-    alignItems: 'flex-end',
-  },
-  price: {
-    // width: '25%',
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-});
 
 class Status extends Component {
   constructor() {
@@ -230,10 +222,61 @@ class Status extends Component {
             </ListItem>
           </List>
         </Content>
+
+        {!this.props.navigation.getParam('history')
+                &&
+            <Footer style={styles.footer}>
+                <Button
+                    danger
+                    block
+                    style={styles.button}
+                    onPress={()=>{}}
+                >
+                    <Icon
+                        type='MaterialCommunityIcons'
+                        name='close-circle'
+                        style={styles.icon}
+                    />
+                    <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
+                </Button>
+            </Footer>
+        }
       </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+    buttonText: {
+        textAlign: 'center',
+        letterSpacing: 2,
+        color: 'white',
+    },
+    button: {
+        marginTop: 10,
+        width: '95%',
+        alignSelf: 'center',
+    },
+    footer: {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        paddingBottom: 15,
+    },
+    icon: {
+        margin: 0,
+        padding: 0,
+    },
+    lineItemRow: {
+        display: 'flex',
+        alignItems: 'flex-end',
+    },
+    price: {
+        // width: '25%',
+        display: 'flex',
+        justifyContent: 'flex-end',
+    },
+});
+
 
 const mapState = state => ({
   id: state.user.currentUser.id,
