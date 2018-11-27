@@ -88,7 +88,7 @@ export class EventMembers extends Component {
 
     } else if (val === false) {
       this.eventMemberRef.remove();
-      this.userEventRef.remove();
+      this.userEventRef.remove()
     }
   };
 
