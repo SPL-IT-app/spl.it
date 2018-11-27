@@ -13,7 +13,6 @@ import {
 import { StyleSheet } from 'react-native';
 import CheckBox from 'react-native-checkbox-heaven';
 import { makeRef } from '../server/firebaseconfig';
-// import { Expo } from 'expo-server-sdk';
 
 
 const styles = StyleSheet.create({
@@ -48,11 +47,9 @@ export class EventMembers extends Component {
         addedFriends: Object.keys(friendIds)
       })
     })
-
   }
 
   sendPushNotification(token, title, body){
-    console.log("IN PUSH FUNCTION ===>", "TOKEN", token, "TITLE", title, "BODY", body)
     return fetch('https://exp.host/--/api/v2/push/send', {
       body: JSON.stringify({
         to: token,
@@ -68,7 +65,6 @@ export class EventMembers extends Component {
   }
 
   handleSelect = (val, id) => {
-    console.log("IN HANDLE SELECT")
     this.eventMemberRef = makeRef(`/events/${this.props.event}/members/${id}`);
     this.userRef = makeRef(`/users/${id}/events`)
     this.userEventRef = makeRef(`/users/${id}/events/${this.props.event}`)
@@ -84,7 +80,6 @@ export class EventMembers extends Component {
       let expoToken = ''
       this.userExpoTokenRef = makeRef(`/users/${id}/expoToken`)
       this.userExpoTokenRef.once("value", snapshot => {
-        console.log("EXPO TOKEN ====> ", snapshot.val())
         expoToken = snapshot.val()
         const title = `You've been invited to an event: `
         const body = `${this.state.eventName}`
@@ -96,6 +91,17 @@ export class EventMembers extends Component {
       this.userEventRef.remove();
     }
   };
+
+
+  componentWillUnmount() {
+    this.eventNameRef.off();
+    this.eventRef.off();
+    this.usersFriendsRef.off()
+    this.eventMemberRef.off();
+    this.userRef.off();
+    this.userEventRef.off();
+  }
+
 
   render() {
     const { friends } = this.props;
