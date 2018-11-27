@@ -70,10 +70,7 @@ class AllEvents extends React.Component {
         this.setState({
           events: newEvents,
         });
-      }).then(() => {
-        console.log("EVENT IS BEING REMOVED")
-        eventsRef.remove();
-      });
+      })
     });
   }
 
