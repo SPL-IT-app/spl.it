@@ -1,12 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { Container, Content, Button, Icon, Footer } from 'native-base';
+import { Container, Content, Footer, Input, Item } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import {
   LineItemsConfirmed,
   MyHeader,
-  DeleteButton,
   EventMembers,
   BackButton,
 } from '../components';
@@ -41,6 +40,49 @@ const styles = StyleSheet.create({
   lastRow: {
     paddingBottom: 80,
   },
+  tiptax: {
+    borderBottomColor: '#ddd',
+    borderBottomWidth: 1,
+    borderTopColor: '#ddd',
+    borderTopWidth: 1,
+    height: 45,
+    justifyContent: 'center',
+  },
+  formInput: {
+    borderColor: 'transparent',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  inputText: {
+    width: '100%',
+    textAlign: 'center',
+  },
+  tipText: {
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '15%',
+    backgroundColor: '#eee',
+  },
+  blankCol: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    width: '60%',
+    backgroundColor: '#eee',
+  },
+  tipAmount: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    width: '25%',
+    backgroundColor: '#eee',
+  },
   buttonText: {
     textAlign: 'center',
     letterSpacing: 2,
@@ -60,6 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: 'transparent',
     paddingBottom: 15,
+    height: 'auto',
   },
   avatarFooter: {
     borderColor: 'transparent',
@@ -72,9 +115,9 @@ export class LineItemsConfirmedScreen extends React.Component {
     super(props);
     this.state = {
       receiptLineItems: [],
-      tipPercent: null,
-      dialogVisible: false,
+      tipPercent: '0',
       eventStatus: true,
+      taxPercent: '10.25',
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -85,11 +128,11 @@ export class LineItemsConfirmedScreen extends React.Component {
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
     let lineItems = {};
-    let tipPercent = null;
+    let tipPercent = 0
     this.receiptRefUrl.on('value', snapshot => {
+      tipPercent = snapshot.val().tipPercent
       lineItems = snapshot.val();
-      tipPercent = snapshot.val().tipPercent;
-      this.setState({ tipPercent: tipPercent });
+      this.setState({tipPercent: tipPercent.toString()})
     });
     this.setState({ receiptLineItems: Object.entries(lineItems) });
 
@@ -107,27 +150,12 @@ export class LineItemsConfirmedScreen extends React.Component {
     this.receiptRefUrl.off();
   };
 
-  handleTipChange = event => {
-    this.setState({ tipPercent: event });
-  };
-
-  handleSaveReceipt = async () => {
-    if (!this.state.tipPercent) {
-      this.setState({ dialogVisible: true });
-    } else {
-      await this.handleSubmitTip();
-      this.props.navigation.navigate('Home');
-    }
-  };
-
-  handleSubmitTip = () => {
-    this.setState({ dialogVisible: false });
-    this.receiptRefUrl = makeRef(this.receiptRef);
+  handleChange = type => async event => {
+    console.log('TIP OR TAX CHANGED ====>', type, event);
+    await this.setState({
+      [type]: event,
+    });
     this.receiptRefUrl.update({ tipPercent: Number(this.state.tipPercent) });
-  };
-
-  handleCancel = () => {
-    this.setState({ dialogVisible: false });
   };
 
   checkStatus = () => {
@@ -145,23 +173,6 @@ export class LineItemsConfirmedScreen extends React.Component {
 
           <Content style={styles.content}>
             <Grid>
-              <Dialog.Container visible={this.state.dialogVisible}>
-                <Dialog.Title>Tip Percent</Dialog.Title>
-                <Dialog.Description>Please enter a tip %</Dialog.Description>
-                <Dialog.Input
-                  lable="test"
-                  onChangeText={this.handleTipChange}
-                />
-                <Dialog.Button label="Cancel" onPress={this.handleCancel} />
-                <Dialog.Button
-                  label="Enter"
-                  onPress={async () => {
-                    await this.handleSubmitTip();
-                    this.props.navigation.navigate('Home');
-                  }}
-                />
-              </Dialog.Container>
-
               <Row style={styles.tableHeader}>
                 <Col style={styles.quantity}>
                   <Text>QTY</Text>
@@ -189,23 +200,53 @@ export class LineItemsConfirmedScreen extends React.Component {
               <Row style={styles.lastRow} />
             </Grid>
           </Content>
+          <Footer style={styles.footer}>
+            <Grid>
+              <Row style={styles.tiptax}>
+                <Col style={styles.tipText}>
+                  <Text style={styles.inputText}>TIP</Text>
+                </Col>
+                <Col style={styles.blankCol} />
+                <Col style={styles.tipAmount}>
+                  <Item style={styles.formInput}>
+                    <Input
+                      style={styles.inputText}
+                      keyboardType="phone-pad"
+                      returnKeyType="done"
+                      name="name"
+                      placeholder="0%"
+                      value={this.state.tipPercent}
+                      onChangeText={this.handleChange('tipPercent')}
+                    />
+                  </Item>
+                </Col>
+              </Row>
+              <Row style={styles.tiptax}>
+                <Col style={styles.tipText}>
+                  <Text style={styles.inputText}>TAX</Text>
+                </Col>
+                <Col style={styles.blankCol} />
+                <Col style={styles.tipAmount}>
+                  <Item style={styles.formInput}>
+                    <Input
+                      style={styles.inputText}
+                      keyboardType="phone-pad"
+                      returnKeyType="done"
+                      name="name"
+                      placeholder="0%"
+                      value={this.state.taxPercent}
+                      onChangeText={this.handleChange('taxPercent')}
+                    />
+                  </Item>
+                </Col>
+              </Row>
+            </Grid>
+          </Footer>
           <Footer style={styles.avatarFooter}>
             <EventMembers
               members={this.state.eventMemberProfiles}
               display={true}
             />
-          </Footer>
-          <Footer style={styles.footer}>
-            <Button
-              success
-              block
-              style={styles.button}
-              onPress={() => {
-                this.handleSaveReceipt();
-              }}
-            >
-              <Text style={styles.buttonText}> SAVE RECEIPT </Text>
-            </Button>
           </Footer>
         </Container>
       );
