@@ -86,7 +86,7 @@ class SignUpScreen extends React.Component {
     }
 
     let token = await Notifications.getExpoPushTokenAsync();
-    firebase.database().ref('users').child(userId).update({expoToken: token})
+    firebase.database().ref('users').child(userId).update({ expoToken: token })
   }
 
   signUpUser = (email, password) => {
@@ -154,53 +154,65 @@ class SignUpScreen extends React.Component {
             <Item floatingLabel>
               <Label>Username</Label>
               <Input
-                id="one"
                 blurOnSubmit={false}
                 autoCorrect={false}
                 autoCapitalize="none"
                 value={this.state.username}
                 onChangeText={username => this.setState({ username })}
-                
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  this.firstNameRef._root.focus();
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>First Name</Label>
               <Input
-                id="two"
                 blurOnSubmit={false}
                 value={this.state.firstName}
                 autoCorrect={false}
                 onChangeText={firstName => this.setState({ firstName })}
+                returnKeyType="next"
+                getRef={input => { this.firstNameRef = input }}
+                onSubmitEditing={() => {
+                  this.lastNameRef._root.focus();
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>Last Name</Label>
               <Input
-                id="three"
                 blurOnSubmit={false}
                 value={this.state.lastName}
                 autoCorrect={false}
                 onChangeText={lastName => this.setState({ lastName })}
+                returnKeyType="next"
+                getRef={input => { this.lastNameRef = input }}
+                onSubmitEditing={() => {
+                  this.emailRef._root.focus();
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>Email</Label>
               <Input
-                id="four"
                 blurOnSubmit={false}
                 keyboardType="email-address"
                 value={this.state.email}
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={email => this.setState({ email })}
+                returnKeyType="next"
+                getRef={input => { this.emailRef = input }}
+                onSubmitEditing={() => {
+                  this.phoneRef._root.focus();
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>Phone</Label>
               <Input
-                id="five"
                 blurOnSubmit={false}
-                returnKeyType="done"
                 keyboardType="phone-pad"
                 maxLength={11}
                 dataDetectorTypes="phoneNumber"
@@ -208,18 +220,23 @@ class SignUpScreen extends React.Component {
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={phone => this.setState({ phone })}
+                returnKeyType="done"
+                getRef={input => { this.phoneRef = input }}
+                onSubmitEditing={() => {
+                  this.passwordRef._root.focus();
+                }}
               />
             </Item>
             <Item floatingLabel>
               <Label>Password</Label>
               <Input
-                id="six"
-                blurOnSubmit={false}
                 value={this.state.password}
                 secureTextEntry={true}
                 autoCapitalize="none"
                 autoCorrect={false}
+                getRef={input => { this.passwordRef = input }}
                 onChangeText={password => this.setState({ password })}
+                returnKeyType="done"
               />
             </Item>
             <Button
