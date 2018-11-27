@@ -126,7 +126,7 @@ class AllEvents extends React.Component {
 
         return (
             <Container>
-                <MyHeader title={status ? "Events" : "Order History"} right={() => <BackButton />} />
+                <MyHeader title={status ? 'Events' : 'Order History'} right={() => <BackButton />} />
                     <ScrollView>
                         <List>
                             {status ?
