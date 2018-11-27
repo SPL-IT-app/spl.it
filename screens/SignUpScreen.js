@@ -67,7 +67,7 @@ class SignUpScreen extends React.Component {
       phone: '',
       password: '',
       username: '',
-    };
+    }
   }
 
   registerForPushNotificationsAsync = async (userId) => {
@@ -135,7 +135,7 @@ class SignUpScreen extends React.Component {
     } catch (err) {
       console.error(err);
     }
-  };
+  }
 
   render() {
     return (
@@ -154,15 +154,20 @@ class SignUpScreen extends React.Component {
             <Item floatingLabel>
               <Label>Username</Label>
               <Input
+                id="one"
+                blurOnSubmit={false}
                 autoCorrect={false}
                 autoCapitalize="none"
                 value={this.state.username}
                 onChangeText={username => this.setState({ username })}
+                
               />
             </Item>
             <Item floatingLabel>
               <Label>First Name</Label>
               <Input
+                id="two"
+                blurOnSubmit={false}
                 value={this.state.firstName}
                 autoCorrect={false}
                 onChangeText={firstName => this.setState({ firstName })}
@@ -171,6 +176,8 @@ class SignUpScreen extends React.Component {
             <Item floatingLabel>
               <Label>Last Name</Label>
               <Input
+                id="three"
+                blurOnSubmit={false}
                 value={this.state.lastName}
                 autoCorrect={false}
                 onChangeText={lastName => this.setState({ lastName })}
@@ -179,6 +186,8 @@ class SignUpScreen extends React.Component {
             <Item floatingLabel>
               <Label>Email</Label>
               <Input
+                id="four"
+                blurOnSubmit={false}
                 keyboardType="email-address"
                 value={this.state.email}
                 autoCorrect={false}
@@ -189,6 +198,8 @@ class SignUpScreen extends React.Component {
             <Item floatingLabel>
               <Label>Phone</Label>
               <Input
+                id="five"
+                blurOnSubmit={false}
                 returnKeyType="done"
                 keyboardType="phone-pad"
                 maxLength={11}
@@ -202,6 +213,8 @@ class SignUpScreen extends React.Component {
             <Item floatingLabel>
               <Label>Password</Label>
               <Input
+                id="six"
+                blurOnSubmit={false}
                 value={this.state.password}
                 secureTextEntry={true}
                 autoCapitalize="none"

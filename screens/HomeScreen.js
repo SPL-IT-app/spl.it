@@ -95,32 +95,31 @@ export class HomeScreen extends React.Component {
 
     return (
       <Container>
-        <MyHeader title="Events" />
         {this.state.isLoading ? (
           <LoadingScreen />
         ) : events ? (
-          <AllEvents />
+          <AllEvents status={true} />
         ) : (
-          <Content contentContainerStyle={styles.content}>
-            <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
-            <Text style={styles.subText}>Create a New Event...</Text>
-            <Button
-              rounded
-              success
-              onPress={async () => {
-                await this.props.setEvent('');
-                this.props.navigation.navigate('Camera');
-              }}
-              style={styles.cameraButton}
-            >
-              <Icon
-                type="MaterialCommunityIcons"
-                name="camera"
-                style={styles.icon}
-              />
-            </Button>
-          </Content>
-        )}
+              <Content contentContainerStyle={styles.content}>
+                <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
+                <Text style={styles.subText}>Create a New Event...</Text>
+                <Button
+                  rounded
+                  success
+                  onPress={async () => {
+                    await this.props.setEvent('');
+                    this.props.navigation.navigate('Camera');
+                  }}
+                  style={styles.cameraButton}
+                >
+                  <Icon
+                    type="MaterialCommunityIcons"
+                    name="camera"
+                    style={styles.icon}
+                  />
+                </Button>
+              </Content>
+            )}
       </Container>
     );
   }
