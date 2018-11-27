@@ -91,10 +91,17 @@ class SignUpScreen extends React.Component {
   }
 
   signUpUser = (email, password) => {
-    const { getUser } = this.props;
+    const { getUser } = this.props
+    const regEmail = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/g
     try {
       if (this.state.password.length < 6) {
         Alert.alert('Error', 'Please enter at least 6 characters');
+        return;
+      } else if (!regEmail.test(this.state.email)) {
+        Alert.alert('Error', 'Please enter a valid email address');
+        return;
+      } else if (this.state.email === '' || this.state.password === '') {
+        Alert.alert('Error', 'Email or password is empty');
         return;
       } else {
         firebase
