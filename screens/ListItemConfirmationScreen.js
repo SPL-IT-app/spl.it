@@ -3,15 +3,11 @@ import { StyleSheet, Text } from 'react-native';
 import { Container, Content, Button, Icon, Footer } from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
-import {
-  LoadingScreen,
-  LineItems,
-  MyHeader,
-  BackButton,
-} from '../components';
+import { LoadingScreen, LineItems, MyHeader, BackButton } from '../components';
 import { addLineItem, setEvent } from '../store';
 const { makeRef } = require('../server/firebaseconfig');
 import Dialog from 'react-native-dialog';
+import { Status } from '../screens';
 
 const styles = StyleSheet.create({
   tableHeader: {
@@ -58,8 +54,8 @@ const styles = StyleSheet.create({
   footer: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
-    paddingBottom: 15
-  }
+    paddingBottom: 15,
+  },
 });
 
 export class ListItemConfirmationScreen extends React.Component {
@@ -69,7 +65,17 @@ export class ListItemConfirmationScreen extends React.Component {
       dialogVisible: false,
       eventName: '',
       receiptRef: '',
+      eventStatus: true,
     };
+  }
+
+  componentDidMount() {
+    this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
+      'value',
+      snapshot => {
+        this.setState({ eventStatus: snapshot.val() });
+      }
+    );
   }
 
   static navigationOptions = {
@@ -161,76 +167,83 @@ export class ListItemConfirmationScreen extends React.Component {
   };
 
   render() {
-    const { receipt } = this.props;
-    return receipt.length ? (
-      <Container>
-        <MyHeader
-          title="Confirmation"
-          right={() => <BackButton navigation={this.props.navigation} />}
-        />
-        <Content style={styles.content}>
-          <Grid style={styles.grid}>
-            <Dialog.Container visible={this.state.dialogVisible}>
-              <Dialog.Title>Event Name</Dialog.Title>
-              <Dialog.Description>
-                Please enter a name for your event
-              </Dialog.Description>
-              <Dialog.Input lable="test" onChangeText={this.handleEventName} />
-              <Dialog.Button label="Cancel" onPress={this.handleCancel} />
-              <Dialog.Button
-                label="Enter"
-                onPress={async () => {
-                  await this.handleSubmitEventName();
-                  this.props.navigation.navigate('Confirmed', {
-                    receiptRef: this.state.receiptRef,
-                  });
-                }}
-              />
-            </Dialog.Container>
+    if (this.state.eventStatus) {
+      const { receipt } = this.props;
+      return receipt.length ? (
+        <Container>
+          <MyHeader
+            title="Confirmation"
+            right={() => <BackButton navigation={this.props.navigation} />}
+          />
+          <Content style={styles.content}>
+            <Grid style={styles.grid}>
+              <Dialog.Container visible={this.state.dialogVisible}>
+                <Dialog.Title>Event Name</Dialog.Title>
+                <Dialog.Description>
+                  Please enter a name for your event
+                </Dialog.Description>
+                <Dialog.Input
+                  lable="test"
+                  onChangeText={this.handleEventName}
+                />
+                <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+                <Dialog.Button
+                  label="Enter"
+                  onPress={async () => {
+                    await this.handleSubmitEventName();
+                    this.props.navigation.navigate('Confirmed', {
+                      receiptRef: this.state.receiptRef,
+                    });
+                  }}
+                />
+              </Dialog.Container>
 
-            <Row style={styles.tableHeader}>
-              <Col style={styles.quantity}>
-                <Text>QTY</Text>
-              </Col>
-              <Col style={styles.description}>
-                <Text>DESCRIPTION</Text>
-              </Col>
-              <Col style={styles.price}>
-                <Text>PRICE</Text>
-              </Col>
-            </Row>
-            {receipt.map((lineItem, idx) => {
-              return <LineItems key={idx} lineItem={lineItem} idx={idx} />;
-            })}
+              <Row style={styles.tableHeader}>
+                <Col style={styles.quantity}>
+                  <Text>QTY</Text>
+                </Col>
+                <Col style={styles.description}>
+                  <Text>DESCRIPTION</Text>
+                </Col>
+                <Col style={styles.price}>
+                  <Text>PRICE</Text>
+                </Col>
+              </Row>
+              {receipt.map((lineItem, idx) => {
+                return <LineItems key={idx} lineItem={lineItem} idx={idx} />;
+              })}
+              <Button
+                style={styles.addItemButton}
+                onPress={() => {
+                  this.props.addLineItem();
+                }}
+              >
+                <Icon
+                  style={{ color: 'black' }}
+                  type="MaterialCommunityIcons"
+                  name="plus"
+                />
+              </Button>
+              {/* <Row style={styles.lastRow} /> */}
+            </Grid>
+          </Content>
+          <Footer style={styles.footer}>
             <Button
-              style={styles.addItemButton}
-              onPress={() => {
-                this.props.addLineItem();
-              }}
+              success
+              block
+              style={styles.confirmItemsButton}
+              onPress={this.handleConfirmItems}
             >
-              <Icon
-                style={{ color: 'black' }}
-                type="MaterialCommunityIcons"
-                name="plus"
-              />
+              <Text style={styles.buttonText}> CONFIRM ITEMS </Text>
             </Button>
-            {/* <Row style={styles.lastRow} /> */}
-          </Grid>
-        </Content>
-        <Footer style={styles.footer}>
-          <Button
-            success
-            block
-            style={styles.confirmItemsButton}
-            onPress={this.handleConfirmItems}
-          >
-            <Text style={styles.buttonText}> CONFIRM ITEMS </Text>
-          </Button>
-        </Footer>
-      </Container>
-    ) : (
-      <LoadingScreen />
-    );
+          </Footer>
+        </Container>
+      ) : (
+        <LoadingScreen />
+      );
+    } else {
+      return <Status />;
+    }
   }
 }
 

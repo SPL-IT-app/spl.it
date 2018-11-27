@@ -10,7 +10,7 @@ import {
   BackButton,
   MyHeader,
 } from '../components';
-
+import { Status } from '../screens';
 
 const styles = StyleSheet.create({
   content: {
@@ -24,15 +24,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '200',
     letterSpacing: 3,
-  }
+  },
 });
 
 export class AddMemberToEventScreen extends Component {
   constructor() {
     super();
     this.state = {
-      eventMemberProfiles: [],
-      friendProfiles: []
+      friendProfiles: [],
+      eventStatus: true,
     };
   }
 
@@ -58,6 +58,12 @@ export class AddMemberToEventScreen extends Component {
         this.setState({ friendProfiles: newArr });
       });
     });
+    this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
+      'value',
+      snapshot => {
+        this.setState({ eventStatus: snapshot.val() });
+      }
+    );
   }
 
   componentWillUnmount() {
@@ -66,28 +72,31 @@ export class AddMemberToEventScreen extends Component {
   }
 
   render() {
-    console.log('state====> ', this.state);
-    if (!this.state.friendProfiles) {
-      return <Text>You don't have any friends!</Text>;
+    if (this.state.eventStatus) {
+      if (!this.state.friendProfiles) {
+        return <Text>You don't have any friends!</Text>;
+      }
+      return (
+        <Container>
+          <MyHeader title="Add Members" right={() => <BackButton />} />
+          <Content contentContainerStyle={styles.content}>
+            <Container>
+              <EventMembers />
+            </Container>
+            <List>
+              <ListItem>
+                <Text style={styles.friendText}>FRIENDS</Text>
+              </ListItem>
+            </List>
+            <ScrollView style={styles.eventFriends}>
+              <EventFriends friends={this.state.friendProfiles} />
+            </ScrollView>
+          </Content>
+        </Container>
+      );
+    } else {
+      return <Status />;
     }
-    return (
-      <Container>
-        <MyHeader title="Add Members" right={() => <BackButton />} />
-        <Content contentContainerStyle={styles.content}>
-          <Container>
-            <EventMembers />
-          </Container>
-          <List>
-            <ListItem>
-              <Text style={styles.friendText}>FRIENDS</Text>
-            </ListItem>
-          </List>
-          <ScrollView style={styles.eventFriends}>
-            <EventFriends friends={this.state.friendProfiles} />
-          </ScrollView>
-        </Content>
-      </Container>
-    );
   }
 }
 
@@ -106,5 +115,3 @@ export default connect(
   mapState,
   mapDispatch
 )(AddMemberToEventScreen);
-
-
