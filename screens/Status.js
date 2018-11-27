@@ -241,11 +241,11 @@ class Status extends Component {
 
         {!this.props.navigation.getParam('history')
                 &&
+          this.state.event.status &&
             <Footer style={styles.footer}>
                 <Button
                     danger={this.isReadyToClose() && this.state.event.status}
                     disabled={!this.isReadyToClose()}
-                    success={!this.state.event.status}
                     block
                     style={styles.button}
                     onPress={this.closeEvent}
@@ -255,13 +255,7 @@ class Status extends Component {
                         name='close-circle'
                         style={styles.icon}
                     />
-                    {this.state.event.status
-                        ?
-                        <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
-                        :
-                        <Text style={styles.buttonText}>CLOSED</Text>
-                    }
-
+                    <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
                 </Button>
             </Footer>
         }
