@@ -140,7 +140,7 @@ class Status extends Component {
             <ListItem>
                 <Text>TEST</Text>
             </ListItem>
-            {true && Object.entries(moneyToSend).map(entry => (
+            {Object.entries(moneyToSend).map(entry => (
               <ListItem>
                 <Left>
                   <Thumbnail
@@ -160,10 +160,50 @@ class Status extends Component {
                     <Text>{members[entry[0]].username}</Text>
                 </Body>
                 <Right>
-                    <Text>{entry[1]}</Text>
+                    <Text style={{color: 'yellow'}} >$ {entry[1]}</Text>
                 </Right>
               </ListItem>
             ))}
+            {Object.entries(moneyToReceive).map(entry => {
+                if(entry[0] === 'unassigned'){
+                    return (
+                        <ListItem>
+                            <Left>
+                                <Text>Unassigned Amount:</Text>
+                            </Left>
+                            <Body />
+                            <Right>
+                                <Text style={{color: 'red'}}>$ {entry[1]}</Text>
+                            </Right>
+                        </ListItem>
+                    )
+                }
+
+                return (
+                    <ListItem>
+                        <Left>
+                            <Thumbnail
+                                source={{ uri: members[entry[0]].imageUrl }}
+                                style={{
+                                borderWidth: 4,
+                                borderColor: members[entry[0]].color
+                                    ? members[entry[0]].color
+                                    : randomColor({
+                                        luminosity: "light",
+                                        hue: "random"
+                                    }).toString()
+                                }}
+                            />
+                        </Left>
+                        <Body>
+                            <Text>{members[entry[0]].username}</Text>
+                        </Body>
+                        <Right>
+                            <Text style={{color:'green'}}>$ {entry[1]}</Text>
+                        </Right>
+                    </ListItem>
+                )
+            })}
           </List>
         </Content>
       </Container>
