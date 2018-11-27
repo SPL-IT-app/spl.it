@@ -167,10 +167,6 @@ class Status extends Component {
 
   render() {
 
-    if(!this.props.navigation.getParam('history') && !this.state.event.status){
-        this.props.navigation.goBack = this.props.navigation.navigate('Home')
-    }
-
     this.calculateUserOwes();
     if (Object.keys(this.state.members).length < this.state.memberCount) {
       return <LoadingScreen />;
@@ -265,7 +261,7 @@ class Status extends Component {
           this.state.event.status &&
             <Footer style={styles.footer}>
                 <Button
-                    danger={this.isReadyToClose() && this.state.event.status}
+                    danger={this.isReadyToClose()}
                     disabled={!this.isReadyToClose()}
                     block
                     style={styles.button}
