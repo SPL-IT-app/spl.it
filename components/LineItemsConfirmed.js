@@ -116,30 +116,28 @@ class LineItemsConfirmed extends React.Component {
               this.state.colors.length < 2 ? this.state.colors[0] : null,
           }}
         >
-          <Swipeable>
-            <Col style={styles.quantity}>
-              <Item type="number" style={styles.input}>
-                <Text>1</Text>
-              </Item>
-            </Col>
-            <Col style={styles.description}>
-              <Item
-                style={styles.input}
-                onPress={() => {
-                  this.handlePress();
-                }}
-              >
-                <Text style={styles.text}>{this.state.lineItem.name}</Text>
-              </Item>
-            </Col>
-            <Col style={styles.price}>
-              <Item type="number" style={styles.input}>
-                <Text>
-                  {numeral(this.state.lineItem.price).format('$0,0.00')}
-                </Text>
-              </Item>
-            </Col>
-          </Swipeable>
+          <Col style={styles.quantity}>
+            <Item type="number" style={styles.input}>
+              <Text>1</Text>
+            </Item>
+          </Col>
+          <Col style={styles.description}>
+            <Item
+              style={styles.input}
+              onPress={() => {
+                this.handlePress();
+              }}
+            >
+              <Text style={styles.text}>{this.state.lineItem.name}</Text>
+            </Item>
+          </Col>
+          <Col style={styles.price}>
+            <Item type="number" style={styles.input}>
+              <Text>
+                {numeral(this.state.lineItem.price).format('$0,0.00')}
+              </Text>
+            </Item>
+          </Col>
         </Row>
       </LinearGradient>
     );
