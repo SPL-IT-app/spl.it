@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Container,
   Content,
@@ -8,11 +8,25 @@ import {
   Left,
   Body,
   Right,
-  Thumbnail
-} from "native-base";
-import { MyHeader, BackButton, CameraProcessing } from "../components";
-import { makeRef } from "../server/firebaseconfig";
-import { connect } from "react-redux";
+  Thumbnail,
+} from 'native-base';
+import { StyleSheet } from 'react-native';
+import { MyHeader, BackButton, LoadingScreen } from '../components';
+import { makeRef } from '../server/firebaseconfig';
+import { connect } from 'react-redux';
+import numeral from 'numeral';
+
+const styles = StyleSheet.create({
+  lineItemRow: {
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
+  price: {
+    // width: '25%',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+});
 
 class Status extends Component {
   constructor() {
@@ -20,34 +34,38 @@ class Status extends Component {
     this.state = {
       members: {},
       event: {},
-      memberCount: Infinity
+      memberCount: Infinity,
     };
+
+    this.calculatePrice = this.calculatePrice.bind(this);
+    this.calculateUserOwes = this.calculateUserOwes.bind(this);
   }
 
   componentDidMount() {
     this.eventRef = makeRef(
-      `events/${this.props.navigation.getParam("eventId")}`
+      `events/${this.props.navigation.getParam('eventId')}`
     );
-    this.eventRef.on("value", snapshot => {
+    this.eventRef.on('value', snapshot => {
       this.setState({ event: snapshot.val() });
     });
+
     this.membersRef = makeRef(
-      `events/${this.props.navigation.getParam("eventId")}/members`
+      `events/${this.props.navigation.getParam('eventId')}/members`
     );
-    this.membersRef.once("value", snapshot => {
+    this.membersRef.on('value', snapshot => {
       this.setState({ memberCount: Object.keys(snapshot.val()).length });
     });
-    this.membersRef.on("child_added", snapshot => {
-      makeRef(`profiles/${snapshot.key}`).once("value", snapshot => {
+    this.membersRef.on('child_added', snapshot => {
+      makeRef(`profiles/${snapshot.key}`).once('value', profSnap => {
         this.setState({
-          members: { ...this.state.members, [snapshot.key]: snapshot.val() }
+          members: { ...this.state.members, [profSnap.key]: profSnap.val() },
         });
       });
     });
-    this.membersRef.on("child_removed", snapshot => {
-      makeRef(`profiles/${snapshot.key}`).once("value", snapshot => {
+    this.membersRef.on('child_removed', snapshot => {
+      makeRef(`profiles/${snapshot.key}`).once('value', profSnap => {
         let newMembers = { ...this.state.members };
-        delete newMembers[snapshot.key];
+        delete newMembers[profSnap.key];
         this.setState({ members: newMembers });
       });
     });
@@ -58,102 +76,99 @@ class Status extends Component {
     this.membersRef.off();
   }
 
-  render() {
+  calculatePrice(price, count, tipPercent = 15) {
+    return (price / count) * (1 + tipPercent / 100 + 0.1025);
+  }
 
-    const moneyToSendOrReceive = { unassigned: 0 };
-
-    const calculatePrice = (price, count, tipPercent = 15) => {
-      return (price / count) * (1 + tipPercent / 100 + 0.1025);
-    };
-
+  calculateUserOwes() {
+    this.moneyToSendOrReceive = { unassigned: 0 };
     for (let key in this.state.event.receipts) {
       let receipt = this.state.event.receipts[key];
       const creator = receipt.creator;
       const lineItems = Object.values(receipt).filter(
-        value => typeof value === "object"
+        value => typeof value === 'object'
       );
       const isCreator = creator === this.props.id;
-      for (let i = 0; i < lineItems.length; i++) {
+      lineItems.forEach(item => {
         if (
           !isCreator &&
-          lineItems[i].users &&
-          lineItems[i].users.hasOwnProperty(this.props.id)
+          item.users &&
+          item.users.hasOwnProperty(this.props.id)
         ) {
-          const countUsers = Object.keys(lineItems[i].users).length;
-          if (moneyToSendOrReceive.hasOwnProperty(creator)) {
-            moneyToSendOrReceive[creator] += calculatePrice(
-              lineItems[i].price,
-              countUsers,
-              receipt.tipPercent
-            );
-          } else {
-            moneyToSendOrReceive[creator] = calculatePrice(
-              lineItems[i].price,
-              countUsers,
-              receipt.tipPercent
-            );
-          }
+          // if you are assigned to an item on a receipt you didn't pay for
+          const countUsers = Object.keys(item.users).length;
+          // get the total count of ppl you're splitting with
+          const lineItemTotal = this.calculatePrice(
+            item.price,
+            countUsers,
+            receipt.tipPercent
+          ); // each user's owes
+          this.moneyToSendOrReceive.hasOwnProperty(creator)
+            ? (this.moneyToSendOrReceive[creator] += lineItemTotal) // add to your tab with the user who footed the bill
+            : (this.moneyToSendOrReceive[creator] = lineItemTotal); // start your tab
         }
-
         if (isCreator) {
-          if (lineItems[i].users) {
-            const countUsers = Object.keys(lineItems[i].users).length;
-            for (let userKey in lineItems[i].users) {
-              if (userKey === this.props.id) continue;
-              if (moneyToSendOrReceive.hasOwnProperty(userKey)) {
-                moneyToSendOrReceive[userKey] -= calculatePrice(
-                  lineItems[i].price,
-                  countUsers,
-                  receipt.tipPercent
-                );
-              } else {
-                moneyToSendOrReceive[userKey] =
-                  -1 *
-                  calculatePrice(
-                    lineItems[i].price,
-                    countUsers,
-                    receipt.tipPercent
-                  );
-              }
+          //if you footed the bill
+          if (item.users) {
+            //if the lineitem has at least one user
+            const countUsers = Object.keys(item.users).length; // get the count of users
+            for (let userKey in item.users) {
+              if (userKey === this.props.id) continue; // don't owe yourself anything
+              const userLineItemTotal = this.calculatePrice(
+                item.price,
+                countUsers,
+                receipt.tipPercent
+              ); // each user's owes
+              this.moneyToSendOrReceive.hasOwnProperty(userKey)
+                ? (this.moneyToSendOrReceive[userKey] -= userLineItemTotal) // discount what they already owe
+                : (this.moneyToSendOrReceive[userKey] = -userLineItemTotal); // open a tab for them
             }
           } else {
-            moneyToSendOrReceive.unassigned += calculatePrice(
-              lineItems[i].price,
+            // if no one has taken responsibility
+            lineItemTotal = this.calculatePrice(
+              item.price,
               1,
               receipt.tipPercent
             );
+            this.moneyToSendOrReceive.unassigned += lineItemTotal;
           }
         }
-      }
+      });
     }
+  }
 
+  render() {
+    this.calculateUserOwes();
     if (Object.keys(this.state.members).length < this.state.memberCount) {
-      return <CameraProcessing />;
+      return <LoadingScreen />;
     }
     const members = this.state.members;
-
     return (
       <Container>
         <MyHeader title="Status" right={() => <BackButton />} />
         <Content>
           <List>
-            {Object.entries(moneyToSendOrReceive).map(entry => {
-              if (entry[0] === "unassigned") {
-                if(!entry[1]) return
+            {Object.entries(this.moneyToSendOrReceive).map(entry => {
+              if (entry[0] === 'unassigned') {
+                if (!entry[1]) return;
                 return (
-                  <ListItem>
+                  <ListItem style={styles.lineItemRow} avatar key={entry[0]}>
                     <Left>
-                      <Text>Unassigned Amount:</Text>
+                      <Thumbnail source={{ uri: 'https://bit.ly/2PWwduR' }} />
                     </Left>
-                    <Body />
-                    <Right>
-                      <Text style={{ color: "red" }}>$ {entry[1]}</Text>
+                    <Body>
+                      <Text>Unassigned</Text>
+                    </Body>
+                    <Right style={styles.price}>
+                      <Text style={{ color: 'orange' }}>
+                        {numeral(entry[1]).format('$0,0.00')}
+                      </Text>
                     </Right>
                   </ListItem>
                 );
               } else {
                 return (
-                  <ListItem>
+                  <ListItem avatar style={styles.lineItemRow} key={entry[0]}>
                     <Left>
                       <Thumbnail
                         source={{ uri: members[entry[0]].imageUrl }}
@@ -162,65 +177,23 @@ class Status extends Component {
                           borderColor: members[entry[0]].color
                             ? members[entry[0]].color
                             : randomColor({
-                                luminosity: "light",
-                                hue: "random"
-                              }).toString()
+                                luminosity: 'light',
+                                hue: 'random',
+                              }).toString(),
                         }}
                       />
                     </Left>
                     <Body>
                       <Text>{members[entry[0]].username}</Text>
                     </Body>
-                    <Right>
-                      <Text
-                        style={{ color: entry[1] > 0 ? "orange" : "green" }}
-                      >
-                        $ {entry[1]}
+                    <Right style={styles.price}>
+                      <Text style={{ color: entry[1] > 0 ? 'red' : 'green' }}>
+                        {numeral(Math.abs(entry[1])).format('$0,0.00')}
                       </Text>
                     </Right>
                   </ListItem>
                 );
               }
-            })}
-            {false && Object.entries(moneyToReceive).map(entry => {
-              if (entry[0] === "unassigned") {
-                return (
-                  <ListItem>
-                    <Left>
-                      <Text>Unassigned Amount:</Text>
-                    </Left>
-                    <Body />
-                    <Right>
-                      <Text style={{ color: "red" }}>$ {entry[1]}</Text>
-                    </Right>
-                  </ListItem>
-                );
-              }
-
-              return (
-                <ListItem>
-                  <Left>
-                    <Thumbnail
-                      source={{ uri: members[entry[0]].imageUrl }}
-                      style={{
-                        borderWidth: 4,
-                        borderColor: members[entry[0]].color
-                          ? members[entry[0]].color
-                          : randomColor({
-                              luminosity: "light",
-                              hue: "random"
-                            }).toString()
-                      }}
-                    />
-                  </Left>
-                  <Body>
-                    <Text>{members[entry[0]].username}</Text>
-                  </Body>
-                  <Right>
-                    <Text style={{ color: "green" }}>$ {entry[1]}</Text>
-                  </Right>
-                </ListItem>
-              );
             })}
           </List>
         </Content>
@@ -230,7 +203,7 @@ class Status extends Component {
 }
 
 const mapState = state => ({
-  id: state.user.currentUser.id
+  id: state.user.currentUser.id,
 });
 
 export default connect(mapState)(Status);
