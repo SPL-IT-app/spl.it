@@ -18,9 +18,9 @@ class Status extends Component {
   constructor() {
     super();
     this.state = {
-      receipts: [],
       members: {},
-      event: {}
+      event: {},
+      memberCount: Infinity
     };
   }
 
@@ -34,6 +34,9 @@ class Status extends Component {
     this.membersRef = makeRef(
       `events/${this.props.navigation.getParam("eventId")}/members`
     );
+    this.membersRef.once('value', snapshot => {
+        this.setState({memberCount: Object.keys(snapshot.val()).length})
+    })
     this.membersRef.on("child_added", snapshot => {
       makeRef(`profiles/${snapshot.key}`).once("value", snapshot => {
         this.setState({
@@ -124,16 +127,10 @@ class Status extends Component {
     }
     console.log("moneyToSend", moneyToSend);
     console.log("moneyToReceive", moneyToReceive);
-    // !this.state.event.title ||
-    if (!Object.keys(this.state.members).length ) {
+    if (Object.keys(this.state.members).length < this.state.memberCount) {
       return <CameraProcessing />;
     }
     const members = this.state.members
-    console.log('entries', Object.entries(moneyToSend))
-    console.log('members', members)
-    const member = members[Object.entries(moneyToSend)[0][0]]
-    console.log(member)
-    setTimeout(()=> {console.log(member.color)}, 1000)
 
     return (
       <Container>
@@ -143,7 +140,7 @@ class Status extends Component {
             <ListItem>
                 <Text>TEST</Text>
             </ListItem>
-            {false && Object.entries(moneyToSend).map(entry => (
+            {true && Object.entries(moneyToSend).map(entry => (
               <ListItem>
                 <Left>
                   <Thumbnail
