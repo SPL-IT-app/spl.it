@@ -14,11 +14,14 @@
   },
   "dependencies": {
     "@expo/samples": "2.1.1",
+    "assert": "^1.4.1",
     "axios": "^0.18.0",
     "dateformat": "^3.0.3",
     "expo": "^31.0.2",
+    "expo-server-sdk": "^3.0.1",
     "firebase": "^5.5.8",
     "native-base": "^2.8.1",
+    "node-libs-react-native": "^1.0.3",
     "numeral": "^2.0.6",
     "randomcolor": "^0.5.3",
     "react": "16.5.0",
@@ -32,7 +35,8 @@
     "react-redux": "^5.1.1",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0",

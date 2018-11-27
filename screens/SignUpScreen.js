@@ -10,6 +10,7 @@ import {
   Icon,
   Container,
 } from 'native-base';
+import { Permissions, Notifications } from 'expo'
 
 import { randomColor } from 'randomcolor';
 
@@ -69,6 +70,25 @@ class SignUpScreen extends React.Component {
     };
   }
 
+  registerForPushNotificationsAsync = async (userId) => {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
+
+    if (existingStatus !== 'granted') {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
+      return;
+    }
+
+    let token = await Notifications.getExpoPushTokenAsync();
+    firebase.database().ref('users').child(userId).update({expoToken: token})
+  }
+
   signUpUser = (email, password) => {
     const { getUser } = this.props;
     try {
@@ -92,6 +112,7 @@ class SignUpScreen extends React.Component {
                   email,
                 },
               });
+            this.registerForPushNotificationsAsync(user.user.uid)
             firebase
               .database()
               .ref('profiles')
