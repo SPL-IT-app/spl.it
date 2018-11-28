@@ -156,7 +156,9 @@ export class LineItemsConfirmedScreen extends React.Component {
       console.log('ITEM REMOVED');
       let newArr = this.state.receiptLineItems.slice();
       if (snapshot.hasChildren()) {
-        newArr.filter(item => item.id !== snapshot.key);
+        newArr = newArr.filter(item => {
+          return item.id !== snapshot.key;
+        });
       }
       this.setState({
         receiptLineItems: newArr,
