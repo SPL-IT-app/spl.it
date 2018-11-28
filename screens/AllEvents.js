@@ -188,11 +188,11 @@ class AllEvents extends React.Component {
     return (
       <Container>
         <MyHeader title={status ? 'Events' : 'History'} />
-        <ScrollView>
-          <List>
-            {status ? (
-              activeEvents.length ? (
-                activeEvents.map((event, idx) => {
+        {status ? (
+          activeEvents.length ? (
+            <ScrollView>
+              <List>
+                {activeEvents.map((event, idx) => {
                   const rightButtons = [
                     <TouchableHighlight
                       style={styles.deleteButton}
@@ -230,30 +230,34 @@ class AllEvents extends React.Component {
                       </ListItem>
                     </Swipeable>
                   );
-                })
-              ) : (
-                <Content contentContainerStyle={styles.content}>
-                  <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
-                  <Text style={styles.subText}>Create a New Event...</Text>
-                  <Button
-                    rounded
-                    success
-                    onPress={async () => {
-                      await this.props.setEvent('');
-                      this.props.navigation.navigate('Camera');
-                    }}
-                    style={styles.cameraButton}
-                  >
-                    <Icon
-                      type="MaterialCommunityIcons"
-                      name="camera"
-                      style={styles.icon}
-                    />
-                  </Button>
-                </Content>
-              )
-            ) : (
-              inactiveEvents.map((event, idx) => {
+                })}
+              </List>
+            </ScrollView>
+          ) : (
+            <Content contentContainerStyle={styles.content}>
+              <Text style={styles.mainText}>WELCOME BACK TO $PL/IT</Text>
+              <Text style={styles.subText}>Create a New Event...</Text>
+              <Button
+                rounded
+                success
+                onPress={async () => {
+                  await this.props.setEvent('');
+                  this.props.navigation.navigate('Camera');
+                }}
+                style={styles.cameraButton}
+              >
+                <Icon
+                  type="MaterialCommunityIcons"
+                  name="camera"
+                  style={styles.icon}
+                />
+              </Button>
+            </Content>
+          )
+        ) : (
+          <ScrollView>
+            <List>
+              {inactiveEvents.map((event, idx) => {
                 return (
                   <ListItem
                     selected
@@ -279,10 +283,10 @@ class AllEvents extends React.Component {
                     </Right>
                   </ListItem>
                 );
-              })
-            )}
-          </List>
-        </ScrollView>
+              })}
+            </List>
+          </ScrollView>
+        )}
         <Container>
           {status ? (
             <Fab
