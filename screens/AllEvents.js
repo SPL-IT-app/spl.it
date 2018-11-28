@@ -133,6 +133,7 @@ class AllEvents extends React.Component {
     });
   }
 
+
   handleRemoveEvent = eventId => {
     this.swipeable.recenter();
     const eventMembersRef = makeRef(`events/${eventId}/members`);

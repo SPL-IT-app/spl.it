@@ -40,12 +40,13 @@ export class EventMembers extends Component {
         eventName: snapshot.val(),
       });
     });
-    this.eventRef.on('value', snapshot => {
+    this.callback = snapshot => {
       const friendIds = snapshot.val() ? snapshot.val() : {};
       this.setState({
         addedFriends: Object.keys(friendIds),
       });
-    });
+    }
+    this.eventRef.on('value', this.callback);
   }
 
   sendPushNotification(token, title, body) {
@@ -92,7 +93,7 @@ export class EventMembers extends Component {
 
   componentWillUnmount() {
     this.eventNameRef.off();
-    this.eventRef.off();
+    this.eventRef.off('value', this.callback);
     this.usersFriendsRef.off()
   }
 
