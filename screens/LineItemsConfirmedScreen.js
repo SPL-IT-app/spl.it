@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
   footer: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
-    paddingBottom: 15,
     height: 'auto',
   },
   avatarFooter: {
