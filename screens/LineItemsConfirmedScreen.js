@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
-  inputText: {
+  amountText: {
     width: '100%',
-    textAlign: 'center',
+    textAlign: 'right',
   },
   tipText: {
     height: '100%',
@@ -78,7 +78,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
-    width: '25%',
+    width: '17%',
+    backgroundColor: '#eee',
+  },
+  percentSign: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'flex-start',
+    width: '8%',
     backgroundColor: '#eee',
   },
   buttonText: {
@@ -171,14 +179,6 @@ export class LineItemsConfirmedScreen extends React.Component {
     this.receiptRefUrl.off();
   };
 
-  handleChange = type => async event => {
-    console.log('TIP OR TAX CHANGED ====>', type, event);
-    await this.setState({
-      [type]: event,
-    });
-    this.receiptRefUrl.update({ tipPercent: Number(this.state.tipPercent) });
-  };
-
   checkStatus = () => {
     if (!this.state.eventStatus) {
       this.props.navigation.navigate('Status', { eventId: this.props.event });
@@ -219,47 +219,33 @@ export class LineItemsConfirmedScreen extends React.Component {
           </Grid>
         </Content>
         <Footer style={styles.footer}>
-          <Grid>
-            <Row style={styles.tiptax}>
-              <Col style={styles.tipText}>
-                <Text style={styles.inputText}>TIP</Text>
-              </Col>
-              <Col style={styles.blankCol} />
-              <Col style={styles.tipAmount}>
-                <Item style={styles.formInput}>
-                  <Input
-                    style={styles.inputText}
-                    keyboardType="phone-pad"
-                    returnKeyType="done"
-                    name="name"
-                    placeholder="0%"
-                    value={this.state.tipPercent}
-                    onChangeText={this.handleChange('tipPercent')}
-                  />
-                </Item>
-              </Col>
-            </Row>
-            <Row style={styles.tiptax}>
-              <Col style={styles.tipText}>
-                <Text style={styles.inputText}>TAX</Text>
-              </Col>
-              <Col style={styles.blankCol} />
-              <Col style={styles.tipAmount}>
-                <Item style={styles.formInput}>
-                  <Input
-                    style={styles.inputText}
-                    keyboardType="phone-pad"
-                    returnKeyType="done"
-                    name="name"
-                    placeholder="0%"
-                    value={this.state.taxPercent}
-                    onChangeText={this.handleChange('taxPercent')}
-                  />
-                </Item>
-              </Col>
-            </Row>
-          </Grid>
-        </Footer>
+            <Grid>
+              <Row style={styles.tiptax}>
+                <Col style={styles.tipText}>
+                  <Text style={styles.inputText}>TIP</Text>
+                </Col>
+                <Col style={styles.blankCol} />
+                <Col style={styles.tipAmount}>
+                  <Text style={styles.amountText}>{this.state.tipPercent}</Text>
+                </Col>
+                <Col style={styles.percentSign}>
+                  <Text>%</Text>
+                </Col>
+              </Row>
+              <Row style={styles.tiptax}>
+                <Col style={styles.tipText}>
+                  <Text style={styles.inputText}>TAX</Text>
+                </Col>
+                <Col style={styles.blankCol} />
+                <Col style={styles.tipAmount}>
+                  <Text style={styles.amountText}>{this.state.taxPercent}</Text>
+                </Col>
+                <Col style={styles.percentSign}>
+                  <Text>%</Text>
+                </Col>
+              </Row>
+            </Grid>
+          </Footer>
         <Footer style={styles.avatarFooter}>
           <EventMembers
             members={this.state.eventMemberProfiles}
