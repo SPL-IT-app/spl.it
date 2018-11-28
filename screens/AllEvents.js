@@ -134,6 +134,7 @@ class AllEvents extends React.Component {
   }
 
   handleRemoveEvent = eventId => {
+    this.swipeable.recenter();
     const eventMembersRef = makeRef(`events/${eventId}/members`);
     eventMembersRef.once('value', snapshot => {
       snapshot.forEach(childSnapshot => {
@@ -177,6 +178,8 @@ class AllEvents extends React.Component {
     }
   }
 
+  swipeable = null;
+
   render() {
     const { events } = this.state;
     const { status } = this.props;
@@ -205,7 +208,11 @@ class AllEvents extends React.Component {
                     </TouchableHighlight>,
                   ];
                   return (
-                    <Swipeable rightButtons={rightButtons} key={event.id}>
+                    <Swipeable
+                      onRef={ref => (this.swipeable = ref)}
+                      rightButtons={rightButtons}
+                      key={event.id}
+                    >
                       <ListItem
                         selected
                         button
