@@ -10,8 +10,6 @@ import {
   BackButton,
 } from '../components';
 const { makeRef } = require('../server/firebaseconfig');
-import Dialog from 'react-native-dialog';
-import { Status } from '../screens';
 
 const styles = StyleSheet.create({
   tableHeader: {
@@ -55,9 +53,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
-  inputText: {
+  amountText: {
     width: '100%',
-    textAlign: 'center',
+    textAlign: 'right',
   },
   tipText: {
     height: '100%',
@@ -80,7 +78,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
-    width: '25%',
+    width: '17%',
+    backgroundColor: '#eee',
+  },
+  percentSign: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'flex-start',
+    width: '8%',
     backgroundColor: '#eee',
   },
   buttonText: {
@@ -127,14 +133,37 @@ export class LineItemsConfirmedScreen extends React.Component {
 
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
-    let lineItems = {};
-    let tipPercent = 0
+    let newItem;
+
     this.receiptRefUrl.on('value', snapshot => {
-      tipPercent = snapshot.val().tipPercent
-      lineItems = snapshot.val();
-      this.setState({tipPercent: tipPercent.toString()})
+      this.setState({ tipPercent: snapshot.val().tipPercent });
     });
-    this.setState({ receiptLineItems: Object.entries(lineItems) });
+
+    this.receiptRefUrl.on('child_added', snapshot => {
+      const newArr = this.state.receiptLineItems.slice();
+      if (snapshot.hasChildren()) {
+        newItem = { id: snapshot.key, info: snapshot.val() };
+        newArr.push(newItem);
+        this.setState(prevState => ({
+          receiptLineItems: [
+            ...prevState.receiptLineItems,
+            { id: snapshot.key, info: snapshot.val() },
+          ],
+        }));
+      }
+    });
+
+    this.receiptRefUrl.on('child_removed', snapshot => {
+      let newArr = this.state.receiptLineItems.slice();
+      if (snapshot.hasChildren()) {
+        newArr = newArr.filter(item => {
+          return item.id !== snapshot.key;
+        });
+      }
+      this.setState({
+        receiptLineItems: newArr,
+      });
+    });
 
     if (this.props.event.length) {
       this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
@@ -150,14 +179,6 @@ export class LineItemsConfirmedScreen extends React.Component {
     this.receiptRefUrl.off();
   };
 
-  handleChange = type => async event => {
-    console.log('TIP OR TAX CHANGED ====>', type, event);
-    await this.setState({
-      [type]: event,
-    });
-    this.receiptRefUrl.update({ tipPercent: Number(this.state.tipPercent) });
-  };
-
   checkStatus = () => {
     if (!this.state.eventStatus) {
       this.props.navigation.navigate('Status', { eventId: this.props.event });
@@ -165,91 +186,74 @@ export class LineItemsConfirmedScreen extends React.Component {
   };
 
   render() {
-      this.checkStatus()
-      const receipt = this.state.receiptLineItems;
-      return (
-        <Container>
-          <MyHeader title="Assign Items" right={() => <BackButton />} />
+    this.checkStatus();
+    const receipt = this.state.receiptLineItems;
+    return (
+      <Container>
+        <MyHeader title="Assign Items" right={() => <BackButton />} />
 
-          <Content style={styles.content}>
-            <Grid>
-              <Row style={styles.tableHeader}>
-                <Col style={styles.quantity}>
-                  <Text>QTY</Text>
-                </Col>
-                <Col style={styles.description}>
-                  <Text>DESCRIPTION</Text>
-                </Col>
-                <Col style={styles.price}>
-                  <Text>PRICE</Text>
-                </Col>
-              </Row>
-              {receipt.map((lineItem, idx) => {
-                if (typeof lineItem[1] === 'object') {
-                  return (
-                    <LineItemsConfirmed
-                      key={idx}
-                      dataRef={this.receiptRef}
-                      id={lineItem[0]}
-                      lineItem={lineItem[1]}
-                      idx={idx}
-                    />
-                  );
-                }
-              })}
-              <Row style={styles.lastRow} />
-            </Grid>
-          </Content>
-          <Footer style={styles.footer}>
-            <Grid>
-              <Row style={styles.tiptax}>
-                <Col style={styles.tipText}>
-                  <Text style={styles.inputText}>TIP</Text>
-                </Col>
-                <Col style={styles.blankCol} />
-                <Col style={styles.tipAmount}>
-                  <Item style={styles.formInput}>
-                    <Input
-                      style={styles.inputText}
-                      keyboardType="phone-pad"
-                      returnKeyType="done"
-                      name="name"
-                      placeholder="0%"
-                      value={this.state.tipPercent}
-                      onChangeText={this.handleChange('tipPercent')}
-                    />
-                  </Item>
-                </Col>
-              </Row>
-              <Row style={styles.tiptax}>
-                <Col style={styles.tipText}>
-                  <Text style={styles.inputText}>TAX</Text>
-                </Col>
-                <Col style={styles.blankCol} />
-                <Col style={styles.tipAmount}>
-                  <Item style={styles.formInput}>
-                    <Input
-                      style={styles.inputText}
-                      keyboardType="phone-pad"
-                      returnKeyType="done"
-                      name="name"
-                      placeholder="0%"
-                      value={this.state.taxPercent}
-                      onChangeText={this.handleChange('taxPercent')}
-                    />
-                  </Item>
-                </Col>
-              </Row>
-            </Grid>
-          </Footer>
-          <Footer style={styles.avatarFooter}>
-            <EventMembers
-              members={this.state.eventMemberProfiles}
-              display={true}
-            />
-          </Footer>
-        </Container>
-      );
+        <Content style={styles.content}>
+          <Grid>
+            <Row style={styles.tableHeader}>
+              <Col style={styles.quantity}>
+                <Text>QTY</Text>
+              </Col>
+              <Col style={styles.description}>
+                <Text>DESCRIPTION</Text>
+              </Col>
+              <Col style={styles.price}>
+                <Text>PRICE</Text>
+              </Col>
+            </Row>
+            {receipt.map(lineItem => {
+              return (
+                <LineItemsConfirmed
+                  key={lineItem.id}
+                  dataRef={this.receiptRef}
+                  id={lineItem.id}
+                  lineItem={lineItem.info}
+                />
+              );
+            })}
+            <Row style={styles.lastRow} />
+          </Grid>
+        </Content>
+        <Footer style={styles.footer}>
+          <Grid>
+            <Row style={styles.tiptax}>
+              <Col style={styles.tipText}>
+                <Text style={styles.inputText}>TIP</Text>
+              </Col>
+              <Col style={styles.blankCol} />
+              <Col style={styles.tipAmount}>
+                <Text style={styles.amountText}>{this.state.tipPercent}</Text>
+              </Col>
+              <Col style={styles.percentSign}>
+                <Text>%</Text>
+              </Col>
+            </Row>
+            <Row style={styles.tiptax}>
+              <Col style={styles.tipText}>
+                <Text style={styles.inputText}>TAX</Text>
+              </Col>
+              <Col style={styles.blankCol} />
+              <Col style={styles.tipAmount}>
+                <Text style={styles.amountText}>{this.state.taxPercent}</Text>
+              </Col>
+              <Col style={styles.percentSign}>
+                <Text>%</Text>
+              </Col>
+            </Row>
+          </Grid>
+        </Footer>
+        <Footer style={styles.avatarFooter}>
+          <EventMembers
+            members={this.state.eventMemberProfiles}
+            display={true}
+          />
+        </Footer>
+      </Container>
+    );
   }
 }
 

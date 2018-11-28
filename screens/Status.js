@@ -10,9 +10,9 @@ import {
   Right,
   Thumbnail,
   Footer,
-  FooterTab,
   Button,
   Icon,
+  Separator,
   Toast
 } from 'native-base';
 import { StyleSheet } from 'react-native';
@@ -21,6 +21,56 @@ import { makeRef } from '../server/firebaseconfig';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
 
+const styles = StyleSheet.create({
+  buttonText: {
+    textAlign: 'center',
+    letterSpacing: 2,
+    color: 'white',
+  },
+  button: {
+    marginTop: 10,
+    marginBottom: 10,
+    width: '95%',
+    alignSelf: 'center',
+  },
+  footer: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    height: 'auto'
+  },
+  icon: {
+    margin: 0,
+    padding: 0,
+  },
+  lineItemRow: {
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
+  price: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  dividerText: {
+    letterSpacing: 2,
+    fontSize: 13,
+    color: 'white'
+  },
+  unassignedDivider: {
+    backgroundColor: '#FFC000',
+    height: 'auto'
+  },
+  userSplits: {
+    marginTop: 15,
+    backgroundColor: '#159192',
+    height: 'auto'
+
+  },
+  totalDivider: {
+    marginTop: 15,
+    height: 'auto',
+    backgroundColor: "#1A98FC",
+  },
+});
 
 class Status extends Component {
   constructor() {
@@ -42,7 +92,9 @@ class Status extends Component {
     }
     this.eventRef.on('value', this.callback );
 
-    this.membersRef = makeRef(`events/${this.props.navigation.getParam('eventId')}/members`);
+    this.membersRef = makeRef(
+      `events/${this.props.navigation.getParam('eventId')}/members`
+    );
     this.membersRef.on('value', snapshot => {
       this.setState({ memberCount: Object.keys(snapshot.val()).length });
     });
@@ -129,69 +181,121 @@ class Status extends Component {
   }
 
   calculateTotal = () => {
-      let copy = Object.assign(this.moneyToSendOrReceive, {unassigned: 0})
-      return Object.values(copy).reduce((a,b)=>a+b, 0)
-  }
+    let copy = Object.assign(this.moneyToSendOrReceive, { unassigned: 0 });
+    return Object.values(copy).reduce((a, b) => a + b, 0);
+  };
 
   isReadyToClose = () => {
-      for(let key in this.state.event.receipts){
-          let receipt = this.state.event.receipts[key]
-          let lineItems = Object.values(receipt).filter(value => typeof value === 'object')
-          for (let i = 0; i < lineItems.length; i++){
-              if(!lineItems[i].users) return false
-              else if(!Object.keys(lineItems[i].users)) return false
-          }
+    for (let key in this.state.event.receipts) {
+      let receipt = this.state.event.receipts[key];
+      let lineItems = Object.values(receipt).filter(
+        value => typeof value === 'object'
+      );
+      for (let i = 0; i < lineItems.length; i++) {
+        if (!lineItems[i].users) return false;
+        else if (!Object.keys(lineItems[i].users)) return false;
       }
-      return true
-  }
+    }
+    return true;
+  };
 
   closeEvent = () => {
-      this.eventRef.update({status: false}, (error) => {
-          if(!error){
-            Toast.show({
-                text: 'Event Closed!',
-                buttonText: 'UNDO',
-                type: 'success',
-                duration: 3000,
-                onClose: (reason) => {
-                    if(reason === 'user'){
-                        this.eventRef.update({status: true})}
-                    }
-            })
-          }
-      })
-  }
+    this.eventRef.update({ status: false }, error => {
+      if (!error) {
+        Toast.show({
+          text: 'Event Closed!',
+          buttonText: 'UNDO',
+          type: 'success',
+          duration: 3000,
+          onClose: reason => {
+            if (reason === 'user') {
+              this.eventRef.update({ status: true });
+            }
+          },
+        });
+      }
+    });
+  };
 
   render() {
-
     this.calculateUserOwes();
     if (Object.keys(this.state.members).length < this.state.memberCount) {
       return <LoadingScreen />;
     }
     const members = this.state.members;
     return (
-
       <Container>
-        <MyHeader title={this.props.navigation.getParam('history') ? 'History' : 'Status'} subtitle={this.state.event.title} right={() => <BackButton />} />
+        <MyHeader
+          title={
+            this.props.navigation.getParam('history') ? 'History' : 'Status'
+          }
+          subtitle={this.state.event.title}
+          right={() => <BackButton />}
+        />
         <Content>
           <List>
+
             {Object.entries(this.moneyToSendOrReceive).map(entry => {
               if (entry[0] === 'unassigned') {
-                if (!entry[1]) return;
-                return (
-                  <ListItem style={styles.lineItemRow} avatar key={entry[0]}>
-                    <Left>
-                      <Thumbnail source={{ uri: 'https://bit.ly/2PWwduR' }} />
-                    </Left>
-                    <Body>
-                      <Text>Unassigned</Text>
-                    </Body>
-                    <Right style={styles.price}>
-                      <Text style={{ color: 'orange' }}>
-                        {numeral(entry[1]).format('$0,0.00')}
+                if (!entry[1]) return(
+                  <React.Fragment>
+                    <Separator bordered style={styles.unassignedDivider}>
+                      <Text style={styles.dividerText}>
+                        NO UNASSIGNED LINE ITEMS
                       </Text>
-                    </Right>
-                  </ListItem>
+                    </Separator>
+                    <ListItem style={styles.lineItemRow} avatar key={entry[0]}>
+                      <Left>
+                        <Thumbnail
+                          source={{
+                            uri:
+                              'https://cdn3.iconfinder.com/data/icons/account-1/64/Account-06-512.png',
+                          }}
+                        />
+                      </Left>
+                      <Body>
+                        <Text>Unassigned</Text>
+                      </Body>
+                      <Right style={styles.price}>
+                        <Text style={{ color: 'orange' }}>
+                          {numeral(0).format('$0,0.00')}
+                        </Text>
+                      </Right>
+                    </ListItem>
+                    <Separator bordered style={styles.userSplits}>
+                      <Text style={styles.dividerText}>USER SPLITS</Text>
+                    </Separator>
+                  </React.Fragment>
+                );
+                return (
+                  <React.Fragment>
+                    <Separator bordered style={styles.unassignedDivider}>
+                      <Text style={styles.dividerText}>
+                        UNASSIGNED LINE ITEMS
+                      </Text>
+                    </Separator>
+                    <ListItem style={styles.lineItemRow} avatar key={entry[0]}>
+                      <Left>
+                        <Thumbnail
+                          source={{
+                            uri:
+                              'https://cdn3.iconfinder.com/data/icons/account-1/64/Account-06-512.png',
+                          }}
+                        />
+                      </Left>
+                      <Body>
+                        <Text>Unassigned</Text>
+                      </Body>
+                      <Right style={styles.price}>
+                        <Text style={{ color: 'orange' }}>
+                          {numeral(entry[1]).format('$0,0.00')}
+                        </Text>
+                      </Right>
+                    </ListItem>
+                    <Separator bordered style={styles.userSplits}>
+                      <Text style={styles.dividerText}>USER SPLITS</Text>
+                    </Separator>
+                  </React.Fragment>
                 );
               } else {
                 return (
@@ -222,93 +326,60 @@ class Status extends Component {
                 );
               }
             })}
-            <ListItem itemDivider last>
-                <Text>Your Total:</Text>
-            </ListItem>
-            <ListItem avatar style={styles.lineItemRow} >
-                <Left>
-                    <Thumbnail
-                            source={{ uri: members[this.props.id].imageUrl }}
-                            style={{
-                            borderWidth: 4,
-                            borderColor: members[this.props.id].color
-                                ? members[this.props.id].color
-                                : randomColor({
-                                    luminosity: 'light',
-                                    hue: 'random',
-                                }).toString(),
-                            }}
-                    />
-                </Left>
-                <Body>
-                    <Text>{members[this.props.id].username}</Text>
-                </Body>
-                <Right style={styles.price}>
-                      <Text style={{ color: this.calculateTotal() > 0 ? 'red' : 'green' }}>
-                        {numeral(Math.abs(this.calculateTotal())).format('$0,0.00')}
-                      </Text>
-                </Right>
-
+            <Separator bordered style={styles.totalDivider}>
+              <Text style={styles.dividerText}>YOUR NET TOTAL</Text>
+            </Separator>
+            <ListItem avatar style={styles.lineItemRow}>
+              <Left>
+                <Thumbnail
+                  source={{ uri: members[this.props.id].imageUrl }}
+                  style={{
+                    borderWidth: 4,
+                    borderColor: members[this.props.id].color
+                      ? members[this.props.id].color
+                      : randomColor({
+                          luminosity: 'light',
+                          hue: 'random',
+                        }).toString(),
+                  }}
+                />
+              </Left>
+              <Body>
+                <Text>{members[this.props.id].username}</Text>
+              </Body>
+              <Right style={styles.price}>
+                <Text
+                  style={{ color: this.calculateTotal() > 0 ? 'red' : 'green' }}
+                >
+                  {numeral(Math.abs(this.calculateTotal())).format('$0,0.00')}
+                </Text>
+              </Right>
             </ListItem>
           </List>
         </Content>
 
-        {!this.props.navigation.getParam('history')
-                &&
-          this.state.event.status &&
-            <Footer style={styles.footer}>
-                <Button
-                    danger={this.isReadyToClose()}
-                    disabled={!this.isReadyToClose()}
-                    block
-                    style={styles.button}
-                    onPress={this.closeEvent}
-                >
-                    <Icon
-                        type='MaterialCommunityIcons'
-                        name='close-circle'
-                        style={styles.icon}
-                    />
-                    <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
-                </Button>
-            </Footer>
-        }
+        {!this.props.navigation.getParam('history') && this.state.event.status && (
+          <Footer style={styles.footer}>
+            <Button
+              danger={this.isReadyToClose()}
+              disabled={!this.isReadyToClose()}
+              block
+              style={styles.button}
+              onPress={this.closeEvent}
+            >
+              <Icon
+                type="MaterialCommunityIcons"
+                name="close-circle"
+                style={styles.icon}
+              />
+              <Text style={styles.buttonText}>CHECKOUT THE EVENT</Text>
+            </Button>
+          </Footer>
+        )}
       </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({
-    buttonText: {
-        textAlign: 'center',
-        letterSpacing: 2,
-        color: 'white',
-    },
-    button: {
-        marginTop: 10,
-        width: '95%',
-        alignSelf: 'center',
-    },
-    footer: {
-        backgroundColor: 'transparent',
-        borderColor: 'transparent',
-        paddingBottom: 15,
-    },
-    icon: {
-        margin: 0,
-        padding: 0,
-    },
-    lineItemRow: {
-        display: 'flex',
-        alignItems: 'flex-end',
-    },
-    price: {
-        // width: '25%',
-        display: 'flex',
-        justifyContent: 'flex-end',
-    },
-});
-
 
 const mapState = state => ({
   id: state.user.currentUser.id,

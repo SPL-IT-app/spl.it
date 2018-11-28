@@ -2,7 +2,7 @@ import React from 'react';
 import { Item } from 'native-base';
 import { Col, Row } from 'react-native-easy-grid';
 import { LinearGradient } from 'expo';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
 import Swipeable from 'react-native-swipeable';
@@ -34,6 +34,16 @@ const styles = StyleSheet.create({
   price: {
     width: '25%',
   },
+  deleteButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: '#FF7E79',
+    height: '100%',
+  },
+  deleteText: {
+    paddingLeft: 15,
+    color: 'white',
+  },
 });
 
 import { makeRef } from '../server/firebaseconfig';
@@ -44,7 +54,6 @@ class LineItemsConfirmed extends React.Component {
     this.state = {
       id: this.props.dataRef + '/' + this.props.id,
       lineItem: this.props.lineItem,
-      index: this.props.idx,
       colors: [],
       selected: false,
     };
@@ -88,6 +97,13 @@ class LineItemsConfirmed extends React.Component {
     this.toggleSelected();
   }
 
+  handleRemoveItem = () => {
+    this.swipeable.recenter();
+    this.lineItemRef.remove();
+  };
+
+  swipeable = null;
+
   render() {
     let newArr = [...this.state.colors];
     newArr.forEach((col, idx) => {
@@ -108,37 +124,50 @@ class LineItemsConfirmed extends React.Component {
         start={{ x: 0, y: 1 }}
         end={{ x: 1, y: 1 }}
       >
-        <Row
-          button
-          style={{
-            ...styles.lineItemRow,
-            backgroundColor:
-              this.state.colors.length < 2 ? this.state.colors[0] : null,
-          }}
-        >
-          <Col style={styles.quantity}>
-            <Item type="number" style={styles.input}>
-              <Text>1</Text>
-            </Item>
-          </Col>
-          <Col style={styles.description}>
-            <Item
-              style={styles.input}
-              onPress={() => {
-                this.handlePress();
-              }}
+        <Swipeable
+          onRef={ref => (this.swipeable = ref)}
+          rightButtons={[
+            <TouchableHighlight
+              style={styles.deleteButton}
+              key={this.state.id}
+              onPress={this.handleRemoveItem}
             >
-              <Text style={styles.text}>{this.state.lineItem.name}</Text>
-            </Item>
-          </Col>
-          <Col style={styles.price}>
-            <Item type="number" style={styles.input}>
-              <Text>
-                {numeral(this.state.lineItem.price).format('$0,0.00')}
-              </Text>
-            </Item>
-          </Col>
-        </Row>
+              <Text style={styles.deleteText}>DELETE</Text>
+            </TouchableHighlight>,
+          ]}
+        >
+          <Row
+            button
+            style={{
+              ...styles.lineItemRow,
+              backgroundColor:
+                this.state.colors.length < 2 ? this.state.colors[0] : null,
+            }}
+          >
+            <Col style={styles.quantity}>
+              <Item type="number" style={styles.input}>
+                <Text>1</Text>
+              </Item>
+            </Col>
+            <Col style={styles.description}>
+              <Item
+                style={styles.input}
+                onPress={() => {
+                  this.handlePress();
+                }}
+              >
+                <Text style={styles.text}>{this.state.lineItem.name}</Text>
+              </Item>
+            </Col>
+            <Col style={styles.price}>
+              <Item type="number" style={styles.input}>
+                <Text>
+                  {numeral(this.state.lineItem.price).format('$0,0.00')}
+                </Text>
+              </Item>
+            </Col>
+          </Row>
+        </Swipeable>
       </LinearGradient>
     );
   }
