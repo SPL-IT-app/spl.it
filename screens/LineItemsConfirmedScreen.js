@@ -150,14 +150,6 @@ export class LineItemsConfirmedScreen extends React.Component {
     this.receiptRefUrl.off();
   };
 
-  handleChange = type => async event => {
-    console.log('TIP OR TAX CHANGED ====>', type, event);
-    await this.setState({
-      [type]: event,
-    });
-    this.receiptRefUrl.update({ tipPercent: Number(this.state.tipPercent) });
-  };
-
   checkStatus = () => {
     if (!this.state.eventStatus) {
       this.props.navigation.navigate('Status', { eventId: this.props.event });
