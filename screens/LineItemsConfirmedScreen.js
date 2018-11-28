@@ -142,9 +142,12 @@ export class LineItemsConfirmedScreen extends React.Component {
         console.log('ITEM ADDED');
         newItem = { id: snapshot.key, info: snapshot.val() };
         newArr.push(newItem);
-        this.setState({
-          receiptLineItems: [...newArr],
-        });
+        this.setState(prevState => ({
+          receiptLineItems: [
+            ...prevState.receiptLineItems,
+            { id: snapshot.key, info: snapshot.val() },
+          ],
+        }));
       }
       console.log(this.state.receiptLineItems);
     });
@@ -189,7 +192,7 @@ export class LineItemsConfirmedScreen extends React.Component {
   };
 
   render() {
-    console.log('LINE ITEMS: ', this.state.receiptLineItems);
+    console.log('LINE ITEMS IN STATE: ', this.state.receiptLineItems);
     this.checkStatus();
     const receipt = this.state.receiptLineItems;
     return (
