@@ -94,6 +94,7 @@ class AllEvents extends React.Component {
   }
 
   handleRemoveEvent = eventId => {
+    this.swipeable.recenter();
     const eventMembersRef = makeRef(`events/${eventId}/members`);
     eventMembersRef.once('value', snapshot => {
       snapshot.forEach(childSnapshot => {
@@ -137,6 +138,8 @@ class AllEvents extends React.Component {
     }
   }
 
+  swipeable = null;
+
   render() {
     const { events } = this.state;
     const { status } = this.props;
@@ -147,29 +150,60 @@ class AllEvents extends React.Component {
 
     return (
       <Container>
-        <MyHeader
-          title={status ? 'Events' : 'History'} />
+        <MyHeader title={status ? 'Events' : 'History'} />
         <ScrollView>
           <List>
             {status
               ? activeEvents.map((event, idx) => {
-                const rightButtons = [
-                  <TouchableHighlight
-                    style={styles.deleteButton}
-                    key={parseInt(idx, 2)}
-                    onPress={() => {
-                      this.handleRemoveEvent(event.id);
-                    }}
-                  >
-                    <Text style={styles.deleteText}>DELETE</Text>
-                  </TouchableHighlight>,
-                ];
-                return (
-                  <Swipeable rightButtons={rightButtons} key={event.id}>
+                  const rightButtons = [
+                    <TouchableHighlight
+                      style={styles.deleteButton}
+                      key={parseInt(idx, 2)}
+                      onPress={() => {
+                        this.handleRemoveEvent(event.id);
+                      }}
+                    >
+                      <Text style={styles.deleteText}>DELETE</Text>
+                    </TouchableHighlight>,
+                  ];
+                  return (
+                    <Swipeable
+                      onRef={ref => (this.swipeable = ref)}
+                      rightButtons={rightButtons}
+                      key={event.id}
+                    >
+                      <ListItem
+                        selected
+                        button
+                        onPress={() => this.handleEventClick(event.id)}
+                      >
+                        <Body>
+                          <Text style={styles.eventText}>
+                            {event.info.title === ''
+                              ? `Event ${idx + 1}`.toUpperCase()
+                              : event.info.title.toUpperCase()}
+                          </Text>
+                          <Text note style={styles.eventDateText}>
+                            {dateFormat(event.info.date, 'mediumDate')}
+                          </Text>
+                        </Body>
+                        <Right>
+                          <Icon
+                            type="MaterialCommunityIcons"
+                            name="chevron-right"
+                          />
+                        </Right>
+                      </ListItem>
+                    </Swipeable>
+                  );
+                })
+              : inactiveEvents.map((event, idx) => {
+                  return (
                     <ListItem
                       selected
                       button
                       onPress={() => this.handleEventClick(event.id)}
+                      key={event.id}
                     >
                       <Body>
                         <Text style={styles.eventText}>
@@ -188,36 +222,8 @@ class AllEvents extends React.Component {
                         />
                       </Right>
                     </ListItem>
-                  </Swipeable>
-                );
-              })
-              : inactiveEvents.map((event, idx) => {
-                return (
-                  <ListItem
-                    selected
-                    button
-                    onPress={() => this.handleEventClick(event.id)}
-                    key={event.id}
-                  >
-                    <Body>
-                      <Text style={styles.eventText}>
-                        {event.info.title === ''
-                          ? `Event ${idx + 1}`.toUpperCase()
-                          : event.info.title.toUpperCase()}
-                      </Text>
-                      <Text note style={styles.eventDateText}>
-                        {dateFormat(event.info.date, 'mediumDate')}
-                      </Text>
-                    </Body>
-                    <Right>
-                      <Icon
-                        type="MaterialCommunityIcons"
-                        name="chevron-right"
-                      />
-                    </Right>
-                  </ListItem>
-                );
-              })}
+                  );
+                })}
           </List>
         </ScrollView>
         <Container>
@@ -230,8 +236,8 @@ class AllEvents extends React.Component {
               <Icon type="MaterialCommunityIcons" name="plus" />
             </Fab>
           ) : (
-              <Container />
-            )}
+            <Container />
+          )}
         </Container>
       </Container>
     );

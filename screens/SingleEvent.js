@@ -118,7 +118,7 @@ class SingleEvent extends React.Component {
           ...prevState.receiptCountUnassigned,
           countUnassigned,
         ],
-      }))
+      }));
     });
 
     this.receiptsRef.on('child_changed', async snapshot => {
@@ -163,6 +163,7 @@ class SingleEvent extends React.Component {
   };
 
   handleRemoveReceipt = receiptId => {
+    this.swipeable.recenter();
     const receiptRef = makeRef(
       `events/${this.props.event}/receipts/${receiptId}`
     );
@@ -179,6 +180,8 @@ class SingleEvent extends React.Component {
     this.eventRef.off();
     this.receiptsRef.off();
   }
+
+  swipeable = null;
 
   render() {
     this.checkStatus();
@@ -205,7 +208,11 @@ class SingleEvent extends React.Component {
                   </TouchableHighlight>,
                 ];
                 return (
-                  <Swipeable key={parseInt(idx, 2)} rightButtons={rightButtons}>
+                  <Swipeable
+                    onRef={ref => (this.swipeable = ref)}
+                    key={parseInt(idx, 2)}
+                    rightButtons={rightButtons}
+                  >
                     <ListItem
                       thumbnail
                       button
@@ -233,18 +240,18 @@ class SingleEvent extends React.Component {
                           <Icon
                             type="MaterialCommunityIcons"
                             name="chevron-right"
-                          />)}
-                        </Right>
-                      </ListItem>
-                    </Swipeable>
-                  );
-                })
-              ) : (
-                  <Text>No Receipts</Text>
-                )}
-            </List>
-          </Content>
-
+                          />
+                        )}
+                      </Right>
+                    </ListItem>
+                  </Swipeable>
+                );
+              })
+            ) : (
+              <Text>No Receipts</Text>
+            )}
+          </List>
+        </Content>
 
         <Footer style={styles.footer}>
           <Button
