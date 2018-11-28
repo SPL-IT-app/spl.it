@@ -51,8 +51,6 @@ const styles = StyleSheet.create({
   formInput: {
     borderColor: 'transparent',
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     width: '100%',
   },
   inputText: {
@@ -79,8 +77,16 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     display: 'flex',
-    alignItems: 'center',
-    width: '25%',
+    alignItems: 'flex-end',
+    width: '17%',
+    backgroundColor: '#eee',
+  },
+  percentSign: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'flex-start',
+    width: '8%',
     backgroundColor: '#eee',
   },
   buttonText: {
@@ -220,6 +226,9 @@ export class LineItemsConfirmedScreen extends React.Component {
                     />
                   </Item>
                 </Col>
+                <Col style={styles.percentSign}>
+                  <Text>%</Text>
+                </Col>
               </Row>
               <Row style={styles.tiptax}>
                 <Col style={styles.tipText}>
@@ -238,6 +247,9 @@ export class LineItemsConfirmedScreen extends React.Component {
                       onChangeText={this.handleChange('taxPercent')}
                     />
                   </Item>
+                </Col>
+                <Col style={styles.percentSign}>
+                  <Text>%</Text>
                 </Col>
               </Row>
             </Grid>
