@@ -54,7 +54,6 @@ class LineItemsConfirmed extends React.Component {
     this.state = {
       id: this.props.dataRef + '/' + this.props.id,
       lineItem: this.props.lineItem,
-      index: this.props.idx,
       colors: [],
       selected: false,
     };
@@ -99,7 +98,6 @@ class LineItemsConfirmed extends React.Component {
   }
 
   handleRemoveItem = () => {
-    console.log('deleted an item');
     this.lineItemRef.remove();
   };
 

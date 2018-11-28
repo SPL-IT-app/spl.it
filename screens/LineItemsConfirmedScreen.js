@@ -10,8 +10,6 @@ import {
   BackButton,
 } from '../components';
 const { makeRef } = require('../server/firebaseconfig');
-import Dialog from 'react-native-dialog';
-import { Status } from '../screens';
 
 const styles = StyleSheet.create({
   tableHeader: {
