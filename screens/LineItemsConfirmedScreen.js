@@ -128,13 +128,23 @@ export class LineItemsConfirmedScreen extends React.Component {
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
     let lineItems = {};
-    let tipPercent = 0
-    this.receiptRefUrl.on('value', snapshot => {
-      tipPercent = snapshot.val().tipPercent
-      lineItems = snapshot.val();
-      this.setState({tipPercent: tipPercent.toString()})
+    let tipPercent = 0;
+    let itemRefs = [];
+    // this.receiptRefUrl.on('value', snapshot => {
+    //   tipPercent = snapshot.val().tipPercent
+    //   lineItems = snapshot.val();
+    //   this.setState({tipPercent: tipPercent.toString()})
+    // });
+    // this.setState({ receiptLineItems: Object.entries(lineItems) });
+
+    this.receiptRefUrl.on('child_added', snapshot => {
+      if (!snapshot.hasChildren() && snapshot.key === 'tipPercent') {
+        tipPercent = snapshot.val();
+      }
+      if (snapshot.hasChildren()) {
+        itemRefs.push(snapshot.key);
+      }
     });
-    this.setState({ receiptLineItems: Object.entries(lineItems) });
 
     if (this.props.event.length) {
       this.eventStatus = makeRef(`/events/${this.props.event}/status`).on(
@@ -165,91 +175,91 @@ export class LineItemsConfirmedScreen extends React.Component {
   };
 
   render() {
-      this.checkStatus()
-      const receipt = this.state.receiptLineItems;
-      return (
-        <Container>
-          <MyHeader title="Assign Items" right={() => <BackButton />} />
+    this.checkStatus();
+    const receipt = this.state.receiptLineItems;
+    return (
+      <Container>
+        <MyHeader title="Assign Items" right={() => <BackButton />} />
 
-          <Content style={styles.content}>
-            <Grid>
-              <Row style={styles.tableHeader}>
-                <Col style={styles.quantity}>
-                  <Text>QTY</Text>
-                </Col>
-                <Col style={styles.description}>
-                  <Text>DESCRIPTION</Text>
-                </Col>
-                <Col style={styles.price}>
-                  <Text>PRICE</Text>
-                </Col>
-              </Row>
-              {receipt.map((lineItem, idx) => {
-                if (typeof lineItem[1] === 'object') {
-                  return (
-                    <LineItemsConfirmed
-                      key={idx}
-                      dataRef={this.receiptRef}
-                      id={lineItem[0]}
-                      lineItem={lineItem[1]}
-                      idx={idx}
-                    />
-                  );
-                }
-              })}
-              <Row style={styles.lastRow} />
-            </Grid>
-          </Content>
-          <Footer style={styles.footer}>
-            <Grid>
-              <Row style={styles.tiptax}>
-                <Col style={styles.tipText}>
-                  <Text style={styles.inputText}>TIP</Text>
-                </Col>
-                <Col style={styles.blankCol} />
-                <Col style={styles.tipAmount}>
-                  <Item style={styles.formInput}>
-                    <Input
-                      style={styles.inputText}
-                      keyboardType="phone-pad"
-                      returnKeyType="done"
-                      name="name"
-                      placeholder="0%"
-                      value={this.state.tipPercent}
-                      onChangeText={this.handleChange('tipPercent')}
-                    />
-                  </Item>
-                </Col>
-              </Row>
-              <Row style={styles.tiptax}>
-                <Col style={styles.tipText}>
-                  <Text style={styles.inputText}>TAX</Text>
-                </Col>
-                <Col style={styles.blankCol} />
-                <Col style={styles.tipAmount}>
-                  <Item style={styles.formInput}>
-                    <Input
-                      style={styles.inputText}
-                      keyboardType="phone-pad"
-                      returnKeyType="done"
-                      name="name"
-                      placeholder="0%"
-                      value={this.state.taxPercent}
-                      onChangeText={this.handleChange('taxPercent')}
-                    />
-                  </Item>
-                </Col>
-              </Row>
-            </Grid>
-          </Footer>
-          <Footer style={styles.avatarFooter}>
-            <EventMembers
-              members={this.state.eventMemberProfiles}
-              display={true}
-            />
-          </Footer>
-        </Container>
-      );
+        <Content style={styles.content}>
+          <Grid>
+            <Row style={styles.tableHeader}>
+              <Col style={styles.quantity}>
+                <Text>QTY</Text>
+              </Col>
+              <Col style={styles.description}>
+                <Text>DESCRIPTION</Text>
+              </Col>
+              <Col style={styles.price}>
+                <Text>PRICE</Text>
+              </Col>
+            </Row>
+            {receipt.map((lineItem, idx) => {
+              if (typeof lineItem[1] === 'object') {
+                return (
+                  <LineItemsConfirmed
+                    key={idx}
+                    dataRef={this.receiptRef}
+                    id={lineItem[0]}
+                    lineItem={lineItem[1]}
+                    idx={idx}
+                  />
+                );
+              }
+            })}
+            <Row style={styles.lastRow} />
+          </Grid>
+        </Content>
+        <Footer style={styles.footer}>
+          <Grid>
+            <Row style={styles.tiptax}>
+              <Col style={styles.tipText}>
+                <Text style={styles.inputText}>TIP</Text>
+              </Col>
+              <Col style={styles.blankCol} />
+              <Col style={styles.tipAmount}>
+                <Item style={styles.formInput}>
+                  <Input
+                    style={styles.inputText}
+                    keyboardType="phone-pad"
+                    returnKeyType="done"
+                    name="name"
+                    placeholder="0%"
+                    value={this.state.tipPercent}
+                    onChangeText={this.handleChange('tipPercent')}
+                  />
+                </Item>
+              </Col>
+            </Row>
+            <Row style={styles.tiptax}>
+              <Col style={styles.tipText}>
+                <Text style={styles.inputText}>TAX</Text>
+              </Col>
+              <Col style={styles.blankCol} />
+              <Col style={styles.tipAmount}>
+                <Item style={styles.formInput}>
+                  <Input
+                    style={styles.inputText}
+                    keyboardType="phone-pad"
+                    returnKeyType="done"
+                    name="name"
+                    placeholder="0%"
+                    value={this.state.taxPercent}
+                    onChangeText={this.handleChange('taxPercent')}
+                  />
+                </Item>
+              </Col>
+            </Row>
+          </Grid>
+        </Footer>
+        <Footer style={styles.avatarFooter}>
+          <EventMembers
+            members={this.state.eventMemberProfiles}
+            display={true}
+          />
+        </Footer>
+      </Container>
+    );
   }
 }
 
