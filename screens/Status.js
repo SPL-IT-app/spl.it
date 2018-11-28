@@ -37,9 +37,10 @@ class Status extends Component {
 
   componentDidMount() {
     this.eventRef = makeRef(`events/${this.props.navigation.getParam('eventId')}`);
-    this.eventRef.on('value', snapshot => {
+    this.callback = snapshot => {
       this.setState({ event: snapshot.val() });
-    });
+    }
+    this.eventRef.on('value', this.callback );
 
     this.membersRef = makeRef(`events/${this.props.navigation.getParam('eventId')}/members`);
     this.membersRef.on('value', snapshot => {
@@ -62,7 +63,7 @@ class Status extends Component {
   }
 
   componentWillUnmount() {
-    this.eventRef.off();
+    this.eventRef.off('value', this.callback);
     this.membersRef.off();
   }
 

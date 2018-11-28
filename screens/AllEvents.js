@@ -93,6 +93,7 @@ class AllEvents extends React.Component {
     });
   }
 
+
   handleRemoveEvent = eventId => {
     const eventMembersRef = makeRef(`events/${eventId}/members`);
     eventMembersRef.once('value', snapshot => {

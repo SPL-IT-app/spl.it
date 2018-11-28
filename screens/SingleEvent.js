@@ -98,11 +98,12 @@ class SingleEvent extends React.Component {
     }
 
     // ON EVENT CHANGE
-    this.eventRef.once('value', snapshot => {
+    this.callback = snapshot => {
       this.setState({
         event: snapshot.val(),
       });
-    });
+    }
+    this.eventRef.once('value', this.callback);
 
     // ON EVENT RECEIPT ADDED
     this.receiptsRef.on('child_added', async snapshot => {
@@ -176,7 +177,7 @@ class SingleEvent extends React.Component {
   };
 
   componentWillUnmount() {
-    this.eventRef.off();
+    this.eventRef.off('value', this.callback);
     this.receiptsRef.off();
   }
 
