@@ -61,12 +61,12 @@ class SignUpScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      password: '',
-      username: '',
+      firstName: 'Finn',
+      lastName: 'Terdal',
+      email: 'finn@email.com',
+      phone: '1234567890',
+      password: '123456',
+      username: 'finnterdal',
     }
   }
 
@@ -115,7 +115,7 @@ class SignUpScreen extends React.Component {
             .ref('profiles')
             .update({
               [user.user.uid]: {
-                imageUrl: 'https://bit.ly/2qQRtn6',
+                imageUrl: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973461_960_720.png',
                 username,
                 color: randomColor({
                   luminosity: 'light',

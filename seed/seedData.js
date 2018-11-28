@@ -39,8 +39,8 @@ const users = [
   },
   {
     '2qiLDJACacMAITAJ4BKjUaaDCZh1': {
-      firstName: 'Julianne',
-      lastName: 'Crawford',
+      firstName: 'julianne',
+      lastName: 'crawford',
       email: 'julianne@email.com',
       phone: '111-111-1111',
       expoToken: "ExponentPushToken[v6g53lGNr1QFmkiIeOn1_J]",
@@ -51,8 +51,8 @@ const users = [
   },
   {
     uJeuLwsE8XNcfWYtMt2zDtqCjZH2: {
-      firstName: 'Lotus',
-      lastName: 'Tan',
+      firstName: 'lotus',
+      lastName: 'tan',
       email: 'lotus@email.com',
       phone: '222-222-2222',
       expoToken: "ExponentPushToken[v6g53lGNr1QFmkiIeOn1_J]",
@@ -63,8 +63,8 @@ const users = [
   },
   {
     u01TsZiVJbVFWdurzpz6ygZUbUm2: {
-      firstName: 'Mustafa',
-      lastName: 'Dane',
+      firstName: 'mustafa',
+      lastName: 'dane',
       email: 'mustafa@email.com',
       phone: '333-333-3333',
       expoToken: "ExponentPushToken[pQD87ENR5YddMgP_f1PRy8]",
@@ -75,8 +75,8 @@ const users = [
   },
   {
     dOQJVPAdwLXl8UbxtaSbDdbeGiQ2: {
-      firstName: 'Brittany',
-      lastName: 'Hill',
+      firstName: 'brittany',
+      lastName: 'hill',
       email: 'brittany@email.com',
       phone: '444-444-4444',
       expoToken: "ExponentPushToken[v6g53lGNr1QFmkiIeOn1_J]",
@@ -87,8 +87,8 @@ const users = [
   },
   {
     '5TL5kwr0m4coy9WpncZdiyknuLu1': {
-      firstName: 'Collin',
-      lastName: 'Miller',
+      firstName: 'collin',
+      lastName: 'miller',
       email: 'collin@email.com',
       phone: '555-555-5555',
       expoToken: "ExponentPushToken[v6g53lGNr1QFmkiIeOn1_J]",
@@ -99,8 +99,8 @@ const users = [
   },
   {
     kWdrASnnEZWQ29MK7u0uO7FDvIP2: {
-      firstName: 'Ben',
-      lastName: 'Wilhelm',
+      firstName: 'ben',
+      lastName: 'wilhelm',
       email: 'ben@email.com',
       phone: '666-666-6666',
       expoToken: "ExponentPushToken[v6g53lGNr1QFmkiIeOn1_J]",
@@ -109,22 +109,22 @@ const users = [
       events: {},
     },
   },
-  {
-    owZenwd8cGbPeW6scHFbfqfgpdD2: {
-      firstName: 'Finn',
-      lastName: 'Terdal',
-      email: 'finn@email.com',
-      phone: '777-777-7777',
-      expoToken: "ExponentPushToken[v6g53lGNr1QFmkiIeOn1_J]",
-      friends: {},
-      groups: {},
-      events: {},
-    },
-  },
+  // {
+  //   owZenwd8cGbPeW6scHFbfqfgpdD2: {
+  //     firstName: 'finn',
+  //     lastName: 'terdal',
+  //     email: 'finn@email.com',
+  //     phone: '777-777-7777',
+  //     expoToken: "ExponentPushToken[v6g53lGNr1QFmkiIeOn1_J]",
+  //     friends: {},
+  //     groups: {},
+  //     events: {},
+  //   },
+  // },
   {
     LYbFZlww7NhFABx1V492EjHCVJ42: {
-      firstName: 'Priti',
-      lastName: 'Patel',
+      firstName: 'priti',
+      lastName: 'patel',
       email: 'priti@email.com',
       phone: '888-888-8888',
       expoToken: "ExponentPushToken[v6g53lGNr1QFmkiIeOn1_J]",
@@ -145,7 +145,7 @@ const profilePictures = [
   'https://media.licdn.com/dms/image/C4E03AQET2S41uyB6HA/profile-displayphoto-shrink_800_800/0?e=1548288000&v=beta&t=i_3aeTBTgkATA4UnUYi8L1KhRG7tD_YL7gL62CMgkao',
   'https://cloud.fullstackacademy.com/colllin-miller-instructor.jpg?mtime=20180122152631',
   'https://cloud.fullstackacademy.com/ben-wilhelm-instructor.jpg?mtime=20180122152630',
-  'https://cloud.fullstackacademy.com/finn-terdal-min.jpg?mtime=20180618121640',
+  // 'https://cloud.fullstackacademy.com/finn-terdal-min.jpg?mtime=20180618121640',
   'https://cloud.fullstackacademy.com/priti-patel-instructor.jpg?mtime=20180503134058',
 ];
 

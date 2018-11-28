@@ -64,7 +64,9 @@ export class AddFriend extends Component {
   };
 
   addFriend = (id, username) => {
+    this.addedFriendRef = makeRef(`/users/${id}/friends`)
     this.friendsRef.update({ [id]: true });
+    this.addedFriendRef.update({ [this.props.id]: true });
     this.setState({ friends: [...this.state.friends, username] });
   };
 
