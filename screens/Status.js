@@ -13,6 +13,7 @@ import {
   Button,
   Icon,
   Separator,
+  Toast
 } from 'native-base';
 import { StyleSheet } from 'react-native';
 import { MyHeader, BackButton, LoadingScreen } from '../components';
@@ -36,7 +37,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: 'transparent',
     height: 'auto'
-    // paddingBottom: 15,
   },
   icon: {
     margin: 0,
