@@ -118,7 +118,6 @@ export class LineItemsConfirmedScreen extends React.Component {
       tipPercent: '0',
       eventStatus: true,
       taxPercent: '10.25',
-      receiptLineItemRefs: [],
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -135,11 +134,8 @@ export class LineItemsConfirmedScreen extends React.Component {
     });
 
     this.receiptRefUrl.on('child_added', snapshot => {
-      // console.log('ITEM ADDED');
-
       const newArr = this.state.receiptLineItems.slice();
       if (snapshot.hasChildren()) {
-        console.log('ITEM ADDED');
         newItem = { id: snapshot.key, info: snapshot.val() };
         newArr.push(newItem);
         this.setState(prevState => ({
@@ -149,11 +145,9 @@ export class LineItemsConfirmedScreen extends React.Component {
           ],
         }));
       }
-      console.log(this.state.receiptLineItems);
     });
 
     this.receiptRefUrl.on('child_removed', snapshot => {
-      console.log('ITEM REMOVED');
       let newArr = this.state.receiptLineItems.slice();
       if (snapshot.hasChildren()) {
         newArr = newArr.filter(item => {
@@ -194,7 +188,6 @@ export class LineItemsConfirmedScreen extends React.Component {
   };
 
   render() {
-    console.log('LINE ITEMS IN STATE: ', this.state.receiptLineItems);
     this.checkStatus();
     const receipt = this.state.receiptLineItems;
     return (
@@ -215,17 +208,14 @@ export class LineItemsConfirmedScreen extends React.Component {
               </Col>
             </Row>
             {receipt.map(lineItem => {
-              // if (typeof lineItem[1] === 'object') {
               return (
                 <LineItemsConfirmed
                   key={lineItem.id}
                   dataRef={this.receiptRef}
                   id={lineItem.id}
                   lineItem={lineItem.info}
-                  // idx={idx}
                 />
               );
-              // }
             })}
             <Row style={styles.lastRow} />
           </Grid>
