@@ -128,38 +128,35 @@ export class LineItemsConfirmedScreen extends React.Component {
 
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
-    let lineItems = [];
-    let tipPercent = 0;
-    let itemRefs = [];
     let newItem;
-    // this.receiptRefUrl.on('value', snapshot => {
-    //   tipPercent = snapshot.val().tipPercent
-    //   lineItems = snapshot.val();
-    //   this.setState({tipPercent: tipPercent.toString()})
-    // });
-    // this.setState({ receiptLineItems: Object.entries(lineItems) });
+
+    this.receiptRefUrl.on('value', snapshot => {
+      this.setState({ tipPercent: snapshot.val().tipPercent });
+    });
 
     this.receiptRefUrl.on('child_added', snapshot => {
-      if (!snapshot.hasChildren() && snapshot.key === 'tipPercent') {
-        tipPercent = snapshot.val();
-      }
+      // console.log('ITEM ADDED');
+
+      const newArr = this.state.receiptLineItems.slice();
       if (snapshot.hasChildren()) {
+        console.log('ITEM ADDED');
         newItem = { id: snapshot.key, info: snapshot.val() };
+        newArr.push(newItem);
+        this.setState({
+          receiptLineItems: [...newArr],
+        });
       }
-      this.setState({
-        receiptLineItems: [...this.state.receiptLineItems, newItem],
-        tipPercent: tipPercent.toString(),
-      });
+      console.log(this.state.receiptLineItems);
     });
 
     this.receiptRefUrl.on('child_removed', snapshot => {
+      console.log('ITEM REMOVED');
       let newArr = this.state.receiptLineItems.slice();
       if (snapshot.hasChildren()) {
         newArr.filter(item => item.id !== snapshot.key);
       }
       this.setState({
         receiptLineItems: newArr,
-        // receiptLineItemRefs: itemRefs,
       });
     });
 
@@ -192,6 +189,7 @@ export class LineItemsConfirmedScreen extends React.Component {
   };
 
   render() {
+    console.log('LINE ITEMS: ', this.state.receiptLineItems);
     this.checkStatus();
     const receipt = this.state.receiptLineItems;
     return (
@@ -211,18 +209,18 @@ export class LineItemsConfirmedScreen extends React.Component {
                 <Text>PRICE</Text>
               </Col>
             </Row>
-            {receipt.map((lineItem, idx) => {
-              if (typeof lineItem[1] === 'object') {
-                return (
-                  <LineItemsConfirmed
-                    key={idx}
-                    dataRef={this.receiptRef}
-                    id={lineItem[0]}
-                    lineItem={lineItem[1]}
-                    idx={idx}
-                  />
-                );
-              }
+            {receipt.map(lineItem => {
+              // if (typeof lineItem[1] === 'object') {
+              return (
+                <LineItemsConfirmed
+                  key={lineItem.id}
+                  dataRef={this.receiptRef}
+                  id={lineItem.id}
+                  lineItem={lineItem.info}
+                  // idx={idx}
+                />
+              );
+              // }
             })}
             <Row style={styles.lastRow} />
           </Grid>
