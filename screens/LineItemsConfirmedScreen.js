@@ -55,9 +55,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
-  inputText: {
+  amountText: {
     width: '100%',
-    textAlign: 'center',
+    textAlign: 'right',
   },
   tipText: {
     height: '100%',
@@ -80,7 +80,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
-    width: '25%',
+    width: '17%',
+    backgroundColor: '#eee',
+  },
+  percentSign: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'flex-start',
+    width: '8%',
     backgroundColor: '#eee',
   },
   buttonText: {
@@ -200,7 +208,10 @@ export class LineItemsConfirmedScreen extends React.Component {
                 </Col>
                 <Col style={styles.blankCol} />
                 <Col style={styles.tipAmount}>
-                  <Text>{this.state.tipPercent}</Text>
+                  <Text style={styles.amountText}>{this.state.tipPercent}</Text>
+                </Col>
+                <Col style={styles.percentSign}>
+                  <Text>%</Text>
                 </Col>
               </Row>
               <Row style={styles.tiptax}>
@@ -209,7 +220,10 @@ export class LineItemsConfirmedScreen extends React.Component {
                 </Col>
                 <Col style={styles.blankCol} />
                 <Col style={styles.tipAmount}>
-                  <Text>{this.state.taxPercent}</Text>
+                  <Text style={styles.amountText}>{this.state.taxPercent}</Text>
+                </Col>
+                <Col style={styles.percentSign}>
+                  <Text>%</Text>
                 </Col>
               </Row>
             </Grid>
