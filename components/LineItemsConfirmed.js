@@ -98,8 +98,11 @@ class LineItemsConfirmed extends React.Component {
   }
 
   handleRemoveItem = () => {
+    this.swipeable.recenter();
     this.lineItemRef.remove();
   };
+
+  swipeable = null;
 
   render() {
     let newArr = [...this.state.colors];
@@ -122,6 +125,7 @@ class LineItemsConfirmed extends React.Component {
         end={{ x: 1, y: 1 }}
       >
         <Swipeable
+          onRef={ref => (this.swipeable = ref)}
           rightButtons={[
             <TouchableHighlight
               style={styles.deleteButton}
