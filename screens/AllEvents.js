@@ -235,7 +235,7 @@ class AllEvents extends React.Component {
             </ScrollView>
           ) : (
             <Content contentContainerStyle={styles.content}>
-              <Text style={styles.mainText}>WELCOME BACK TO $PL/IT</Text>
+              <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
               <Text style={styles.subText}>Create a New Event...</Text>
               <Button
                 rounded
