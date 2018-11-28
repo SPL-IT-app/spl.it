@@ -118,6 +118,7 @@ export class LineItemsConfirmedScreen extends React.Component {
       tipPercent: '0',
       eventStatus: true,
       taxPercent: '10.25',
+      receiptLineItemRefs: [],
     };
     this.receiptRef = this.props.navigation.getParam(
       'receiptRef',
@@ -127,9 +128,10 @@ export class LineItemsConfirmedScreen extends React.Component {
 
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
-    let lineItems = {};
+    let lineItems = [];
     let tipPercent = 0;
     let itemRefs = [];
+    let newItem;
     // this.receiptRefUrl.on('value', snapshot => {
     //   tipPercent = snapshot.val().tipPercent
     //   lineItems = snapshot.val();
@@ -142,8 +144,23 @@ export class LineItemsConfirmedScreen extends React.Component {
         tipPercent = snapshot.val();
       }
       if (snapshot.hasChildren()) {
-        itemRefs.push(snapshot.key);
+        newItem = { id: snapshot.key, info: snapshot.val() };
       }
+      this.setState({
+        receiptLineItems: [...this.state.receiptLineItems, newItem],
+        tipPercent: tipPercent.toString(),
+      });
+    });
+
+    this.receiptRefUrl.on('child_removed', snapshot => {
+      let newArr = this.state.receiptLineItems.slice();
+      if (snapshot.hasChildren()) {
+        newArr.filter(item => item.id !== snapshot.key);
+      }
+      this.setState({
+        receiptLineItems: newArr,
+        // receiptLineItemRefs: itemRefs,
+      });
     });
 
     if (this.props.event.length) {
