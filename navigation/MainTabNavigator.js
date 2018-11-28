@@ -115,7 +115,7 @@ export default createBottomTabNavigator(
           <FooterTab>
             <Button
               active={props.navigation.state.index === 0}
-              onPress={() => props.navigation.navigate('HomeStack')}
+              onPress={() => props.navigation.navigate('Home')}
             >
               <Icon type="MaterialCommunityIcons" name="calendar" />
               <Text>Events</Text>
