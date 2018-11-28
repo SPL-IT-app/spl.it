@@ -199,7 +199,7 @@ class SingleEvent extends React.Component {
                 const rightButtons = [
                   <TouchableHighlight
                     style={styles.deleteButton}
-                    key={parseInt(idx, 2)}
+                    key={receiptIds[idx]}
                     onPress={() => {
                       this.handleRemoveReceipt(receiptIds[idx]);
                     }}
