@@ -28,13 +28,15 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
+    marginBottom: 10,
     width: '95%',
     alignSelf: 'center',
   },
   footer: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
-    paddingBottom: 15,
+    height: 'auto'
+    // paddingBottom: 15,
   },
   icon: {
     margin: 0,
@@ -43,7 +45,6 @@ const styles = StyleSheet.create({
   lineItemRow: {
     display: 'flex',
     alignItems: 'flex-end',
-    borderBottomColor: 'transparent'
   },
   price: {
     display: 'flex',
@@ -51,14 +52,24 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     letterSpacing: 2,
-    fontSize: 11,
+    fontSize: 13,
+    color: 'white'
+  },
+  unassignedDivider: {
+    backgroundColor: '#FFC000',
+    height: 'auto'
+  },
+  userSplits: {
+    marginTop: 15,
+    backgroundColor: '#159192',
+    height: 'auto'
+
   },
   totalDivider: {
     marginTop: 15,
+    height: 'auto',
+    backgroundColor: "#1A98FC",
   },
-  userSplits: {
-    marginTop: 15
-  }
 });
 
 class Status extends Component {
@@ -224,17 +235,54 @@ class Status extends Component {
         />
         <Content>
           <List>
+
             {Object.entries(this.moneyToSendOrReceive).map(entry => {
               if (entry[0] === 'unassigned') {
-                if (!entry[1]) return;
-                return (
+                if (!entry[1]) return(
                   <React.Fragment>
-                    <Separator bordered>
-                      <Text style={styles.dividerText}>UNASSIGNED LINE ITEMS</Text>
+                    <Separator bordered style={styles.unassignedDivider}>
+                      <Text style={styles.dividerText}>
+                        NO UNASSIGNED LINE ITEMS
+                      </Text>
                     </Separator>
                     <ListItem style={styles.lineItemRow} avatar key={entry[0]}>
                       <Left>
-                        <Thumbnail source={{ uri: 'https://bit.ly/2PWwduR' }} />
+                        <Thumbnail
+                          source={{
+                            uri:
+                              'https://cdn3.iconfinder.com/data/icons/account-1/64/Account-06-512.png',
+                          }}
+                        />
+                      </Left>
+                      <Body>
+                        <Text>Unassigned</Text>
+                      </Body>
+                      <Right style={styles.price}>
+                        <Text style={{ color: 'orange' }}>
+                          {numeral(0).format('$0,0.00')}
+                        </Text>
+                      </Right>
+                    </ListItem>
+                    <Separator bordered style={styles.userSplits}>
+                      <Text style={styles.dividerText}>USER SPLITS</Text>
+                    </Separator>
+                  </React.Fragment>
+                );
+                return (
+                  <React.Fragment>
+                    <Separator bordered style={styles.unassignedDivider}>
+                      <Text style={styles.dividerText}>
+                        UNASSIGNED LINE ITEMS
+                      </Text>
+                    </Separator>
+                    <ListItem style={styles.lineItemRow} avatar key={entry[0]}>
+                      <Left>
+                        <Thumbnail
+                          source={{
+                            uri:
+                              'https://cdn3.iconfinder.com/data/icons/account-1/64/Account-06-512.png',
+                          }}
+                        />
                       </Left>
                       <Body>
                         <Text>Unassigned</Text>
@@ -252,30 +300,30 @@ class Status extends Component {
                 );
               } else {
                 return (
-                    <ListItem avatar style={styles.lineItemRow} key={entry[0]}>
-                      <Left>
-                        <Thumbnail
-                          source={{ uri: members[entry[0]].imageUrl }}
-                          style={{
-                            borderWidth: 4,
-                            borderColor: members[entry[0]].color
-                              ? members[entry[0]].color
-                              : randomColor({
-                                  luminosity: 'light',
-                                  hue: 'random',
-                                }).toString(),
-                          }}
-                        />
-                      </Left>
-                      <Body>
-                        <Text>{members[entry[0]].username}</Text>
-                      </Body>
-                      <Right style={styles.price}>
-                        <Text style={{ color: entry[1] > 0 ? 'red' : 'green' }}>
-                          {numeral(Math.abs(entry[1])).format('$0,0.00')}
-                        </Text>
-                      </Right>
-                    </ListItem>
+                  <ListItem avatar style={styles.lineItemRow} key={entry[0]}>
+                    <Left>
+                      <Thumbnail
+                        source={{ uri: members[entry[0]].imageUrl }}
+                        style={{
+                          borderWidth: 4,
+                          borderColor: members[entry[0]].color
+                            ? members[entry[0]].color
+                            : randomColor({
+                                luminosity: 'light',
+                                hue: 'random',
+                              }).toString(),
+                        }}
+                      />
+                    </Left>
+                    <Body>
+                      <Text>{members[entry[0]].username}</Text>
+                    </Body>
+                    <Right style={styles.price}>
+                      <Text style={{ color: entry[1] > 0 ? 'red' : 'green' }}>
+                        {numeral(Math.abs(entry[1])).format('$0,0.00')}
+                      </Text>
+                    </Right>
+                  </ListItem>
                 );
               }
             })}
@@ -325,7 +373,7 @@ class Status extends Component {
                 name="close-circle"
                 style={styles.icon}
               />
-              <Text style={styles.buttonText}>CLOSE THE EVENT</Text>
+              <Text style={styles.buttonText}>CHECKOUT THE EVENT</Text>
             </Button>
           </Footer>
         )}
