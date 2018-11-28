@@ -1,6 +1,16 @@
 import React from 'react';
 import { StyleSheet, Text, ScrollView, TouchableHighlight } from 'react-native';
-import { Icon, Container, List, Body, Right, ListItem, Fab } from 'native-base';
+import {
+  Icon,
+  Container,
+  List,
+  Body,
+  Right,
+  ListItem,
+  Fab,
+  Content,
+  Button,
+} from 'native-base';
 import { setEvent } from '../store';
 import { connect } from 'react-redux';
 import { makeRef } from '../server/firebaseconfig';
@@ -33,6 +43,36 @@ const styles = StyleSheet.create({
   },
   addEventFab: {
     backgroundColor: '#1A98FC',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  icon: {
+    alignSelf: 'center',
+    // color: 'black'
+  },
+  cameraButton: {
+    alignSelf: 'center',
+    height: 60,
+    width: 60,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mainText: {
+    textAlign: 'center',
+    fontSize: 25,
+    fontWeight: '300',
+    letterSpacing: 4,
+  },
+  subText: {
+    padding: 20,
+    color: '#363731',
+    textAlign: 'center',
+    fontSize: 15,
+    fontWeight: '200',
+    letterSpacing: 3,
   },
 });
 
@@ -151,10 +191,11 @@ class AllEvents extends React.Component {
     return (
       <Container>
         <MyHeader title={status ? 'Events' : 'History'} />
-        <ScrollView>
-          <List>
-            {status
-              ? activeEvents.map((event, idx) => {
+        {status ? (
+          activeEvents.length ? (
+            <ScrollView>
+              <List>
+                {activeEvents.map((event, idx) => {
                   const rightButtons = [
                     <TouchableHighlight
                       style={styles.deleteButton}
@@ -167,11 +208,10 @@ class AllEvents extends React.Component {
                     </TouchableHighlight>,
                   ];
                   return (
-                    <Swipeable
+                    <Swipeable 
                       onRef={ref => (this.swipeable = ref)}
-                      rightButtons={rightButtons}
-                      key={event.id}
-                    >
+                      rightButtons={rightButtons} 
+                      key={event.id}>
                       <ListItem
                         selected
                         button
@@ -196,36 +236,63 @@ class AllEvents extends React.Component {
                       </ListItem>
                     </Swipeable>
                   );
-                })
-              : inactiveEvents.map((event, idx) => {
-                  return (
-                    <ListItem
-                      selected
-                      button
-                      onPress={() => this.handleEventClick(event.id)}
-                      key={event.id}
-                    >
-                      <Body>
-                        <Text style={styles.eventText}>
-                          {event.info.title === ''
-                            ? `Event ${idx + 1}`.toUpperCase()
-                            : event.info.title.toUpperCase()}
-                        </Text>
-                        <Text note style={styles.eventDateText}>
-                          {dateFormat(event.info.date, 'mediumDate')}
-                        </Text>
-                      </Body>
-                      <Right>
-                        <Icon
-                          type="MaterialCommunityIcons"
-                          name="chevron-right"
-                        />
-                      </Right>
-                    </ListItem>
-                  );
                 })}
-          </List>
-        </ScrollView>
+              </List>
+            </ScrollView>
+          ) : (
+            <Content contentContainerStyle={styles.content}>
+              <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
+              <Text style={styles.subText}>Create a New Event...</Text>
+              <Button
+                rounded
+                success
+                onPress={async () => {
+                  await this.props.setEvent('');
+                  this.props.navigation.navigate('Camera');
+                }}
+                style={styles.cameraButton}
+              >
+                <Icon
+                  type="MaterialCommunityIcons"
+                  name="camera"
+                  style={styles.icon}
+                />
+              </Button>
+            </Content>
+          )
+        ) : (
+          <ScrollView>
+            <List>
+              {inactiveEvents.map((event, idx) => {
+                return (
+                  <ListItem
+                    selected
+                    button
+                    onPress={() => this.handleEventClick(event.id)}
+                    key={event.id}
+                  >
+                    <Body>
+                      <Text style={styles.eventText}>
+                        {event.info.title === ''
+                          ? `Event ${idx + 1}`.toUpperCase()
+                          : event.info.title.toUpperCase()}
+                      </Text>
+                      <Text note style={styles.eventDateText}>
+                        {dateFormat(event.info.date, 'mediumDate')}
+                      </Text>
+                    </Body>
+                    <Right>
+                      <Icon
+                        type="MaterialCommunityIcons"
+                        name="chevron-right"
+                      />
+                    </Right>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </ScrollView>
+        )}
         <Container>
           {status ? (
             <Fab
