@@ -129,11 +129,11 @@ export class LineItemsConfirmedScreen extends React.Component {
   componentDidMount = () => {
     this.receiptRefUrl = makeRef(this.receiptRef);
     let lineItems = {};
-    let tipPercent = 0
+    let tipPercent = 0;
     this.receiptRefUrl.on('value', snapshot => {
-      tipPercent = snapshot.val().tipPercent
+      tipPercent = snapshot.val().tipPercent;
       lineItems = snapshot.val();
-      this.setState({tipPercent: tipPercent.toString()})
+      this.setState({ tipPercent: tipPercent.toString() });
     });
     this.setState({ receiptLineItems: Object.entries(lineItems) });
 
@@ -166,9 +166,10 @@ export class LineItemsConfirmedScreen extends React.Component {
   };
 
   render() {
-    this.checkStatus()
+    this.checkStatus();
     const receipt = this.state.receiptLineItems;
-    return this.props.isFocused ? (
+    return (
+      this.props.isFocused && (
         <Container>
           <MyHeader title="Assign Items" right={() => <BackButton />} />
 
@@ -250,7 +251,8 @@ export class LineItemsConfirmedScreen extends React.Component {
             />
           </Footer>
         </Container>
-      ) : null
+      )
+    );
   }
 }
 

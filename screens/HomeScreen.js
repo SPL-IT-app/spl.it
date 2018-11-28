@@ -58,39 +58,39 @@ export class HomeScreen extends React.Component {
     this.state = {
       isLoading: true,
       user: {},
-      activeEventCount: NaN,
+      // activeEventCount: NaN,
     };
   }
 
   componentDidMount() {
-    let eventCount = 0;
+    // let eventCount = 0;
     const { user } = this.props;
 
     this.userRef = makeRef(`/users/${user.id}`);
 
     this.userRef.on('value', snapshot => {
       let currentUser = snapshot.val();
-      const eventsExist = snapshot.hasChild('events');
-      console.log('currentUser', currentUser);
-      console.log('eventsExist', eventsExist);
-      if (!eventsExist || !currentUser.events) {
-        eventCount = 0;
-      } else {
-        Object.keys(currentUser.events).forEach(eventId => {
-          makeRef(`/events/${eventId}/status`).on('value', statusSnap => {
-            console.log('status snap +++++++++', statusSnap.val());
-            if (statusSnap.val() === true)
-              this.setState({
-                activeEventCount: this.state.activeEventCount + 1,
-              });
-          });
-        });
-      }
+      // const eventsExist = snapshot.hasChild('events');
+      // console.log('currentUser', currentUser);
+      // console.log('eventsExist', eventsExist);
+      // if (!eventsExist || !currentUser.events) {
+      //   eventCount = 0;
+      // } else {
+      //   Object.keys(currentUser.events).forEach(eventId => {
+      //     makeRef(`/events/${eventId}/status`).on('value', statusSnap => {
+      //       console.log('status snap +++++++++', statusSnap.val());
+      //       if (statusSnap.val() === true)
+      //         this.setState({
+      //           activeEventCount: this.state.activeEventCount + 1,
+      //         });
+      //     });
+      //   });
+      // }
 
       this.setState({
         user: currentUser,
         isLoading: false,
-        activeEventCount: eventCount,
+        // activeEventCount: eventCount,
       });
     });
   }
@@ -116,36 +116,39 @@ export class HomeScreen extends React.Component {
   };
 
   render() {
-    const { activeEventCount } = this.state;
-    return this.props.isFocused ? (
-      <Container>
-        {this.state.isLoading ? (
-          <LoadingScreen />
-        ) : activeEventCount ? (
-          <AllEvents status={true} />
-        ) : (
-          <Content contentContainerStyle={styles.content}>
-            <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
-            <Text style={styles.subText}>Create a New Event...</Text>
-            <Button
-              rounded
-              success
-              onPress={async () => {
-                await this.props.setEvent('');
-                this.props.navigation.navigate('Camera');
-              }}
-              style={styles.cameraButton}
-            >
-              <Icon
-                type="MaterialCommunityIcons"
-                name="camera"
-                style={styles.icon}
-              />
-            </Button>
-          </Content>
-        )}
-      </Container>
-    ) : null;
+    // const { activeEventCount } = this.state;
+    const { events } = this.state.user;
+    return (
+      this.props.isFocused && (
+        <Container>
+          {this.state.isLoading ? (
+            <LoadingScreen />
+          ) : events ? (
+            <AllEvents status={true} />
+          ) : (
+            <Content contentContainerStyle={styles.content}>
+              <Text style={styles.mainText}>WELCOME TO $PL/IT</Text>
+              <Text style={styles.subText}>Create a New Event...</Text>
+              <Button
+                rounded
+                success
+                onPress={async () => {
+                  await this.props.setEvent('');
+                  this.props.navigation.navigate('Camera');
+                }}
+                style={styles.cameraButton}
+              >
+                <Icon
+                  type="MaterialCommunityIcons"
+                  name="camera"
+                  style={styles.icon}
+                />
+              </Button>
+            </Content>
+          )}
+        </Container>
+      )
+    );
   }
 }
 
