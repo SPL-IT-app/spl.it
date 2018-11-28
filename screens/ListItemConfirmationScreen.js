@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { Container, Content, Button, Icon, Footer } from 'native-base';
+import { Container, Content, Button, Icon, Footer, Input, Item} from 'native-base';
 import { Grid, Col, Row } from 'react-native-easy-grid';
 import { connect } from 'react-redux';
 import { LoadingScreen, LineItems, MyHeader, BackButton } from '../components';
@@ -55,6 +55,56 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: 'transparent',
     paddingBottom: 15,
+    height: 'auto'
+  },
+  tiptax: {
+    borderBottomColor: '#ddd',
+    borderBottomWidth: 1,
+    borderTopColor: '#ddd',
+    borderTopWidth: 1,
+    height: 45,
+    justifyContent: 'center',
+  },
+  formInput: {
+    borderColor: 'transparent',
+    display: 'flex',
+    width: '100%',
+  },
+  inputText: {
+    width: '100%',
+    textAlign: 'center',
+  },
+  tipText: {
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '15%',
+    backgroundColor: '#eee',
+  },
+  blankCol: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    width: '60%',
+    backgroundColor: '#eee',
+  },
+  tipAmount: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'flex-end',
+    width: '17%',
+    backgroundColor: '#eee',
+  },
+  percentSign: {
+    height: '100%',
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'flex-start',
+    width: '8%',
+    backgroundColor: '#eee',
   },
 });
 
@@ -66,6 +116,8 @@ export class ListItemConfirmationScreen extends React.Component {
       eventName: '',
       receiptRef: '',
       eventStatus: true,
+      tipPercent: '15',
+      taxPercent: '10.25',
     };
   }
 
@@ -117,7 +169,7 @@ export class ListItemConfirmationScreen extends React.Component {
       imageUrl: 'http://www.w3.org/wiki/images/a/a9/Munich-dinner-receipt.jpg',
       creator: this.props.user.id,
       dateCreated: new Date().toString(),
-      tipPercent: 15,
+      tipPercent: this.state.tipPercent,
       lineItems: {},
     };
 
@@ -174,6 +226,13 @@ export class ListItemConfirmationScreen extends React.Component {
     }
   };
 
+  handleChange = type => async event => {
+    console.log('TIP OR TAX CHANGED ====>', type, event);
+    await this.setState({
+      [type]: event,
+    });
+  };
+
   render() {
     this.checkStatus();
     const { receipt } = this.props;
@@ -224,14 +283,59 @@ export class ListItemConfirmationScreen extends React.Component {
               }}
             >
               <Icon
-                style={{ color: 'black' }}
+                style={{ color: 'black', paddingRight: 10 }}
                 type="MaterialCommunityIcons"
                 name="plus"
               />
             </Button>
-            {/* <Row style={styles.lastRow} /> */}
           </Grid>
         </Content>
+        <Footer style={styles.footer}>
+            <Grid>
+              <Row style={styles.tiptax}>
+                <Col style={styles.tipText}>
+                  <Text style={styles.inputText}>TIP</Text>
+                </Col>
+                <Col style={styles.blankCol} />
+                <Col style={styles.tipAmount}>
+                  <Item style={styles.formInput}>
+                    <Input
+                      style={styles.inputText}
+                      keyboardType="phone-pad"
+                      returnKeyType="done"
+                      name="name"
+                      value={this.state.tipPercent}
+                      onChangeText={this.handleChange('tipPercent')}
+                    />
+                  </Item>
+                </Col>
+                <Col style={styles.percentSign}>
+                  <Text>%</Text>
+                </Col>
+              </Row>
+              <Row style={styles.tiptax}>
+                <Col style={styles.tipText}>
+                  <Text style={styles.inputText}>TAX</Text>
+                </Col>
+                <Col style={styles.blankCol} />
+                <Col style={styles.tipAmount}>
+                  <Item style={styles.formInput}>
+                    <Input
+                      style={styles.inputText}
+                      keyboardType="phone-pad"
+                      returnKeyType="done"
+                      name="name"
+                      value={this.state.taxPercent}
+                      onChangeText={this.handleChange('taxPercent')}
+                    />
+                  </Item>
+                </Col>
+                <Col style={styles.percentSign}>
+                  <Text>%</Text>
+                </Col>
+              </Row>
+            </Grid>
+          </Footer>
         <Footer style={styles.footer}>
           <Button
             success
