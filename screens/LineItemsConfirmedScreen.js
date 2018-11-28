@@ -40,55 +40,55 @@ const styles = StyleSheet.create({
   lastRow: {
     paddingBottom: 80,
   },
-  tiptax: {
-    borderBottomColor: '#ddd',
-    borderBottomWidth: 1,
-    borderTopColor: '#ddd',
-    borderTopWidth: 1,
-    height: 45,
-    justifyContent: 'center',
-  },
-  formInput: {
-    borderColor: 'transparent',
-    display: 'flex',
-    width: '100%',
-  },
-  inputText: {
-    width: '100%',
-    textAlign: 'center',
-  },
-  tipText: {
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '15%',
-    backgroundColor: '#eee',
-  },
-  blankCol: {
-    height: '100%',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'center',
-    width: '60%',
-    backgroundColor: '#eee',
-  },
-  tipAmount: {
-    height: '100%',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'flex-end',
-    width: '17%',
-    backgroundColor: '#eee',
-  },
-  percentSign: {
-    height: '100%',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'flex-start',
-    width: '8%',
-    backgroundColor: '#eee',
-  },
+  // tiptax: {
+  //   borderBottomColor: '#ddd',
+  //   borderBottomWidth: 1,
+  //   borderTopColor: '#ddd',
+  //   borderTopWidth: 1,
+  //   height: 45,
+  //   justifyContent: 'center',
+  // },
+  // formInput: {
+  //   borderColor: 'transparent',
+  //   display: 'flex',
+  //   width: '100%',
+  // },
+  // inputText: {
+  //   width: '100%',
+  //   textAlign: 'center',
+  // },
+  // tipText: {
+  //   height: '100%',
+  //   display: 'flex',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   width: '15%',
+  //   backgroundColor: '#eee',
+  // },
+  // blankCol: {
+  //   height: '100%',
+  //   justifyContent: 'center',
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   width: '60%',
+  //   backgroundColor: '#eee',
+  // },
+  // tipAmount: {
+  //   height: '100%',
+  //   justifyContent: 'center',
+  //   display: 'flex',
+  //   alignItems: 'flex-end',
+  //   width: '17%',
+  //   backgroundColor: '#eee',
+  // },
+  // percentSign: {
+  //   height: '100%',
+  //   justifyContent: 'center',
+  //   display: 'flex',
+  //   alignItems: 'flex-start',
+  //   width: '8%',
+  //   backgroundColor: '#eee',
+  // },
   buttonText: {
     textAlign: 'center',
     letterSpacing: 2,
@@ -205,54 +205,6 @@ export class LineItemsConfirmedScreen extends React.Component {
               <Row style={styles.lastRow} />
             </Grid>
           </Content>
-          <Footer style={styles.footer}>
-            <Grid>
-              <Row style={styles.tiptax}>
-                <Col style={styles.tipText}>
-                  <Text style={styles.inputText}>TIP</Text>
-                </Col>
-                <Col style={styles.blankCol} />
-                <Col style={styles.tipAmount}>
-                  <Item style={styles.formInput}>
-                    <Input
-                      style={styles.inputText}
-                      keyboardType="phone-pad"
-                      returnKeyType="done"
-                      name="name"
-                      placeholder="0%"
-                      value={this.state.tipPercent}
-                      onChangeText={this.handleChange('tipPercent')}
-                    />
-                  </Item>
-                </Col>
-                <Col style={styles.percentSign}>
-                  <Text>%</Text>
-                </Col>
-              </Row>
-              <Row style={styles.tiptax}>
-                <Col style={styles.tipText}>
-                  <Text style={styles.inputText}>TAX</Text>
-                </Col>
-                <Col style={styles.blankCol} />
-                <Col style={styles.tipAmount}>
-                  <Item style={styles.formInput}>
-                    <Input
-                      style={styles.inputText}
-                      keyboardType="phone-pad"
-                      returnKeyType="done"
-                      name="name"
-                      placeholder="0%"
-                      value={this.state.taxPercent}
-                      onChangeText={this.handleChange('taxPercent')}
-                    />
-                  </Item>
-                </Col>
-                <Col style={styles.percentSign}>
-                  <Text>%</Text>
-                </Col>
-              </Row>
-            </Grid>
-          </Footer>
           <Footer style={styles.avatarFooter}>
             <EventMembers
               members={this.state.eventMemberProfiles}
