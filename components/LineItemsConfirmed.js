@@ -40,6 +40,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF7E79',
     height: '100%',
   },
+  deleteText: {
+    paddingLeft: 15,
+    color: 'white',
+  },
 });
 
 import { makeRef } from '../server/firebaseconfig';
@@ -123,10 +127,10 @@ class LineItemsConfirmed extends React.Component {
           rightButtons={[
             <TouchableHighlight
               style={styles.deleteButton}
-              key={this.state.index}
+              key={this.state.id}
               onPress={this.handleRemoveItem}
             >
-              <Text>DELETE</Text>
+              <Text style={styles.deleteText}>DELETE</Text>
             </TouchableHighlight>,
           ]}
         >
