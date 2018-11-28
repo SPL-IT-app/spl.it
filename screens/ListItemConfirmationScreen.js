@@ -7,7 +7,6 @@ import { LoadingScreen, LineItems, MyHeader, BackButton } from '../components';
 import { addLineItem, setEvent } from '../store';
 const { makeRef } = require('../server/firebaseconfig');
 import Dialog from 'react-native-dialog';
-import { Status } from '../screens';
 
 const styles = StyleSheet.create({
   tableHeader: {
@@ -26,12 +25,15 @@ const styles = StyleSheet.create({
   description: {
     display: 'flex',
     alignItems: 'center',
-    width: '60%',
+    width: '57%',
   },
   price: {
     display: 'flex',
     alignItems: 'center',
     width: '25%',
+  },
+  dummy: {
+    width: '3%',
   },
   lastRow: {
     paddingBottom: 80,
@@ -66,6 +68,7 @@ export class ListItemConfirmationScreen extends React.Component {
       eventName: '',
       receiptRef: '',
       eventStatus: true,
+      receipt: this.props.receipt,
     };
   }
 
@@ -77,6 +80,14 @@ export class ListItemConfirmationScreen extends React.Component {
           this.setState({ eventStatus: snapshot.val() });
         }
       );
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.receipt !== prevProps.receipt) {
+      this.setState({
+        receipt: this.props.receipt,
+      });
     }
   }
 
@@ -176,7 +187,7 @@ export class ListItemConfirmationScreen extends React.Component {
 
   render() {
     this.checkStatus();
-    const { receipt } = this.props;
+    const { receipt } = this.state;
     return receipt.length ? (
       <Container>
         <MyHeader
@@ -213,8 +224,10 @@ export class ListItemConfirmationScreen extends React.Component {
               <Col style={styles.price}>
                 <Text>PRICE</Text>
               </Col>
+              <Col style={styles.dummy} />
             </Row>
             {receipt.map((lineItem, idx) => {
+              console.log('rendering receipt line item ==>', lineItem);
               return <LineItems key={idx} lineItem={lineItem} idx={idx} />;
             })}
             <Button
