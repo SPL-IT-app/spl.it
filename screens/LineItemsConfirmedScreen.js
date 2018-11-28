@@ -10,8 +10,9 @@ import {
   BackButton,
 } from '../components';
 const { makeRef } = require('../server/firebaseconfig');
-import Dialog from 'react-native-dialog';
-import { Status } from '../screens';
+// import Dialog from 'react-native-dialog';
+// import { Status } from '../screens';
+import { withNavigationFocus } from 'react-navigation';
 
 const styles = StyleSheet.create({
   tableHeader: {
@@ -165,9 +166,9 @@ export class LineItemsConfirmedScreen extends React.Component {
   };
 
   render() {
-      this.checkStatus()
-      const receipt = this.state.receiptLineItems;
-      return (
+    this.checkStatus()
+    const receipt = this.state.receiptLineItems;
+    return this.props.isFocused ? (
         <Container>
           <MyHeader title="Assign Items" right={() => <BackButton />} />
 
@@ -249,7 +250,7 @@ export class LineItemsConfirmedScreen extends React.Component {
             />
           </Footer>
         </Container>
-      );
+      ) : null
   }
 }
 
@@ -260,4 +261,4 @@ const mapState = state => {
   };
 };
 
-export default connect(mapState)(LineItemsConfirmedScreen);
+export default withNavigationFocus(connect(mapState)(LineItemsConfirmedScreen));

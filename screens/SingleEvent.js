@@ -21,6 +21,7 @@ import { makeRef } from '../server/firebaseconfig';
 import { BackButton, MyHeader } from '../components';
 import Swipeable from 'react-native-swipeable';
 const dateFormat = require('dateformat');
+import { withNavigationFocus } from 'react-navigation';
 
 const styles = StyleSheet.create({
   container: {
@@ -118,7 +119,7 @@ class SingleEvent extends React.Component {
           ...prevState.receiptCountUnassigned,
           countUnassigned,
         ],
-      }))
+      }));
     });
 
     this.receiptsRef.on('child_changed', async snapshot => {
@@ -186,7 +187,7 @@ class SingleEvent extends React.Component {
     if (!event.title) {
       return <MyHeader title="Add Event" right={() => <BackButton />} />;
     }
-    return (
+    return this.props.isFocused ? (
       <Container styles={styles.container}>
         <MyHeader title={event.title} right={() => <BackButton />} />
         <Content>
@@ -233,18 +234,18 @@ class SingleEvent extends React.Component {
                           <Icon
                             type="MaterialCommunityIcons"
                             name="chevron-right"
-                          />)}
-                        </Right>
-                      </ListItem>
-                    </Swipeable>
-                  );
-                })
-              ) : (
-                  <Text>No Receipts</Text>
-                )}
-            </List>
-          </Content>
-
+                          />
+                        )}
+                      </Right>
+                    </ListItem>
+                  </Swipeable>
+                );
+              })
+            ) : (
+              <Text>No Receipts</Text>
+            )}
+          </List>
+        </Content>
 
         <Footer style={styles.footer}>
           <Button
@@ -282,7 +283,7 @@ class SingleEvent extends React.Component {
           </Button>
         </Footer>
       </Container>
-    );
+    ) : null;
   }
 }
 
@@ -292,7 +293,9 @@ const mapState = state => {
   };
 };
 
-export default connect(
-  mapState,
-  { setReceipt }
-)(SingleEvent);
+export default withNavigationFocus(
+  connect(
+    mapState,
+    { setReceipt }
+  )(SingleEvent)
+);

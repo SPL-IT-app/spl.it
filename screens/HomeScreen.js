@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import AllEvents from './AllEvents';
 import { makeRef } from '../server/firebaseconfig';
 import { setEvent, setReceipt } from '../store/index';
+import { withNavigationFocus } from 'react-navigation';
 
 const styles = StyleSheet.create({
   content: {
@@ -116,7 +117,7 @@ export class HomeScreen extends React.Component {
 
   render() {
     const { activeEventCount } = this.state;
-    return (
+    return this.props.isFocused ? (
       <Container>
         {this.state.isLoading ? (
           <LoadingScreen />
@@ -144,7 +145,7 @@ export class HomeScreen extends React.Component {
           </Content>
         )}
       </Container>
-    );
+    ) : null;
   }
 }
 
@@ -163,7 +164,9 @@ const mapDispatch = dispatch => {
   };
 };
 
-export default connect(
-  mapState,
-  mapDispatch
-)(HomeScreen);
+export default withNavigationFocus(
+  connect(
+    mapState,
+    mapDispatch
+  )(HomeScreen)
+);

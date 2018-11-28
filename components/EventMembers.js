@@ -28,6 +28,7 @@ export class EventMembers extends Component {
     };
   }
   componentDidMount() {
+    console.log('EVENT MEMBER CAROUSEL MOUNTED');
     this.eventMembersRef = makeRef(`/events/${this.props.event}/members`);
     this.eventMembersRef.on('child_added', snapshot => {
       const profileRef = makeRef(`/profiles/${snapshot.key}`);
