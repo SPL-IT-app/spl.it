@@ -20,6 +20,9 @@ const dateFormat = require('dateformat');
 import { MyHeader } from '../components';
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1
+  },
   deleteButton: {
     display: 'flex',
     justifyContent: 'center',
@@ -190,7 +193,7 @@ class AllEvents extends React.Component {
     if (events.length === 0) return <Container />;
 
     return (
-      <Container>
+      <Container style={styles.mainContainer}>
         <MyHeader title={status ? 'Events' : 'History'} />
         {status ? (
           activeEvents.length ? (
@@ -296,7 +299,7 @@ class AllEvents extends React.Component {
           </ScrollView>
         )}
         <Container>
-          {status ? (
+          {status && activeEvents.length ? (
             <Fab
               position="bottomRight"
               style={styles.addEventFab}
