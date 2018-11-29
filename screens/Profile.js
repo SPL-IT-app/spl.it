@@ -31,8 +31,7 @@ import Dialog from 'react-native-dialog';
 import { ImagePicker, Permissions } from 'expo';
 import { RNS3 } from 'react-native-aws3';
 require('../secrets');
-import { removeUser } from '../store'
-
+import { removeUser } from '../store';
 
 const styles = StyleSheet.create({
   container: {
@@ -145,32 +144,35 @@ class Profile extends React.Component {
 
   handleYes = async () => {
     this.setState({ dialogVisible: false });
-    await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-    if (!result.cancelled) {
-      const date = new Date();
-      const file = {
-        uri: result.uri,
-        name: this.props.user.id + date,
-        type: 'image/jpg',
-      };
-      const options = {
-        keyPrefix: 'profiles/',
-        bucket: 'spl-it',
-        region: 'us-east-2',
-        accessKey: process.env.S3_API_KEY,
-        secretKey: process.env.S3_SECRET_KEY,
-        successActionStatus: 201,
-      };
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    console.log('status ==>', status);
+    if (status === 'granted') {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+      if (!result.cancelled) {
+        const date = new Date();
+        const file = {
+          uri: result.uri,
+          name: this.props.user.id + date,
+          type: 'image/jpg',
+        };
+        const options = {
+          keyPrefix: 'profiles/',
+          bucket: 'spl-it',
+          region: 'us-east-2',
+          accessKey: process.env.S3_API_KEY,
+          secretKey: process.env.S3_SECRET_KEY,
+          successActionStatus: 201,
+        };
 
-      const response = await RNS3.put(file, options);
-      if (response.status === 201) {
-        makeRef(`/profiles/${this.props.user.id}/imageUrl`).set(
-          response.body.postResponse.location
-        );
+        const response = await RNS3.put(file, options);
+        if (response.status === 201) {
+          makeRef(`/profiles/${this.props.user.id}/imageUrl`).set(
+            response.body.postResponse.location
+          );
+        }
       }
     }
   };
@@ -192,14 +194,14 @@ class Profile extends React.Component {
   render() {
     return (
       <Container>
-        <Dialog.Container visible={this.state.dialogVisible}>
+        {/* <Dialog.Container visible={this.state.dialogVisible}>
           <Dialog.Title>Profile Photo</Dialog.Title>
           <Dialog.Description>
             Do you want to change your profile photo?
           </Dialog.Description>
           <Dialog.Button label="No" onPress={this.handleNo} />
           <Dialog.Button label="Yes" onPress={this.handleYes} />
-        </Dialog.Container>
+        </Dialog.Container> */}
         <MyHeader title="Profile" />
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
           <ScrollView>
@@ -263,7 +265,8 @@ class Profile extends React.Component {
                   <CardItem
                     button
                     cardBody
-                    onLongPress={() => this.setState({ dialogVisible: true })}
+                    // onLongPress={() => this.setState({ dialogVisible: true })}
+                    onLongPress={this.handleYes}
                   >
                     <Image
                       source={{ uri: this.state.profile.imageUrl }}
@@ -432,7 +435,10 @@ const mapState = state => ({
 });
 
 const mapDispatch = dispatch => ({
-  removeUser: () => dispatch(removeUser())
-})
+  removeUser: () => dispatch(removeUser()),
+});
 
-export default connect(mapState, mapDispatch)(Profile);
+export default connect(
+  mapState,
+  mapDispatch
+)(Profile);
