@@ -10,7 +10,7 @@
 </div>
 
 ---
-🔪 $PL/IT is cross platform app for fair tab splitting that uses Google's [Cloud Vision API](https://cloud.google.com/vision/docs/ocr) to parse text from receipts.
+🔪 $PL/IT is cross platform app for fair tab splitting that uses Google's [Cloud Vision API](https://cloud.google.com/vision/docs/ocr) to parse text from receipts. 
 
 
 ## Development
