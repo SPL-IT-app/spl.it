@@ -10,7 +10,7 @@ import {
   Icon,
   Container,
 } from 'native-base';
-import { Permissions, Notifications } from 'expo'
+import { Permissions, Notifications } from 'expo';
 
 import { randomColor } from 'randomcolor';
 
@@ -67,10 +67,10 @@ class SignUpScreen extends React.Component {
       phone: '1234567890',
       password: '123456',
       username: 'finnterdal',
-    }
+    };
   }
 
-  registerForPushNotificationsAsync = async (userId) => {
+  registerForPushNotificationsAsync = async userId => {
     const { status: existingStatus } = await Permissions.getAsync(
       Permissions.NOTIFICATIONS
     );
@@ -86,12 +86,15 @@ class SignUpScreen extends React.Component {
     }
 
     let token = await Notifications.getExpoPushTokenAsync();
-    firebase.database().ref('users').child(userId)
-      .update({ expoToken: token })
-  }
+    firebase
+      .database()
+      .ref('users')
+      .child(userId)
+      .update({ expoToken: token });
+  };
 
   signUpUser = (email, password) => {
-    const { getUser } = this.props
+    const { getUser } = this.props;
     try {
       firebase
         .auth()
@@ -109,18 +112,20 @@ class SignUpScreen extends React.Component {
                 email,
               },
             });
-          this.registerForPushNotificationsAsync(user.user.uid)
+          this.registerForPushNotificationsAsync(user.user.uid);
           firebase
             .database()
             .ref('profiles')
             .update({
               [user.user.uid]: {
-                imageUrl: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973461_960_720.png',
+                imageUrl:
+                  'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973461_960_720.png',
                 username,
-                color: randomColor({
-                  luminosity: 'light',
-                  hue: 'random',
-                }).toString(),
+                // color: randomColor({
+                //   luminosity: 'light',
+                //   hue: 'random',
+                // }).toString(),
+                color: '#A1FFFA',
               },
             });
           getUser({ id: user.user.uid });
@@ -129,13 +134,12 @@ class SignUpScreen extends React.Component {
           this.props.navigation.navigate('Main');
         })
         .catch(err => {
-          Alert.alert('Error', err.message)
-        })
-
+          Alert.alert('Error', err.message);
+        });
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   render() {
     return (
@@ -173,7 +177,9 @@ class SignUpScreen extends React.Component {
                 autoCorrect={false}
                 onChangeText={firstName => this.setState({ firstName })}
                 returnKeyType="next"
-                getRef={input => { this.firstNameRef = input }}
+                getRef={input => {
+                  this.firstNameRef = input;
+                }}
                 onSubmitEditing={() => {
                   this.lastNameRef._root.focus();
                 }}
@@ -187,7 +193,9 @@ class SignUpScreen extends React.Component {
                 autoCorrect={false}
                 onChangeText={lastName => this.setState({ lastName })}
                 returnKeyType="next"
-                getRef={input => { this.lastNameRef = input }}
+                getRef={input => {
+                  this.lastNameRef = input;
+                }}
                 onSubmitEditing={() => {
                   this.emailRef._root.focus();
                 }}
@@ -203,7 +211,9 @@ class SignUpScreen extends React.Component {
                 autoCapitalize="none"
                 onChangeText={email => this.setState({ email })}
                 returnKeyType="next"
-                getRef={input => { this.emailRef = input }}
+                getRef={input => {
+                  this.emailRef = input;
+                }}
                 onSubmitEditing={() => {
                   this.phoneRef._root.focus();
                 }}
@@ -221,9 +231,11 @@ class SignUpScreen extends React.Component {
                 autoCapitalize="none"
                 onChangeText={phone => this.setState({ phone })}
                 returnKeyType="done"
-                getRef={input => { this.phoneRef = input }}
+                getRef={input => {
+                  this.phoneRef = input;
+                }}
                 onSubmitEditing={() => {
-                  this.passwordRef._root.focus()
+                  this.passwordRef._root.focus();
                 }}
               />
             </Item>
@@ -234,7 +246,9 @@ class SignUpScreen extends React.Component {
                 secureTextEntry={true}
                 autoCapitalize="none"
                 autoCorrect={false}
-                getRef={input => { this.passwordRef = input }}
+                getRef={input => {
+                  this.passwordRef = input;
+                }}
                 onChangeText={password => this.setState({ password })}
                 returnKeyType="done"
               />

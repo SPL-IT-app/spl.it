@@ -13,13 +13,14 @@ import {
   Button,
   Icon,
   Separator,
-  Toast
+  Toast,
 } from 'native-base';
 import { StyleSheet } from 'react-native';
 import { MyHeader, BackButton, LoadingScreen } from '../components';
 import { makeRef } from '../server/firebaseconfig';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
+import { WebBrowser } from 'expo';
 
 const styles = StyleSheet.create({
   buttonText: {
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   footer: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
-    height: 'auto'
+    height: 'auto',
   },
   icon: {
     margin: 0,
@@ -53,22 +54,21 @@ const styles = StyleSheet.create({
   dividerText: {
     letterSpacing: 2,
     fontSize: 13,
-    color: 'white'
+    color: 'white',
   },
   unassignedDivider: {
     backgroundColor: '#FFC000',
-    height: 'auto'
+    height: 'auto',
   },
   userSplits: {
     marginTop: 15,
     backgroundColor: '#159192',
-    height: 'auto'
-
+    height: 'auto',
   },
   totalDivider: {
     marginTop: 15,
     height: 'auto',
-    backgroundColor: "#1A98FC",
+    backgroundColor: '#1A98FC',
   },
 });
 
@@ -79,6 +79,7 @@ class Status extends Component {
       members: {},
       event: {},
       memberCount: Infinity,
+      result: null,
     };
 
     this.calculatePrice = this.calculatePrice.bind(this);
@@ -86,11 +87,13 @@ class Status extends Component {
   }
 
   componentDidMount() {
-    this.eventRef = makeRef(`events/${this.props.navigation.getParam('eventId')}`);
+    this.eventRef = makeRef(
+      `events/${this.props.navigation.getParam('eventId')}`
+    );
     this.callback = snapshot => {
       this.setState({ event: snapshot.val() });
-    }
-    this.eventRef.on('value', this.callback );
+    };
+    this.eventRef.on('value', this.callback);
 
     this.membersRef = makeRef(
       `events/${this.props.navigation.getParam('eventId')}/members`
@@ -199,6 +202,13 @@ class Status extends Component {
     return true;
   };
 
+  _handlePressButtonAsync = async () => {
+    console.log('opening browser');
+    await WebBrowser.openBrowserAsync(
+      'https://venmo.com/code?user_id=1824435317243904215'
+    );
+  };
+
   closeEvent = () => {
     this.eventRef.update({ status: false }, error => {
       if (!error) {
@@ -234,39 +244,43 @@ class Status extends Component {
         />
         <Content>
           <List>
-
             {Object.entries(this.moneyToSendOrReceive).map(entry => {
               if (entry[0] === 'unassigned') {
-                if (!entry[1]) return(
-                  <React.Fragment>
-                    <Separator bordered style={styles.unassignedDivider}>
-                      <Text style={styles.dividerText}>
-                        NO UNASSIGNED LINE ITEMS
-                      </Text>
-                    </Separator>
-                    <ListItem style={styles.lineItemRow} avatar key={entry[0]}>
-                      <Left>
-                        <Thumbnail
-                          source={{
-                            uri:
-                              'https://cdn3.iconfinder.com/data/icons/account-1/64/Account-06-512.png',
-                          }}
-                        />
-                      </Left>
-                      <Body>
-                        <Text>Unassigned</Text>
-                      </Body>
-                      <Right style={styles.price}>
-                        <Text style={{ color: 'orange' }}>
-                          {numeral(0).format('$0,0.00')}
+                if (!entry[1])
+                  return (
+                    <React.Fragment>
+                      <Separator bordered style={styles.unassignedDivider}>
+                        <Text style={styles.dividerText}>
+                          NO UNASSIGNED LINE ITEMS
                         </Text>
-                      </Right>
-                    </ListItem>
-                    <Separator bordered style={styles.userSplits}>
-                      <Text style={styles.dividerText}>USER SPLITS</Text>
-                    </Separator>
-                  </React.Fragment>
-                );
+                      </Separator>
+                      <ListItem
+                        style={styles.lineItemRow}
+                        avatar
+                        key={entry[0]}
+                      >
+                        <Left>
+                          <Thumbnail
+                            source={{
+                              uri:
+                                'https://cdn3.iconfinder.com/data/icons/account-1/64/Account-06-512.png',
+                            }}
+                          />
+                        </Left>
+                        <Body>
+                          <Text>Unassigned</Text>
+                        </Body>
+                        <Right style={styles.price}>
+                          <Text style={{ color: 'orange' }}>
+                            {numeral(0).format('$0,0.00')}
+                          </Text>
+                        </Right>
+                      </ListItem>
+                      <Separator bordered style={styles.userSplits}>
+                        <Text style={styles.dividerText}>USER SPLITS</Text>
+                      </Separator>
+                    </React.Fragment>
+                  );
                 return (
                   <React.Fragment>
                     <Separator bordered style={styles.unassignedDivider}>
@@ -299,7 +313,13 @@ class Status extends Component {
                 );
               } else {
                 return (
-                  <ListItem avatar style={styles.lineItemRow} key={entry[0]}>
+                  <ListItem
+                    avatar
+                    button
+                    style={styles.lineItemRow}
+                    key={entry[0]}
+                    onPress={this._handlePressButtonAsync}
+                  >
                     <Left>
                       <Thumbnail
                         source={{ uri: members[entry[0]].imageUrl }}
