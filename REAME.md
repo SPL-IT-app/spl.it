@@ -1,9 +1,6 @@
 <h1 align="center">$ P L / I T</h1>
-<p align="center">
-<img width="200" height="200" src="https://bit.ly/2TXwoEv" alt="$PL/IT logo">
-</p>
-
 <div align="center">
+<img width="200" height="200" src="https://bit.ly/2TXwoEv" alt="$PL/IT logo">
 
 ![version](https://img.shields.io/badge/version-1.0.0-blue.svg?maxAge=2592000)
 <a href="https://twitter.com/intent/tweet?text=Look%20at%20this%20awesome%20tab%20splitting%20app%20I%20found!%20https://github.com/SPL-IT-app/spl.it">
