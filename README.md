@@ -14,14 +14,14 @@
 🔪 $PL/IT is a mobile tab splitting app for friends who go out to eat but have different spending habits. iOS and Android users can upload photos of their receipts and claim ownership of each item in that receipt. Once the event is closed, each user is shown how much they should pay or charge other users in the event.
 
 ## Development
-This was built using Google's [Cloud Vision API](https://cloud.google.com/vision/docs/ocr), with a front end in [React Native](https://facebook.github.io/react-native/) and a back-end in [Firebase](https://firebase.google.com/). 
+This was built using Google's [Cloud Vision API](https://cloud.google.com/vision/docs/ocr) with a front end in [React Native](https://facebook.github.io/react-native/) and a back-end in [Firebase](https://firebase.google.com/). 
 
-We wrote a custom algorithm to parse the results from Cloud Vision's API into line items which we store in Firebase's real-time database. Firebase supports not only our apps' database and authentication, but also user interaction. With Firebase, we learned how to use a non-relational database and how to set up subscriptions to an SDK to handle queries in real-time.
+We wrote a custom algorithm to parse the results from Cloud Vision's API into line items which we store in Firebase's real-time database. Firebase supports not only our apps' database and authentication, but also user interaction. In addition, this non-relational database allows us to set up subscriptions to an SDK to handle queries almost instantly.
 
 ### To get started:
 1. Clone the repository to your local computer
 2. Run `npm install`
-3. Have at it
+3. Have at it!
 
 ## Contributors
 * [Brittany Hill](https://github.com/ibrittanyhill)
