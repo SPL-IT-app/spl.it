@@ -145,33 +145,45 @@ class Profile extends React.Component {
 
   handleYes = async () => {
     this.setState({ dialogVisible: false });
-    await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-    if (!result.cancelled) {
-      const date = new Date();
-      const file = {
-        uri: result.uri,
-        name: this.props.user.id + date,
-        type: 'image/jpg',
-      };
-      const options = {
-        keyPrefix: 'profiles/',
-        bucket: 'spl-it',
-        region: 'us-east-2',
-        accessKey: process.env.S3_API_KEY,
-        secretKey: process.env.S3_SECRET_KEY,
-        successActionStatus: 201,
-      };
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
+    console.log('STATUS', status)
+    // let newStatus
+    // if( status !== 'granted'){
+    //   const perm = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    //   newStatus = perm.status
+    // }
+    // if(newStatus !== 'granted') return
+    // || newStatus === 'granted'
+    if(status === "granted" ){
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: "Images",
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+      if (!result.cancelled) {
+        const date = new Date();
+        const file = {
+          uri: result.uri,
+          name: this.props.user.id + date,
+          type: 'image/jpg',
+        };
+        const options = {
+          keyPrefix: 'profiles/',
+          bucket: 'spl-it',
+          region: 'us-east-2',
+          accessKey: process.env.S3_API_KEY,
+          secretKey: process.env.S3_SECRET_KEY,
+          successActionStatus: 201,
+        };
 
-      const response = await RNS3.put(file, options);
-      if (response.status === 201) {
-        makeRef(`/profiles/${this.props.user.id}/imageUrl`).set(
-          response.body.postResponse.location
-        );
+        const response = await RNS3.put(file, options);
+        if (response.status === 201) {
+          makeRef(`/profiles/${this.props.user.id}/imageUrl`).set(
+            response.body.postResponse.location
+          );
+        }
       }
+
     }
   };
 

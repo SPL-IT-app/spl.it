@@ -101,7 +101,7 @@ export class LineItems extends React.Component {
             <Item type="number" style={styles.formInput}>
               <Input
                 style={styles.inputText}
-                keyboardType="phone-pad"
+                keyboardType='numeric'
                 returnKeyType="done"
                 name="quantity"
                 placeholder="quantity"
@@ -126,7 +126,7 @@ export class LineItems extends React.Component {
             <Item type="number" style={styles.formInput}>
               <Input
                 style={styles.inputText}
-                keyboardType="phone-pad"
+                keyboardType="numeric"
                 returnKeyType="done"
                 name="price"
                 placeholder="price"
