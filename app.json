@@ -21,6 +21,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "spl.host.app"
+    },
+    "android": {
+      "package": "com.split.split"
     }
   }
 }
