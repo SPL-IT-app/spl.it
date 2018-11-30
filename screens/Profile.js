@@ -31,8 +31,7 @@ import Dialog from 'react-native-dialog';
 import { ImagePicker, Permissions } from 'expo';
 import { RNS3 } from 'react-native-aws3';
 require('../secrets');
-import { removeUser } from '../store'
-
+import { removeUser } from '../store';
 
 const styles = StyleSheet.create({
   container: {
@@ -145,18 +144,10 @@ class Profile extends React.Component {
 
   handleYes = async () => {
     this.setState({ dialogVisible: false });
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
-    console.log('STATUS', status)
-    // let newStatus
-    // if( status !== 'granted'){
-    //   const perm = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    //   newStatus = perm.status
-    // }
-    // if(newStatus !== 'granted') return
-    // || newStatus === 'granted'
-    if(status === "granted" ){
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    console.log('status ==>', status);
+    if (status === 'granted') {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: "Images",
         allowsEditing: true,
         aspect: [4, 3],
       });
@@ -204,14 +195,14 @@ class Profile extends React.Component {
   render() {
     return (
       <Container>
-        <Dialog.Container visible={this.state.dialogVisible}>
+        {/* <Dialog.Container visible={this.state.dialogVisible}>
           <Dialog.Title>Profile Photo</Dialog.Title>
           <Dialog.Description>
             Do you want to change your profile photo?
           </Dialog.Description>
           <Dialog.Button label="No" onPress={this.handleNo} />
           <Dialog.Button label="Yes" onPress={this.handleYes} />
-        </Dialog.Container>
+        </Dialog.Container> */}
         <MyHeader title="Profile" />
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
           <ScrollView>
@@ -275,7 +266,8 @@ class Profile extends React.Component {
                   <CardItem
                     button
                     cardBody
-                    onLongPress={() => this.setState({ dialogVisible: true })}
+                    // onLongPress={() => this.setState({ dialogVisible: true })}
+                    onLongPress={this.handleYes}
                   >
                     <Image
                       source={{ uri: this.state.profile.imageUrl }}
@@ -444,7 +436,10 @@ const mapState = state => ({
 });
 
 const mapDispatch = dispatch => ({
-  removeUser: () => dispatch(removeUser())
-})
+  removeUser: () => dispatch(removeUser()),
+});
 
-export default connect(mapState, mapDispatch)(Profile);
+export default connect(
+  mapState,
+  mapDispatch
+)(Profile);
