@@ -2,10 +2,13 @@
   "expo": {
     "name": "spl.it",
     "description": "A cross-platform app for fair tab splitting.",
-    "slug": "spl.it",
+    "slug": "split",
     "privacy": "public",
     "sdkVersion": "31.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -17,10 +20,11 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "spl.host.app"
+      "supportsTablet": true
     },
     "android": {
       "package": "com.split.split"
