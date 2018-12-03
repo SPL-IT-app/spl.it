@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Text,
   View,
   TouchableOpacity,
   StyleSheet,
@@ -8,12 +7,13 @@ import {
   Alert,
   Dimensions,
   PixelRatio,
+  Platform
 } from 'react-native';
 import { PanResponderInstance } from 'PanResponder';
-import { Camera, Permissions, ImageManipulator, Svg } from 'expo';
+import { Camera, Permissions, ImageManipulator, Svg, ImagePicker } from 'expo';
 const axios = require('axios');
 require('../secrets');
-import { Icon, Button, Content, Spinner } from 'native-base';
+import { Icon, Button, Content, Spinner, Text } from 'native-base';
 import { connect } from 'react-redux';
 import { setReceipt } from '../store';
 import { MyHeader, BackButton } from '../components';
@@ -141,11 +141,25 @@ export class CameraView extends React.Component {
     }
   };
   takePicture = async () => {
-    let photo = await this.camera.takePictureAsync({
-      quality: 0,
-      base64: true,
-    });
-    this.cropPicture(photo);
+    if(Platform.OS === 'android'){
+      let result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        base64: true
+      })
+      if(result.cancelled){return}
+      await this.getData(result)
+      this.props.navigation.navigate('ListConfirm')
+
+      // if(!result.cancelled){
+      // }
+    } else {
+      let photo = await this.camera.takePictureAsync({
+        quality: 0,
+        base64: true,
+      });
+      this.cropPicture(photo);
+
+    }
   };
 
   cropPicture = async photo => {
@@ -244,7 +258,14 @@ export class CameraView extends React.Component {
       return <View />;
     } else if (hasCameraPermission === false) {
       return <Text>No access to camera!</Text>;
-    } else {
+    }
+    if(Platform.OS === 'android'){
+
+        this.takePicture()
+
+      return <Text>Something</Text>
+    }
+    else {
       return (
         <View style={styles.view}>
           <MyHeader title="Take Photo" right={() => <BackButton />} />
@@ -258,7 +279,7 @@ export class CameraView extends React.Component {
           >
             {this._rectangleDisplay()}
             {this._renderLoading()}
-            {/* <View style={styles.camera}>
+            {false && <View style={styles.camera}>
               <Button
                 style={styles.button}
                 onPress={() => this.props.navigation.navigate('Home')}
@@ -277,8 +298,16 @@ export class CameraView extends React.Component {
                   <Text style={styles.text}> Take Photo </Text>
                 </Button>
               </TouchableOpacity>
-            </View> */}
+            </View> }
           </Camera>
+          <Button onPress={() => {
+                  this.takePicture().then(() => {
+                    this.props.navigation.navigate('ListConfirm');
+                  });
+                }}>
+            <Text>Take Photo</Text>
+          </Button>
+
         </View>
       );
     }
