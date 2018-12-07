@@ -1,6 +1,7 @@
-<h1 align="center">$ P L / I T</h1>
-
 <div align="center">
+
+<h1>$ P L / I T</h1>
+
 <img width="200" height="200" src="https://bit.ly/2TXwoEv" alt="$PL/IT logo">
 
 ![version](https://img.shields.io/badge/version-1.0.0-blue.svg?maxAge=2592000)
